@@ -9,3 +9,10 @@ older [Riley computational package](https://github.com/aelzenaar/riley). New fea
  - closer integration with [pandas](https://pandas.pydata.org/)
  - better visualisation tools using [HoloViews](https://holoviews.org/)
 
+Example
+-------
+The `limits.py` file contains an example of a HoloViews/Bokeh server to dynamically show limit sets. Run
+
+    panel serve limits.py
+
+with the python packages `holoview`, `bokeh`, `panel`, `pandas` installed to try it.
