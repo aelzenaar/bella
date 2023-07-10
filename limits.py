@@ -5,17 +5,20 @@ import pandas as pd
 hv.extension('bokeh')
 from bokeh.plotting import show
 
+p = 2
+q = 7
+mu = 2+2j
+
+alpha = np.exp(1j*np.pi/p)
+beta = np.exp(1j*np.pi/q)
+X = np.array([[alpha,1],[0,np.conj(alpha)]])
+Y = np.array([[beta,0],[mu,np.conj(beta)]])
+
 
 def testfn():
-    G = cayley.GroupCache([np.array([[1,1],[0,1]]), np.array([[1,0],[2j,1]])])
-    L = []
-    base = np.array([[0],[1]])
-    for w in G.free_cayley_graph_mc(20,40000):
-        point = np.dot(G[w], base)
-        L.append(point[0]/point[1])
-    print(len(L))
-    df = pd.DataFrame(data=[(float(np.real(point)), float(np.imag(point))) for point in L], columns=['x','y'], copy=False)
-    scatter = hv.Scatter(df, 'x', 'y')
-    show(hv.render(scatter.opts(marker = "dot", size = 1,  line_color = 'black').redim(x=hv.Dimension('x', range=(-4, 4)),y=hv.Dimension('y', range=(-4, 4)))))
+    G = cayley.GroupCache([X,Y])
+    df = G.coloured_limit_set_mc(30,40000)
+    scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])
+    show(hv.render(scatter.opts(marker = "dot", size = 1,  color = hv.dim('colour'), width=800, height=800, data_aspect=1, cmap='Category10').redim(x=hv.Dimension('x', range=(-1.5, 1.5)),y=hv.Dimension('y', range=(-0.5, 2.0)))))
 
 testfn()

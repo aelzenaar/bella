@@ -5,6 +5,7 @@ from numpy.linalg import inv
 import itertools
 import functools
 import random
+import pandas as pd
 
 # https://stackoverflow.com/a/60980685
 def _list_to_tuple(function):
@@ -65,4 +66,14 @@ class GroupCache:
             for n in range(depth+1):
                 word = self.free_random_walk_locally(word)
                 yield word
+
+    def coloured_limit_set_mc(self, depth, count):
+        L = []
+        base = np.array([[0],[1]])
+        for w in self.free_cayley_graph_mc(depth,count):
+            point = np.dot(self[w], base)
+            cpx = point[0]/point[1]
+            L.append([np.real(cpx), np.imag(cpx), w[0]])
+        df = pd.DataFrame(data=L, columns=['x','y','colour'], copy=False)
+        return df
 
