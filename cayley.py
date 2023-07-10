@@ -4,8 +4,7 @@ import numpy as np
 from numpy.linalg import inv
 import itertools
 import functools
-import operator
-import timeit
+import random
 
 # https://stackoverflow.com/a/60980685
 def _list_to_tuple(function):
@@ -33,6 +32,13 @@ class GroupCache:
     def __len__(self):
         return self.length
 
+    def free_random_walk_locally(self, word):
+        if word == []:
+            return random.choice([[w] for w in range(2*self.length)])
+        else:
+            lab = random.choice([x for x in range(2*self.length) if x != self.gen_to_inv[word[0]]])
+            return [lab] + word
+
     def free_cayley_graph_locally(self, word):
         if word == []:
             yield from [[w] for w in range(2*self.length)]
@@ -41,6 +47,7 @@ class GroupCache:
                 if lab != self.gen_to_inv[word[0]]:
                     yield [lab] + word
 
+    # Breadth-first search
     def free_cayley_graph_bfs(self, depth):
         last_list = [[]]
         for n in range(depth+1):
@@ -51,4 +58,11 @@ class GroupCache:
                     this_list.append(item)
             last_list = this_list
 
+    # Monte-Carlo search
+    def free_cayley_graph_mc(self, depth, count):
+        for nn in range(count):
+            word = []
+            for n in range(depth+1):
+                word = self.free_random_walk_locally(word)
+                yield word
 
