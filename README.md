@@ -19,5 +19,5 @@ to start the HoloViews/Bokeh server.
 
 The `limits.py` file contains an example to dynamically show limit sets for elliptic Riley groups.
 
-The `peripherals.py` file shows the peripheral subgroups of the parabolic Riley groups of the form $ \langle X, W_{p/q} \rangle $ for $ W_{p/q} $ a Farey word.
+The `peripherals.py` file shows the peripheral subgroups of the parabolic Riley groups of the form $` \langle X, W_{p/q} \rangle `$ for $` W_{p/q} `$ a Farey word.
 This shows the power of having HoloViews as a graphics frontend: we can compose two different limit sets with no pain.
