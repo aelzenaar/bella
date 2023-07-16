@@ -1,7 +1,7 @@
 # cayley.py -- methods for enumerating matrix groups.
 
 import numpy as np
-from numpy.linalg import inv
+from numpy.linalg import inv, eig
 import itertools
 import functools
 import random
@@ -21,7 +21,7 @@ class GroupCache:
     def inv_word(self, word):
         return tuple(reversed(tuple(self.gen_to_inv[x] for x in word)))
 
-    def __init__(self, generators, relators=None):
+    def __init__(self, generators, relators=[]):
         self.length = len(generators)
         inverses = [inv(g) for g in generators]
         self.generators = generators + inverses
@@ -112,3 +112,10 @@ class GroupCache:
         df = pd.DataFrame(data=L, columns=['x','y','colour'], copy=False)
         return df
 
+    def fixed_points(self, word):
+        M = self[word]
+        _, eigenvectors = eig(word)
+        return [ (c[0]/c[1] if c[1] != 0 else np.inf) for c in np.transpose(eigenvectors) ]
+
+    def subgroup(self, words):
+        return GroupCache(words)
