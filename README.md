@@ -9,10 +9,15 @@ older [Riley computational package](https://github.com/aelzenaar/riley). New fea
  - closer integration with [pandas](https://pandas.pydata.org/)
  - better visualisation tools using [HoloViews](https://holoviews.org/)
 
-Example
--------
-The `limits.py` file contains an example of a HoloViews/Bokeh server to dynamically show limit sets. Run
+Examples
+--------
+Install the python packages `holoview`, `bokeh`, `panel`, `pandas` installed to try the examples. Then run
 
-    panel serve limits.py
+    panel serve <filename.py>
 
-with the python packages `holoview`, `bokeh`, `panel`, `pandas` installed to try it.
+to start the HoloViews/Bokeh server.
+
+The `limits.py` file contains an example to dynamically show limit sets for elliptic Riley groups.
+
+The `peripherals.py` file shows the peripheral subgroups of the parabolic Riley groups of the form $ \langle X, W_{p/q} \rangle $ for $ W_{p/q} $ a Farey word.
+This shows the power of having HoloViews as a graphics frontend: we can compose two different limit sets with no pain.
