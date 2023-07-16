@@ -169,14 +169,18 @@ class GroupCache:
                 word = self.random_walk_locally(word)
                 yield word
 
-    def coloured_limit_set_mc(self, depth, count):
+    def coloured_limit_set_mc(self, depth, count, seed = 0):
         """ Monte-carlo search for points in the limit set.
 
-            Produce `depth`*count` elements of the limit set of the group
+            Produce `depth`*count` translates of the element `seed`, thus approximating the limit set,
             by computing the Cayley graph as returned by `cayley_graph_mc(depth, count)`.
         """
         L = []
-        base = np.array([[0],[1]])
+        if seed == np.inf:
+            base = np.array([[1],[0]])
+        else:
+            base = np.array([[seed],[1]])
+
         for w in self.cayley_graph_mc(depth,count):
             point = np.dot(self[w], base)
             cpx = point[0]/point[1]
@@ -187,7 +191,7 @@ class GroupCache:
     def fixed_points(self, word):
         """ Compute the fixed points of `word` as it acts on the projective line."""
         M = self[word]
-        _, eigenvectors = eig(word)
+        _, eigenvectors = eig(M)
         return [ (c[0]/c[1] if c[1] != 0 else np.inf) for c in np.transpose(eigenvectors) ]
 
     def subgroup(self, words):
