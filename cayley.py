@@ -7,6 +7,10 @@ import functools
 import random
 import pandas as pd
 
+def simple_inv(M):
+    """ Invert a 2x2 matrix. """
+    return 1/(M[0,0]*M[1,1]-M[0,1]*M[1,0]) * np.array([[M[1,1],-M[0,1]], [-M[1,0], M[0,0]]])
+
 # Words are _tuples_ of elements.
 class GroupCache:
     """ Represents a finitely generated group of 2x2 matrices.
@@ -36,7 +40,7 @@ class GroupCache:
         """
 
         self.length = len(generators)
-        inverses = [inv(g) for g in generators]
+        inverses = [simple_inv(g) for g in generators]
         self.generators = generators + inverses
         self.gen_to_inv = [r for r in itertools.chain(range(self.length,2*self.length), range(0,self.length))]
         self.relators = relators + [self.inv_word(r) for r in relators] + list(itertools.chain.from_iterable([(g, self.gen_to_inv[g]), (self.gen_to_inv[g], g)] for g in range(0,self.length)))
