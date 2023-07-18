@@ -1,4 +1,4 @@
-import cayley
+from bella import cayley, chistyakov
 import numpy as np
 import holoviews as hv
 import pandas as pd
@@ -8,7 +8,6 @@ from bokeh.plotting import show
 from pyadic import PAdic
 from fractions import Fraction as Q
 
-import chistyakov
 
 one_fifth = PAdic(Q(1,5), 5, 30)
 g1 = np.array([[one_fifth, -one_fifth],[-one_fifth,26*one_fifth]])
@@ -20,7 +19,7 @@ def testfn():
     G = cayley.GroupCache([g1,g2,g3])
     L = []
     base = np.array([[0],[1]])
-    for w in G.free_cayley_graph_mc(12,1000):
+    for w in G.free_cayley_graph_mc(15,10000):
         point = np.dot(G[w], base)
         L.append(chistyakov.Υ(0, 0.9*chistyakov.s0(5), point[0,0]/point[1,0], 100))
 

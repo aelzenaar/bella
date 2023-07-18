@@ -1,6 +1,9 @@
+""" Functions and classes specifically modelling Riley groups.
+"""
+
 import numpy as np
-import cayley
-import farey
+from . import cayley
+from . import farey
 import functools
 
 class RileyGroup(cayley.GroupCache):

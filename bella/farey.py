@@ -1,3 +1,6 @@
+""" Utility functions for producing Farey words in the letters X and Y.
+"""
+
 import math
 import functools
 

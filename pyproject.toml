@@ -1,0 +1,15 @@
+[project]
+name = "bella"
+version = "0.0.95"
+authors = [{name="Alex Elzenaar",email="aelz176@aucklanduni.ac.nz"}]
+description = "A computational package for discrete matrix groups of low rank."
+readme = "README.md"
+dependencies = [
+    "holoviews",
+    "bokeh",
+    "pandas",
+    "panel",
+    "pyadic"
+]
+[project.urls]
+"Homepage" = "https://github.com/aelzenaar/bella"

@@ -1,4 +1,8 @@
-# cayley.py -- methods for enumerating matrix groups.
+""" General methods for calculating with 2x2 matrix groups.
+
+    Entries of these matrices must be in a field which can be fed into NumPy, but no
+    other restrictions are made: for instance one may use complex matrices or pyadic.PAdic matrices.
+"""
 
 import numpy as np
 from numpy.linalg import inv, eig

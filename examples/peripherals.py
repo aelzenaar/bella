@@ -1,11 +1,10 @@
-import riley
+from bella import riley, farey
 import numpy as np
 import holoviews as hv
 import pandas as pd
 hv.extension('bokeh')
 from bokeh.plotting import show
 import panel as pn
-import farey
 
 def rotate(g):
     return  g[-1:] + g[:-1]

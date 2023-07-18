@@ -1,4 +1,4 @@
-import riley
+from bella import riley
 import numpy as np
 import holoviews as hv
 import pandas as pd

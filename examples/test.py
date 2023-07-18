@@ -1,4 +1,4 @@
-import cayley
+from bella import cayley
 import numpy as np
 import timeit
 import cProfile
