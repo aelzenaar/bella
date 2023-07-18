@@ -26,10 +26,11 @@ class RileyGroup(cayley.GroupCache):
                 relations.append((index,)*order)
                 return np.exp(1j*np.pi/order)
 
-        α = generator(0, p)
-        β = generator(1, q)
-        X = np.array([[α,1],[0,np.conj(α)]])
-        Y = np.array([[β,0],[μ,np.conj(β)]])
+        self.α = generator(0, p)
+        self.β = generator(1, q)
+        self.μ = μ
+        X = np.array([[self.α,1],[0,np.conj(self.α)]])
+        Y = np.array([[self.β,0],[self.μ,np.conj(self.β)]])
 
         super().__init__([X,Y], relations)
         self.generator_map = {'X':0, 'Y':1, 'x':self.gen_to_inv[0], 'y':self.gen_to_inv[1]}
@@ -47,3 +48,14 @@ class RileyGroup(cayley.GroupCache):
     def farey_fixed_points(self, r, s):
         """ Return the fixed points of the r/s-Farey matrix in this group. """
         return self.fixed_points(self.farey_matrix(r,s))
+
+    def guess_radial_coordinate(self, ε):
+        """ Attempt to guess the Keen-Series coordinate of the group.
+
+            More precisely, iterate over all possible r/s so that the Farey word
+            W_r/s has real trace up to error `ε`.
+        """
+        for (r,s) in farey.walk_tree_bfs():
+            v = farey.polynomial_evaluate(r, s, self.α, self.β, self.μ)
+            if np.abs(np.imag(v)) < ε:
+                return (r,s)

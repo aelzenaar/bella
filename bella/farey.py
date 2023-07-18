@@ -3,6 +3,8 @@
 
 import math
 import functools
+import itertools
+import numpy as np
 
 
 @functools.cache
@@ -78,6 +80,19 @@ def neighbours(p,q):
         return (r1,s1),(r2,s2)
     else:
         return (r2,s2),(r1,s1)
+
+def walk_tree_bfs(end = None):
+    """ Yield every fraction with denominator < `end` in a breadth first way.
+
+        If `end` == None then keep going forever.
+    """
+
+    for s in itertools.count(1):
+        if s == end:
+            return None
+        for r in range(0,s+1):
+            if math.gcd(r,s) == 1:
+                yield (r,s)
 
 @functools.cache
 def _even_const(alpha,beta):
