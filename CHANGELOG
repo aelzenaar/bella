@@ -1,0 +1,6 @@
+v0.0.96
+ - Construction of Riley groups now takes a holonomy angle not an order (use riley.ClassicalRileyGroup for old behaviour).
+ - Add new feature to `guess' which pleating ray a particular Riley group lies on (riley.RileyGroup.guess_rational_coordinate()).
+
+v0.0.95
+ - Minimum viable product without Riley slice computations.
