@@ -5,7 +5,7 @@ import math
 import functools
 import itertools
 import numpy as np
-
+from numpy.polynomial import Polynomial as P
 
 @functools.cache
 def farey_string(r,s):
@@ -104,7 +104,7 @@ def _odd_const(alpha,beta):
 
 @functools.cache
 def polynomial_coefficients_fast(r,s,alpha,beta,_=None):
-    """ Return the coefficients of the Farey polynomial of slope r/s.
+    """ Return the Farey polynomial of slope r/s as a numpy.polynomial.Polynomial object
 
         The method used is the recursion algorithm.
 
@@ -136,7 +136,7 @@ def polynomial_evaluate(r,s,alpha,beta,z):
 
         Arguments:
           r,s -- coprime integers representing the slope of the desired polynomial
-          alpha, beta -- parameters of the group
+          alpha, beta -- parameters of the group, i.e. norm 1 complex numbers that are the top-left entries of X and Y respectively.
           z -- point of evaluation
     """
 
