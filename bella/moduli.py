@@ -2,12 +2,24 @@
 """
 
 from . import farey
-import numpy as np
+import mpmath as mp
 from numpy.polynomial import Polynomial
 
-def approximate_riley_slice(θ, η, depth=None):
-    α = np.exp(1j*θ)
-    β = np.exp(1j*η)
+def approximate_riley_slice(θ, η, depth=None, try_fast=True, maxsteps=100, extraprec=200):
+    """ Generator yielding points of the Riley slice on generator angles θ and η.
+
+        Parameters:
+        θ, η -- parameters of the slice
+        depth -- maximal denominator of Farey polynomial to use
+        try_fast -- if True, do a rough calculation first making things significantly faster
+        maxsteps, extraprec -- passed directly to mpmath.polyroots().
+    """
+    α = mp.exp(1j*θ)
+    β = mp.exp(1j*η)
 
     for (r,s) in farey.walk_tree_bfs(depth):
-        yield from farey.polynomial_coefficients_fast(r,s,α,β).roots()
+        # It is significantly faster (on the order of 20sec vs 110sec) to do a rough computation first using numpy
+        # and then feed the result into mpmath's solver.
+        fast_roots = Polynomial([float(c) for c in farey.polynomial_coefficients_numpy(r,s,α,β)]).roots() if try_fast else None
+        polynomial = farey.polynomial_coefficients(r,s,α,β)
+        yield from mp.polyroots(polynomial, maxsteps=maxsteps, extraprec=extraprec, roots_init=fast_roots)

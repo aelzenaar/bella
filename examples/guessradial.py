@@ -1,14 +1,14 @@
 from bella import riley
-import numpy as np
+import mpmath as mp
 
 # Check known easy examples
-G = riley.ClassicalRileyGroup(np.inf,np.inf,4j)
+G = riley.ClassicalRileyGroup(mp.inf,mp.inf,4j)
 assert(G.guess_radial_coordinate(.001) == (1,2))
 
-G = riley.ClassicalRileyGroup(np.inf,np.inf,43)
+G = riley.ClassicalRileyGroup(mp.inf,mp.inf,43)
 assert(G.guess_radial_coordinate(.001) == (0,1))
 
-G = riley.ClassicalRileyGroup(np.inf,np.inf,-43)
+G = riley.ClassicalRileyGroup(mp.inf,mp.inf,-43)
 assert(G.guess_radial_coordinate(.001) == (1,1))
 
 # hard examples

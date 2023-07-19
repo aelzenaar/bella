@@ -4,7 +4,7 @@
 import math
 import functools
 import itertools
-import numpy as np
+import mpmath as mp
 from numpy.polynomial import Polynomial as P
 
 @functools.cache
@@ -96,14 +96,15 @@ def walk_tree_bfs(end = None):
 
 @functools.cache
 def _even_const(alpha,beta):
-    return 4+2*np.real(alpha**2)+2*np.real(beta**2)
+    return 4+2*(alpha**2).real+2*(beta**2).real
 
 @functools.cache
 def _odd_const(alpha,beta):
-    return 4*(np.real(alpha/beta) + np.real(alpha*beta))
+    return 4*((alpha/beta).real + (alpha*beta).real)
+
 
 @functools.cache
-def polynomial_coefficients_fast(r,s,alpha,beta,_=None):
+def polynomial_coefficients_numpy(r,s,alpha,beta):
     """ Return the Farey polynomial of slope r/s as a numpy.polynomial.Polynomial object
 
         The method used is the recursion algorithm.
@@ -113,20 +114,33 @@ def polynomial_coefficients_fast(r,s,alpha,beta,_=None):
           alpha, beta -- parameters of the group
     """
 
+    # Make sure we are using mpmath numbers!!
+    alpha = mp.mpc(alpha)
+    beta = mp.mpc(beta)
+
     if r == 0 and s == 1:
-        return P([2*np.real(alpha/beta),-1])
+        return P([2*(alpha/beta).real,-1])
     if r == 1 and s == 1:
-        return P([2*np.real(alpha*beta),1])
+        return P([2*(alpha*beta).real,1])
     if r == 1 and s == 2:
-        return P([2,-4*np.imag(alpha)*np.imag(beta),1])
+        return P([2,-4*(alpha*beta).imag,1])
 
     (p1,q1),(p2,q2) = neighbours(r,s)
     konstant = _even_const(alpha,beta) if ((q1 + q2) % 2) == 0 else _odd_const(alpha,beta)
 
-    p =  konstant-(polynomial_coefficients_fast(p1,q1,alpha,beta)*polynomial_coefficients_fast(p2,q2,alpha,beta) + polynomial_coefficients_fast(np.abs(p1-p2),np.abs(q1-q2),alpha,beta))
-
+    p =  konstant-(polynomial_coefficients_numpy(p1,q1,alpha,beta)*polynomial_coefficients_numpy(p2,q2,alpha,beta) + polynomial_coefficients_numpy(mp.fabs(p1-p2),mp.fabs(q1-q2),alpha,beta))
 
     return p
+
+def polynomial_coefficients(r,s,alpha,beta):
+    """ Return the Farey polynomial of slope r/s as a list compatible with mpmath.
+
+        Arguments:
+          r,s -- coprime integers representing the slope of the desired polynomial
+          alpha, beta -- parameters of the group
+    """
+    np_poly = polynomial_coefficients_numpy(r,s,alpha,beta)
+    return list(reversed(np_poly.coef)) # mpmath and numpy have polynomial coefficients in the reverse order!
 
 @functools.cache
 def polynomial_evaluate(r,s,alpha,beta,z):
@@ -141,16 +155,16 @@ def polynomial_evaluate(r,s,alpha,beta,z):
     """
 
     if r == 0 and s == 1:
-        return 2*np.real(alpha/beta)-z
+        return 2*(alpha/beta).real-z
     if r == 1 and s == 1:
-        return 2*np.real(alpha*beta)+z
+        return 2*(alpha*beta).real+z
     if r == 1 and s == 2:
-        return 2-4*np.imag(alpha)*np.imag(beta)*z+z**2
+        return 2-4*(alpha*beta).imag*z+z**2
 
     (p1,q1),(p2,q2) = neighbours(r,s)
     konstant = _even_const(alpha,beta) if ((q1 + q2) % 2) == 0 else _odd_const(alpha,beta)
 
-    p =  konstant-(polynomial_evaluate(p1,q1,alpha,beta,z)*polynomial_evaluate(p2,q2,alpha,beta,z) + polynomial_evaluate(np.abs(p1-p2),np.abs(q1-q2),alpha,beta,z))
+    p =  konstant-(polynomial_evaluate(p1,q1,alpha,beta,z)*polynomial_evaluate(p2,q2,alpha,beta,z) + polynomial_evaluate(mp.fabs(p1-p2),mp.fabs(q1-q2),alpha,beta,z))
 
 
     return p
