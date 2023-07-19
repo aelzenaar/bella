@@ -18,8 +18,8 @@ We are particularly interested in studying a particular moduli space of Kleinian
 generalisations. Background specific to the Riley slice may be found in the proceedings article [[EMS22b](#EMS22b)] and in my MSc thesis [[Elz22](#Elz22)]. For a more practical
 introduction to some of the computational geometry and some very nice pictures, see [[MSW02](#MSW02)] and [its associated website](http://klein.math.okstate.edu/IndrasPearls/).
 Many of the computations in this direction are done using the results obtained in our paper [[EMS22a](#EMS22a)].
-We also have some further recent results on the Riley slice which are of interest from a computational point of view [[EMS21](#EMS21)]; in a later version of this software we will incorporate some of the insights
-from this paper.
+We also have some further recent results on the Riley slice which are of interest from a computational point of view [[EMS21](#EMS21)]; our construction of pleating ray neighbourhoods
+is used by the function `riley.RileyGroup.guess_radial_coordinate' to approximate the pleating coordinate of an input Riley group.
 
 The visualisation software was inspired by the [schottky](https://github.com/dannycalegari/schottky) software written by Danny Calegari and Alden Walker.
 
@@ -33,17 +33,20 @@ We use the `setuptools` package for ease of installation. Simply run `pip instal
 The library is called `bella` (so after installing run `import bella` in Python) and includes the following modules:
  * [cayley.py](bella/cayley.py) -- methods for computing with general matrix groups via their Cayley graph (e.g. reducing words, computing limit sets)
  * [farey.py](bella/farey.py) -- methods for working with Farey words and polynomials
- * [riley.py](bella/riley.py) -- methods for working with the Riley slices
+ * [riley.py](bella/riley.py) -- methods for working with individual Riley groups
+ * [moduli.py](bella/moduli.py) -- methods for working globally with a Riley slice
  * [chistyakov.py](bella/chistyakov.py) -- methods for embedding elements of $` \mathbb{Q}_p `$ into $` \mathbb{C} `$ [[C96](#C96)]
 
 
 ### Examples
-Install the python packages `holoview`, `bokeh`, `panel`, `pandas` to try the examples in the `examples` directory.
+Install the python packages `holoview`, `bokeh`, `panel`, `pandas`, `mpmath` to try the examples in the `examples` directory.
 
  - `panel serve limits.py` - dynamically show limit sets for elliptic Riley groups.
  - `panel serve peripherals.py` - dynamically show peripheral subgroups for the parabolic Riley groups.
  - `python padictest.py` - plot the limit set of a $`p`$-adic group.
  - `python test.py` - run profiler for both `GroupCache.free_cayley_graph_mc` and `GroupCache.cayley_graph_mc`.
+ - `python plotslice.py` - plot the Riley slice.
+ - `python profileslice.py`  - run the profiler on `moduli.approximate_riley_slice` to check that `try_fast = True` is much faster than `try_fast = False`.
 
 ## References
 <a id="B88">[B83]</a>
