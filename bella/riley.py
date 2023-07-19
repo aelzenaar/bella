@@ -53,9 +53,12 @@ class RileyGroup(cayley.GroupCache):
         """ Attempt to guess the Keen-Series coordinate of the group.
 
             More precisely, iterate over all possible r/s so that the Farey word
-            W_r/s has real trace up to error `ε`.
+            W_r/s has trace in the cone of angle π*ε symmetric about the negative real
+            axis; so if ε = 1 we are checking inclusion in our thickened neighbourhoods.
         """
         for (r,s) in farey.walk_tree_bfs():
             v = farey.polynomial_evaluate(r, s, self.α, self.β, self.μ)
-            if np.abs(np.imag(v)) < ε:
-                return (r,s)
+            if np.real(v) < -2:
+                θ = 2*np.arctan(abs(np.imag(v)/np.real(v)))
+                if θ/np.pi < ε:
+                    return (r,s)
