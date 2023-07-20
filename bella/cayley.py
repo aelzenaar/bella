@@ -153,7 +153,7 @@ class GroupCache:
 
     # Monte-Carlo search
     def free_cayley_graph_mc(self, depth, count):
-        """ Monte-carlo search for all words in the generators, assuming no relators.
+        """ Monte-Carlo search for all words in the generators, assuming no relators.
 
             Perform `count` random walks on the Cayley graph of the free group on the given generators,
             on each walk building the words of that walk in sequence from the left up to the word of length `depth`,
@@ -168,7 +168,7 @@ class GroupCache:
                 word = self.free_random_walk_locally(word)
                 yield word
     def cayley_graph_mc(self, depth, count):
-        """ Monte-carlo search for all words in the generators, assuming no relators.
+        """ Monte-Carlo search for all words in the generators, assuming no relators.
 
             Perform `count` random walks on the Cayley graph of the group,
             on each walk producing the words of that walk in sequence up to the word of length `depth`,
@@ -186,19 +186,44 @@ class GroupCache:
 
             Produce `depth`*count` translates of the element `seed`, thus approximating the limit set,
             by computing the Cayley graph as returned by `cayley_graph_mc(depth, count)`.
+
+            Generates: a dataframe with columns [ x, y, colour ] where x+yi is a point in the limit set
+            and colour is the index of the first element in the word indexing that limit set.
         """
-        L = []
         if seed == mp.inf:
             base = mp.matrix([[1],[0]])
         else:
             base = mp.matrix([[seed],[1]])
 
-        for w in self.cayley_graph_mc(depth,count):
-            point = self[w] * base
-            cpx = point[0]/point[1]
-            L.append([float(cpx.real), float(cpx.imag), w[0]])
-        df = pd.DataFrame(data=L, columns=['x','y','colour'], copy=False)
-        return df
+        def _internal_generator():
+            for w in self.cayley_graph_mc(depth,count):
+                point = self[w] * base
+                cpx = point[0]/point[1]
+                yield (float(cpx.real), float(cpx.imag), w[0])
+
+        return pd.DataFrame(_internal_generator(), columns=['x','y','colour'])
+
+    def coloured_isometric_circles_mc(self, depth, count):
+        """ Monte-carlo search for isometric circles in the limit set.
+
+            Produce `depth`*count` isometric circles, thus approximating the limit set,
+            by computing the Cayley graph as returned by `cayley_graph_mc(depth, count)`.
+
+            Generates: a dataframe with columns [ x, y, radius, colour ] where (x,y) is the centre
+            of an isometric circle of given radius, corresponding to a word whose first letter is
+            the generator indexed by `colour`.
+        """
+
+        def _internal_generator():
+            for w in self.cayley_graph_mc(depth,count):
+                m = self[w]
+                if m[1,1] == 0:
+                    pass
+                centre = -m[1,1]/m[1,0]
+                radius = mp.fabs(1/m[1,1])
+                yield [float(centre.real), float(centre.imag), float(radius), w[0]]
+
+        return pd.DataFrame.from_records(_internal_generator(), columns=['x','y','radius','colour'])
 
     def fixed_points(self, word):
         """ Compute the fixed points of `word` as it acts on the projective line."""
