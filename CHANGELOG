@@ -1,3 +1,8 @@
+v0.0.97
+ - Computation of Riley slice approximations (moduli.py).
+ - Convert all internals to use [mpmath](https://mpmath.org/) instead of numpy.
+ - Add method (farey.riley_string()) to compute Riley words.
+
 v0.0.96
  - Construction of Riley groups now takes a holonomy angle not an order (use riley.ClassicalRileyGroup for old behaviour).
  - Add new feature to `guess' which pleating ray a particular Riley group lies on (riley.RileyGroup.guess_rational_coordinate()).

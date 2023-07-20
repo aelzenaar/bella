@@ -11,11 +11,14 @@ from numpy.polynomial import Polynomial as P
 def farey_string(r,s):
     """ Compute the Farey word of slope r/s using the cutting sequence definition.
 
+        The Farey word is W^{-1} Y W X where W is the Riley word; it is the relator in the presentation < X, Y : W_r/s = 1>
+        of the r/s two-bridge knot.
+
         Arguments:
         r, s -- coprime integers such that r/s is the slope of the desired Farey word
 
         Returns:
-        A list consisting of single-character strings representing generators of the group and their inverses (as defined in generator() above)
+        A list consisting of single-character strings representing generators of the group and their inverses.
     """
 
     if math.gcd(r,s) != 1:
@@ -28,6 +31,33 @@ def farey_string(r,s):
         h = h+1/2 if math.ceil(h)==h else h
         return int(math.ceil(h))
     return [ lookup_table[i%2][height(i)%2]  for i in range(1,length+1) ]
+
+@functools.cache
+def riley_string(r,s):
+    """ Compute the Riley word of slope r/s using Riley's definition.
+
+        The r/s two-bridge knot group has presentation < X, Y : V_r/s^{-1} Y V_r/s X = 1>;
+        the word V_r/s is the Riley word.
+
+        Arguments:
+        r, s -- coprime integers such that r/s is the slope of the desired word.
+
+        Returns:
+        A list consisting of single-character strings representing generators of the group and their inverses.
+    """
+
+    if math.gcd(r,s) != 1:
+        raise ValueError("Arguments to riley_string should be coprime integers.")
+
+    ε = lambda i: -int(mp.sign(((i*r) %(2*s)) - s))
+
+    lookup_table=[['y','Y'],['X','x']]
+    string = []
+    # Intentionally ranges from 1 to s-1.
+    for i in range(1,s):
+        string += lookup_table[i%2][int((ε(i) + 1)/2)]
+
+    return string
 
 @functools.cache
 def next_neighbour(p,q):
