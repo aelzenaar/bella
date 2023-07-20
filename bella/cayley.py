@@ -167,19 +167,24 @@ class GroupCache:
             for n in range(depth+1):
                 word = self.free_random_walk_locally(word)
                 yield word
-    def cayley_graph_mc(self, depth, count):
+
+    def cayley_graph_mc(self, depth, count, yield_shorter=True):
         """ Monte-Carlo search for all words in the generators, assuming no relators.
 
             Perform `count` random walks on the Cayley graph of the group,
             on each walk producing the words of that walk in sequence up to the word of length `depth`,
             so in total producing `count`*`depth` words. At each step the random walk will append a generator
             to the left of the word such that the resulting word is non-left-reducible of incrementally longer length.
+
+            If `yield_shorter` is True then return all words that are seen during the walk; if `yield_shorter` is False
+            then only return words of length = depth.
         """
         for nn in range(count):
             word = ()
             for n in range(depth+1):
                 word = self.random_walk_locally(word)
-                yield word
+                if yield_shorter or n == depth:
+                    yield word
 
     def coloured_limit_set_mc(self, depth, count, seed = 0):
         """ Monte-carlo search for points in the limit set.
@@ -217,10 +222,10 @@ class GroupCache:
         def _internal_generator():
             for w in self.cayley_graph_mc(depth,count):
                 m = self[w]
-                if m[1,1] == 0:
-                    pass
+                if m[1,0] == 0:
+                    continue
                 centre = -m[1,1]/m[1,0]
-                radius = mp.fabs(1/m[1,1])
+                radius = mp.fabs(1/m[1,0])
                 yield [float(centre.real), float(centre.imag), float(radius), w[0]]
 
         return pd.DataFrame.from_records(_internal_generator(), columns=['x','y','radius','colour'])
