@@ -4,14 +4,18 @@ import holoviews as hv
 import pandas as pd
 hv.extension('bokeh')
 from bokeh.plotting import show
+import panel as pn
 
-p = mp.inf
-q = mp.inf
-depth = 50
-L = list(moduli.approximate_riley_slice(mp.pi/p, mp.pi/q, depth))
+depth = 30
 
-df = pd.DataFrame(data=[(float(point.real), float(point.imag)) for point in L], columns=['x','y'], copy=False)
-scatter = hv.Scatter(df, 'x','y').opts(marker = "dot", size = 1, width=800, height=800, data_aspect=1, color='black')
+# Riley polynomials (red)
+riley_df = pd.DataFrame(data=[(float(point.real), float(point.imag)) for point in moduli.riley_polynomial_roots(depth)], columns=['x','y'])
+riley_roots = hv.Scatter(riley_df, 'x','y').opts(marker = "dot", size = 4, width=800, height=800, data_aspect=1, color='red')
 
-show(hv.render(scatter.redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))))
+# Farey polynomials (blue)
+farey_df = pd.DataFrame(data=[(float(point.real), float(point.imag)) for point in moduli.approximate_riley_slice(0, 0, depth)], columns=['x','y'])
+farey_roots = hv.Scatter(farey_df, 'x','y').opts(marker = "dot", size = 4, width=800, height=800, data_aspect=1, color='blue')
 
+overlay = hv.NdOverlay({'Riley': riley_roots, 'Farey': farey_roots}).redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
+
+pn.panel(overlay).servable(title='The Riley slice, approximated with different polynomials')
