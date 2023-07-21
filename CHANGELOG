@@ -2,8 +2,10 @@ v0.0.97
  - Computation of Riley slice approximations (moduli.py).
  - Convert all internals to use [mpmath](https://mpmath.org/) instead of numpy.
  - Add methods (farey.riley_string(), farey.riley_polynomial_*()) to compute Riley words and polynomials.
+ - `examples/plotslice.py` now is interactive and shows both Riley and Farey polynomial approximations.
  - Add method (cayley.GroupCache.coloured_isometric_circles_mc()) to produce isometric circles.
  - Rename some methods in farey to make them less ambiguous.
+ - Remove functions in farey that compute Phi^inf,inf - 2 because there is no point in having them.
 
 v0.0.96
  - Construction of Riley groups now takes a holonomy angle not an order (use riley.ClassicalRileyGroup for old behaviour).

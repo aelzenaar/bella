@@ -231,29 +231,3 @@ def farey_polynomial_value(r,s,alpha,beta,z):
 
 
     return p
-
-@functools.cache
-def reduced_farey_polynomial_coefficients(r,s):
-    """ Return the coefficients of the reduced Farey polynomial (\Phi^{\infty,\infty}-2) of slope r/s.
-
-        (This is the polynomial Q_r/s of our 2021 preprint.)
-
-        The method used is the recursion algorithm.
-
-        Arguments:
-          r,s -- coprime integers representing the slope of the desired polynomial
-    """
-
-    if r == 0 and s == 1:
-        return P([0,-1])
-    if r == 1 and s == 1:
-        return P([0,1])
-    if r == 1 and s == 2:
-        return P([0,0,1])
-
-    (p1,q1),(p2,q2) = neighbours(r,s)
-    p = - reduced_farey_polynomial_coefficients(int(abs(p1-p2)),int(abs(q1-q2)))\
-        - reduced_farey_polynomial_coefficients(p1,q1)*reduced_farey_polynomial_coefficients(p2,q2)\
-        - 2 * (reduced_farey_polynomial_coefficients(p1,q1) + reduced_farey_polynomial_coefficients(p2,q2))
-
-    return p
