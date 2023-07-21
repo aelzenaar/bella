@@ -173,6 +173,39 @@ def farey_polynomial_coefficients(r,s,alpha,beta):
     return list(reversed(np_poly.coef)) # mpmath and numpy have polynomial coefficients in the reverse order!
 
 @functools.cache
+def riley_polynomial_numpy(r,s):
+    """ Return the Riley polynomial of slope r/s as a numpy.polynomial.Polynomial object
+
+        We use Chesebro's recursion (https://arxiv.org/abs/1902.01968). The underlying group is always an infinity-infinity Riley group.
+
+        Arguments:
+          r,s -- coprime integers representing the slope of the desired polynomial
+    """
+
+    if r == 0 and s == 1:
+        return P([1])
+    if r == 1 and s == 1:
+        return P([1])
+    if r == 1 and s == 0:
+        return P([0])
+
+    (p1,q1),(p2,q2) = neighbours(r,s)
+    k = 1 if abs(q1-q2) % 2 == 0 else ( P([0,1]) if abs( (p1-p2)*(q1-q2) ) % 2 == 1 else  P([0,-1]) )
+    p =  k*riley_polynomial_numpy(p1,q1)*riley_polynomial_numpy(p2,q2) - riley_polynomial_numpy(mp.fabs(p1-p2),mp.fabs(q1-q2))
+
+
+    return p
+
+def riley_polynomial_coefficients(r,s):
+    """ Return the Riley polynomial of slope r/s as a list compatible with mpmath.
+
+        Arguments:
+          r,s -- coprime integers representing the slope of the desired polynomial
+    """
+    np_poly = riley_polynomial_numpy(r,s)
+    return list(reversed(np_poly.coef)) # mpmath and numpy have polynomial coefficients in the reverse order!
+
+@functools.cache
 def farey_polynomial_value(r,s,alpha,beta,z):
     """ Return the evaluation of the Farey polynomial of slope r/s at z.
 
