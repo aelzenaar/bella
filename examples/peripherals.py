@@ -22,7 +22,7 @@ def limit_set_points(r=1,s=3,mure=2, muim=2, depth=15, logpoints=3):
 
 
 
-    farey_word = rotate(G.string_to_word(farey.farey_string(r,s)))
+    farey_word = rotate(G.string_to_word(farey.farey_word(r,s)))
     left = farey_word[:1]
     left_middle = farey_word[1:]
     right_middle = farey_word[0:-1]

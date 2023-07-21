@@ -8,7 +8,7 @@ import mpmath as mp
 from numpy.polynomial import Polynomial as P
 
 @functools.cache
-def farey_string(r,s):
+def farey_word(r,s):
     """ Compute the Farey word of slope r/s using the cutting sequence definition.
 
         The Farey word is W^{-1} Y W X where W is the Riley word; it is the relator in the presentation < X, Y : W_r/s = 1>
@@ -33,7 +33,7 @@ def farey_string(r,s):
     return [ lookup_table[i%2][height(i)%2]  for i in range(1,length+1) ]
 
 @functools.cache
-def riley_string(r,s):
+def riley_word(r,s):
     """ Compute the Riley word of slope r/s using Riley's definition.
 
         The r/s two-bridge knot group has presentation < X, Y : V_r/s^{-1} Y V_r/s X = 1>;
@@ -47,7 +47,7 @@ def riley_string(r,s):
     """
 
     if math.gcd(r,s) != 1:
-        raise ValueError("Arguments to riley_string should be coprime integers.")
+        raise ValueError("Arguments to riley_word should be coprime integers.")
 
     ε = lambda i: -int(mp.sign(((i*r) %(2*s)) - s))
 
@@ -134,7 +134,7 @@ def _odd_const(alpha,beta):
 
 
 @functools.cache
-def polynomial_coefficients_numpy(r,s,alpha,beta):
+def farey_polynomial_numpy(r,s,alpha,beta):
     """ Return the Farey polynomial of slope r/s as a numpy.polynomial.Polynomial object
 
         The method used is the recursion algorithm.
@@ -158,22 +158,22 @@ def polynomial_coefficients_numpy(r,s,alpha,beta):
     (p1,q1),(p2,q2) = neighbours(r,s)
     konstant = _even_const(alpha,beta) if ((q1 + q2) % 2) == 0 else _odd_const(alpha,beta)
 
-    p =  konstant-(polynomial_coefficients_numpy(p1,q1,alpha,beta)*polynomial_coefficients_numpy(p2,q2,alpha,beta) + polynomial_coefficients_numpy(mp.fabs(p1-p2),mp.fabs(q1-q2),alpha,beta))
+    p =  konstant-(farey_polynomial_numpy(p1,q1,alpha,beta)*farey_polynomial_numpy(p2,q2,alpha,beta) + farey_polynomial_numpy(mp.fabs(p1-p2),mp.fabs(q1-q2),alpha,beta))
 
     return p
 
-def polynomial_coefficients(r,s,alpha,beta):
+def farey_polynomial_coefficients(r,s,alpha,beta):
     """ Return the Farey polynomial of slope r/s as a list compatible with mpmath.
 
         Arguments:
           r,s -- coprime integers representing the slope of the desired polynomial
           alpha, beta -- parameters of the group
     """
-    np_poly = polynomial_coefficients_numpy(r,s,alpha,beta)
+    np_poly = farey_polynomial_numpy(r,s,alpha,beta)
     return list(reversed(np_poly.coef)) # mpmath and numpy have polynomial coefficients in the reverse order!
 
 @functools.cache
-def polynomial_evaluate(r,s,alpha,beta,z):
+def farey_polynomial_value(r,s,alpha,beta,z):
     """ Return the evaluation of the Farey polynomial of slope r/s at z.
 
         The method used is the recursion algorithm.
@@ -194,13 +194,13 @@ def polynomial_evaluate(r,s,alpha,beta,z):
     (p1,q1),(p2,q2) = neighbours(r,s)
     konstant = _even_const(alpha,beta) if ((q1 + q2) % 2) == 0 else _odd_const(alpha,beta)
 
-    p =  konstant-(polynomial_evaluate(p1,q1,alpha,beta,z)*polynomial_evaluate(p2,q2,alpha,beta,z) + polynomial_evaluate(mp.fabs(p1-p2),mp.fabs(q1-q2),alpha,beta,z))
+    p =  konstant-(farey_polynomial_value(p1,q1,alpha,beta,z)*farey_polynomial_value(p2,q2,alpha,beta,z) + farey_polynomial_value(mp.fabs(p1-p2),mp.fabs(q1-q2),alpha,beta,z))
 
 
     return p
 
 @functools.cache
-def polynomial_coefficients_reduced(r,s):
+def reduced_farey_polynomial_coefficients(r,s):
     """ Return the coefficients of the reduced Farey polynomial (\Phi^{\infty,\infty}-2) of slope r/s.
 
         (This is the polynomial Q_r/s of our 2021 preprint.)
@@ -219,8 +219,8 @@ def polynomial_coefficients_reduced(r,s):
         return P([0,0,1])
 
     (p1,q1),(p2,q2) = neighbours(r,s)
-    p = - polynomial_coefficients_reduced(int(abs(p1-p2)),int(abs(q1-q2)))\
-        - polynomial_coefficients_reduced(p1,q1)*polynomial_coefficients_reduced(p2,q2)\
-        - 2 * (polynomial_coefficients_reduced(p1,q1) + polynomial_coefficients_reduced(p2,q2))
+    p = - reduced_farey_polynomial_coefficients(int(abs(p1-p2)),int(abs(q1-q2)))\
+        - reduced_farey_polynomial_coefficients(p1,q1)*reduced_farey_polynomial_coefficients(p2,q2)\
+        - 2 * (reduced_farey_polynomial_coefficients(p1,q1) + reduced_farey_polynomial_coefficients(p2,q2))
 
     return p
