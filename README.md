@@ -42,11 +42,16 @@ The library is called `bella` (so after installing run `import bella` in Python)
 Install the python packages `holoview`, `bokeh`, `panel`, `pandas`, `mpmath` to try the examples in the `examples` directory.
 
  - `panel serve limits.py` - dynamically show limit sets for elliptic Riley groups.
+ - `panel serve isometric_circles.py` - dynamically show isometric circles for elliptic Riley groups.
  - `panel serve peripherals.py` - dynamically show peripheral subgroups for the parabolic Riley groups.
  - `python padictest.py` - plot the limit set of a $`p`$-adic group.
- - `python test.py` - run profiler for both `GroupCache.free_cayley_graph_mc` and `GroupCache.cayley_graph_mc`.
+ - `python test.py` - run profiler for both `cayley.GroupCache.free_cayley_graph_mc` and `cayley.GroupCache.cayley_graph_mc`.
  - `python plotslice.py` - plot the Riley slice.
  - `python profileslice.py`  - run the profiler on `moduli.approximate_riley_slice` to check that `try_fast = True` is much faster than `try_fast = False`.
+ - `python animate_slices.py` - in `animation/` produce many frames animating the conjectured holomorphic motion of the Riley slices. Use a
+    command like `ffmpeg -framerate 30 -pattern_type glob -i 'animation/*.png' -c:v libx264 -pix_fmt yuv420p riley_slice.mp4` to produce a video from these files.
+ - `python guessradial.py` - test whether we can guess the radial coordinate using `riley.RileyGroup.guess_radial_coordinate()`.
+ - `python rileyroots.py` - plot the roots of the Riley polynomials.
 
 ## References
 <a id="B88">[B83]</a>
