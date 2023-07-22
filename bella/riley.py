@@ -1,7 +1,7 @@
 """ Functions and classes specifically modelling Riley groups.
 """
 
-import mpmath as mp
+from mpmath import mp
 from . import cayley
 from . import farey
 import functools

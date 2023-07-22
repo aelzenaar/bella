@@ -4,7 +4,7 @@
     other restrictions are made: for instance one may use complex matrices or pyadic.PAdic matrices.
 """
 
-import mpmath as mp
+from mpmath import mp
 from numpy.linalg import inv, eig
 import itertools
 import functools

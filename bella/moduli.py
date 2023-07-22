@@ -2,10 +2,10 @@
 """
 
 from . import farey
-import mpmath as mp
+from mpmath import mp
 from numpy.polynomial import Polynomial
 
-def approximate_riley_slice(θ, η, depth=None, try_fast=True, maxsteps=100, extraprec=200):
+def approximate_riley_slice(θ, η, depth=None, try_fast=True, maxsteps=500,extraprec=1000):
     """ Generator yielding points of the Riley slice on generator angles θ and η.
 
         Parameters:
@@ -24,7 +24,7 @@ def approximate_riley_slice(θ, η, depth=None, try_fast=True, maxsteps=100, ext
         polynomial = farey.farey_polynomial_coefficients(r,s,α,β)
         yield from mp.polyroots(polynomial, maxsteps=maxsteps, extraprec=extraprec, roots_init=fast_roots)
 
-def riley_polynomial_roots(depth=None, try_fast=True, maxsteps=100, extraprec=200):
+def riley_polynomial_roots(depth=None, try_fast=True, maxsteps=500,extraprec=1000):
     """ Generator yielding zeros of the Riley polynomial.
 
         Parameters:

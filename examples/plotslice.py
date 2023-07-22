@@ -1,5 +1,5 @@
 from bella import cayley, moduli
-import mpmath as mp
+from mpmath import mp
 import holoviews as hv
 import pandas as pd
 hv.extension('bokeh')

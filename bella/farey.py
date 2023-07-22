@@ -4,7 +4,7 @@
 import math
 import functools
 import itertools
-import mpmath as mp
+from mpmath import mp
 from numpy.polynomial import Polynomial as P
 
 @functools.cache
