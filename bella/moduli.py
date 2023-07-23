@@ -20,9 +20,9 @@ def approximate_riley_slice(θ, η, depth=None, try_fast=True, maxsteps=500,extr
     for (r,s) in farey.walk_tree_bfs(depth):
         # It is significantly faster (on the order of 20sec vs 110sec) to do a rough computation first using numpy
         # and then feed the result into mpmath's solver.
-        fast_roots = Polynomial([float(c) for c in farey.farey_polynomial_numpy(r,s,α,β)]).roots() if try_fast else None
-        polynomial = farey.farey_polynomial_coefficients(r,s,α,β)
-        yield from mp.polyroots(polynomial, maxsteps=maxsteps, extraprec=extraprec, roots_init=fast_roots)
+        P = farey.farey_polynomial_numpy(r,s,α,β) + 2
+        fast_roots = Polynomial([float(c) for c in P]).roots() if try_fast else None
+        yield from mp.polyroots(list(reversed(P.coef)), maxsteps=maxsteps, extraprec=extraprec, roots_init=fast_roots)
 
 def riley_polynomial_roots(depth=None, try_fast=True, maxsteps=500,extraprec=1000):
     """ Generator yielding zeros of the Riley polynomial.
@@ -35,6 +35,6 @@ def riley_polynomial_roots(depth=None, try_fast=True, maxsteps=500,extraprec=100
     for (r,s) in farey.walk_tree_bfs(depth):
         # It is significantly faster (on the order of 20sec vs 110sec) to do a rough computation first using numpy
         # and then feed the result into mpmath's solver.
-        fast_roots = Polynomial([float(c) for c in farey.riley_polynomial_numpy(r,s)]).roots() if try_fast else None
-        polynomial = farey.riley_polynomial_coefficients(r,s)
-        yield from mp.polyroots(polynomial, maxsteps=maxsteps, extraprec=extraprec, roots_init=fast_roots)
+        P = farey.riley_polynomial_numpy(r,s)
+        fast_roots = Polynomial([float(c) for c in P]).roots() if try_fast else None
+        yield from mp.polyroots(list(reversed(P.coef)), maxsteps=maxsteps, extraprec=extraprec, roots_init=fast_roots)

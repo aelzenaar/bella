@@ -153,7 +153,7 @@ def farey_polynomial_numpy(r,s,alpha,beta):
     if r == 1 and s == 1:
         return P([2*(alpha*beta).real,1])
     if r == 1 and s == 2:
-        return P([2,-4*(alpha*beta).imag,1])
+        return P([2,-4*(alpha.imag*beta.imag),1])
 
     (p1,q1),(p2,q2) = neighbours(r,s)
     konstant = _even_const(alpha,beta) if ((q1 + q2) % 2) == 0 else _odd_const(alpha,beta)
