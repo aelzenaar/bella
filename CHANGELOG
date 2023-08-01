@@ -1,3 +1,8 @@
+v0.0.98
+ - FIX incorrect computation of Farey polynomials
+ - Increase mpmath precision
+ - Add some unit tests
+
 v0.0.97
  - Computation of Riley slice approximations (moduli.py).
  - Convert all internals to use [mpmath](https://mpmath.org/) instead of numpy.

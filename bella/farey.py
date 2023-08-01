@@ -24,11 +24,11 @@ def farey_word(r,s):
     if math.gcd(r,s) != 1:
         raise ValueError("Arguments to farey_word should be coprime integers.")
 
-    lookup_table=[['y','Y'],['x','X']]
+    lookup_table=[['x','X'],['Y','y']]
     length = 2*s
     def height(i):
         h = i*r/s
-        h = h-1/2 if math.ceil(h)==h else h
+        h = h+1/2 if math.ceil(h)==h else h
         return int(math.ceil(h))
     return [ lookup_table[i%2][height(i)%2]  for i in range(1,length+1) ]
 
@@ -51,7 +51,7 @@ def riley_word(r,s):
 
     ε = lambda i: -int(mp.sign(((i*r) %(2*s)) - s))
 
-    lookup_table=[['y','Y'],['x','X']]
+    lookup_table=[['x','X'],['Y','y']]
     string = []
     # Intentionally ranges from 1 to s-1.
     for i in range(1,s):
