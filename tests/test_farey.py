@@ -1,3 +1,5 @@
+import pytest
+
 from bella import farey
 
 def test_farey_word():
@@ -28,9 +30,33 @@ def test_riley_word():
     assert farey.riley_word(2,5) == swap_x_case(farey.riley_word(3,5))
     assert farey.riley_word(7,9) == swap_x_case(farey.riley_word(2,9))
 
-    # Relation with Farey word when β = 0
+    # Relation with Farey word when β = 0 mod 2 (in which case α = 1 mod 2, so we have a knot)
     assert farey.farey_word(2,3) == farey_from_riley(2,3,'y','X')
     assert farey.farey_word(2,5) == farey_from_riley(2,5,'y','X')
     assert farey.farey_word(4,7) == farey_from_riley(4,7,'y','X')
+
+def test_tree():
+    assert farey.neighbours(1,2) == ((0,1), (1,1))
+    assert farey.neighbours(1,3) == ((0,1), (1,2))
+    with pytest.raises(farey.FractionOutOfRangeException) as e_info:
+        assert farey.neighbours(1,1) == ((0,1), (1,0))
+    with pytest.raises(farey.FractionOutOfRangeException) as e_info:
+        assert farey.neighbours(1,0) == ((0,1), (1,0))
+    with pytest.raises(farey.FractionOutOfRangeException) as e_info:
+        assert farey.neighbours(0,1) == ((0,1), (1,0))
+
+    # walk_tree_bfs should start with (0,1), (1,1), (1,2) and then the fourth and fifth item should have neighbours (0,1) and (1,2) and (1,1), (1,2) resp.
+    it = farey.walk_tree_bfs()
+    assert next(it) == (0,1)
+    assert next(it) == (1,1)
+    assert next(it) == (1,2)
+    assert farey.neighbours(*next(it)) == ((0,1),(1,2))
+    assert farey.neighbours(*next(it)) == ((1,2),(1,1))
+
+def test_poly():
+    # Our p/q polynomial is [KS94]'s 1-p/q polynomial.
+    assert [int(x) for x in farey.farey_polynomial_coefficients(0,1,1,1)] == [-1,2]
+    assert [int(x) for x in farey.farey_polynomial_coefficients(1,1,1,1)] == [1,2]
+    assert [int(x) for x in farey.farey_polynomial_coefficients(1,2,1,1)] == [1,0,2]
 
 

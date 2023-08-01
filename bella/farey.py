@@ -7,6 +7,10 @@ import itertools
 from mpmath import mp
 from numpy.polynomial import Polynomial as P
 
+class FractionOutOfRangeException(Exception):
+    pass
+
+
 @functools.cache
 def farey_word(r,s):
     """ Compute the Farey word of slope r/s using the cutting sequence definition.
@@ -98,11 +102,15 @@ def next_neighbour(p,q):
 
 @functools.cache
 def neighbours(p,q):
-    """ Compute the two Farey neighbours of p/q.
+    """ Compute the two Farey neighbours of p/q, if p/q > 0 and q > 1.
 
         Arguments:
           p,q -- Coprime integers representing the fraction p/q in the interval [0,1].
     """
+
+    if p <= 0 or q < 2:
+        raise FractionOutOfRangeException('Fractions should be in the interval (0,1) to compute neighbours')
+
     r1,s1 = next_neighbour(p,q)
     r2 = p - r1
     s2 = q - s1
