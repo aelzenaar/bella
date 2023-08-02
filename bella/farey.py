@@ -22,7 +22,7 @@ def farey_word(r,s):
         r, s -- coprime integers such that r/s is the slope of the desired Farey word
 
         Returns:
-        A list consisting of single-character strings representing generators of the group and their inverses.
+        A tuple consisting of single-character strings representing generators of the group and their inverses.
     """
 
     if math.gcd(r,s) != 1:
@@ -34,7 +34,7 @@ def farey_word(r,s):
         h = i*r/s
         h = h+1/2 if math.ceil(h)==h else h
         return int(math.ceil(h))
-    return [ lookup_table[i%2][height(i)%2]  for i in range(1,length+1) ]
+    return tuple( lookup_table[i%2][height(i)%2]  for i in range(1,length+1) )
 
 @functools.cache
 def riley_word(r,s):
@@ -47,7 +47,7 @@ def riley_word(r,s):
         r, s -- coprime integers such that r/s is the slope of the desired word.
 
         Returns:
-        A list consisting of single-character strings representing generators of the group and their inverses.
+        A tuple consisting of single-character strings representing generators of the group and their inverses.
     """
 
     if math.gcd(r,s) != 1:
@@ -61,7 +61,19 @@ def riley_word(r,s):
     for i in range(1,s):
         string += lookup_table[i%2][int((ε(i) + 1)/2)]
 
-    return string
+    return tuple(string)
+
+def invert_word(w):
+    """ Return inverse word for word a tuple in X,Y,x,y. """
+    return tuple(c.swapcase() for c in reversed(w))
+
+def substitute_generators(w, new_X, new_Y):
+    """ Perform a substitution for X and Y in the word w. """
+    S = { 'X':new_X, 'Y':new_Y, 'x':invert_word(new_X),'y':invert_word(new_Y) }
+    def walker():
+        for c in word:
+            yield from S[c]
+    return tuple(walker())
 
 @functools.cache
 def next_neighbour(p,q):
