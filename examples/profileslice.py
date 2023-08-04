@@ -1,13 +1,13 @@
-from bella import cayley, moduli
+from bella import cayley, riley
 import mpmath as mp
 import timeit
 import cProfile
 
-def testfn(try_fast):
+
+def testfn():
     p = mp.inf
     q = mp.inf
-    depth = 30
-    _ = list(moduli.approximate_riley_slice(mp.pi/p, mp.pi/q, depth, try_fast))
+    depth = 20
+    _ = list(riley.riley_slice_exterior(mp.pi/p, mp.pi/q, depth=depth,extraprec=400))
 
-cProfile.run('testfn(True)')
-cProfile.run('testfn(False)')
+cProfile.run('testfn()')

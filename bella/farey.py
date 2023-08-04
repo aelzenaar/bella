@@ -6,8 +6,10 @@ import functools
 import itertools
 from mpmath import mp
 from numpy.polynomial import Polynomial as P
+P.__hash__ = lambda self: tuple(self.coef).__hash__()
 
 class FractionOutOfRangeException(Exception):
+    """ Thrown if a fraction parameter is out of range (e.g. some functions only allow fractions in [0,1]). """
     pass
 
 
@@ -144,56 +146,54 @@ def walk_tree_bfs(end = None):
             if math.gcd(r,s) == 1:
                 yield (r,s)
 
-@functools.cache
-def _even_const(alpha,beta):
-    return 4+2*(alpha**2).real+2*(beta**2).real
+
+def numpy_to_mpmath_polynomial(np_poly):
+    """ Convert a numpy polynomial to a polynomial that mpmath will accept. """
+    return list(reversed(np_poly.coef))
+
+def solve_polynomial(np_poly, maxsteps=500, extraprec=1000):
+    """ Compute the roots of the polynomial np_poly.
+
+        Parameters:
+        maxsteps, extraprec -- passed directly to mpmath.polyroots().
+        level_set -- level set of the Farey polynomials to compute (-2 for cusp points).
+    """
+
+    # It is significantly faster (on the order of 20sec vs 110sec) to do a rough computation first using numpy
+    # and then feed the result into mpmath's solver.
+    fast_roots = P([float(mp.chop(c)) for c in np_poly]).roots()
+    yield from mp.polyroots( numpy_to_mpmath_polynomial(np_poly), maxsteps=maxsteps, extraprec=extraprec, roots_init=fast_roots)
+
 
 @functools.cache
-def _odd_const(alpha,beta):
-    return 4*((alpha/beta).real + (alpha*beta).real)
-
-
-@functools.cache
-def farey_polynomial_numpy(r,s,alpha,beta):
+def farey_polynomial(r,s,trX,trY,trXY):
     """ Return the Farey polynomial of slope r/s as a numpy.polynomial.Polynomial object
 
         The method used is the recursion algorithm.
 
         Arguments:
           r,s -- coprime integers representing the slope of the desired polynomial
-          alpha, beta -- parameters of the group
+          trX, trY, trXY -- initial values for the trace of X, Y, and XY: if you want to compute
+            the Farey polynomial after substituting X -> X^2, for instance, pass trX = tr(X^2). These
+            values are mpmath polynomials. Note also, tr XY = tr YX.
     """
-
-    # Make sure we are using mpmath numbers!!
-    alpha = mp.mpc(alpha)
-    beta = mp.mpc(beta)
 
     if r == 0 and s == 1:
-        return P([2*(alpha/beta).real,-1])
+        # tr YX + tr yX = tr X tr Y
+        return trX*trY - trXY
     if r == 1 and s == 1:
-        return P([2*(alpha*beta).real,1])
+        return trXY
     if r == 1 and s == 2:
-        return P([2,-4*(alpha.imag*beta.imag),1])
+        # tr yxYX = tr YXyx = tr[Y,X] = trX^2 + trY^2 + tr^2 XY - trX*trY*trXY - 2
+        return trX**2 + trY**2 + trXY**2 - trX*trY*trXY - 2
 
     (p1,q1),(p2,q2) = neighbours(r,s)
-    konstant = _even_const(alpha,beta) if ((q1 + q2) % 2) == 0 else _odd_const(alpha,beta)
+    constant = trX**2 + trY**2 if ((q1 + q2) % 2) == 0 else 2*trX*trY
 
-    p =  konstant-(farey_polynomial_numpy(p1,q1,alpha,beta)*farey_polynomial_numpy(p2,q2,alpha,beta) + farey_polynomial_numpy(mp.fabs(p1-p2),mp.fabs(q1-q2),alpha,beta))
-
-    return p
-
-def farey_polynomial_coefficients(r,s,alpha,beta):
-    """ Return the Farey polynomial of slope r/s as a list compatible with mpmath.
-
-        Arguments:
-          r,s -- coprime integers representing the slope of the desired polynomial
-          alpha, beta -- parameters of the group
-    """
-    np_poly = farey_polynomial_numpy(r,s,alpha,beta)
-    return list(reversed(np_poly.coef)) # mpmath and numpy have polynomial coefficients in the reverse order!
+    return constant - farey_polynomial(p1,q1,trX,trY,trXY)*farey_polynomial(p2,q2,trX,trY,trXY) - farey_polynomial(abs(p1-p2),abs(q1-q2),trX,trY,trXY)
 
 @functools.cache
-def riley_polynomial_numpy(r,s):
+def riley_polynomial(r,s):
     """ Return the Riley polynomial of slope r/s as a numpy.polynomial.Polynomial object
 
         We use Chesebro's recursion (https://arxiv.org/abs/1902.01968). The underlying group is always an infinity-infinity Riley group.
@@ -211,43 +211,8 @@ def riley_polynomial_numpy(r,s):
 
     (p1,q1),(p2,q2) = neighbours(r,s)
     k = 1 if abs(q1-q2) % 2 == 0 else ( P([0,1]) if abs( (p1-p2)*(q1-q2) ) % 2 == 1 else  P([0,-1]) )
-    p =  k*riley_polynomial_numpy(p1,q1)*riley_polynomial_numpy(p2,q2) - riley_polynomial_numpy(mp.fabs(p1-p2),mp.fabs(q1-q2))
+    p =  k*riley_polynomial(p1,q1)*riley_polynomial(p2,q2) - riley_polynomial(mp.fabs(p1-p2),mp.fabs(q1-q2))
 
 
     return p
 
-def riley_polynomial_coefficients(r,s):
-    """ Return the Riley polynomial of slope r/s as a list compatible with mpmath.
-
-        Arguments:
-          r,s -- coprime integers representing the slope of the desired polynomial
-    """
-    np_poly = riley_polynomial_numpy(r,s)
-    return list(reversed(np_poly.coef)) # mpmath and numpy have polynomial coefficients in the reverse order!
-
-@functools.cache
-def farey_polynomial_value(r,s,alpha,beta,z):
-    """ Return the evaluation of the Farey polynomial of slope r/s at z.
-
-        The method used is the recursion algorithm.
-
-        Arguments:
-          r,s -- coprime integers representing the slope of the desired polynomial
-          alpha, beta -- parameters of the group, i.e. norm 1 complex numbers that are the top-left entries of X and Y respectively.
-          z -- point of evaluation
-    """
-
-    if r == 0 and s == 1:
-        return 2*(alpha/beta).real-z
-    if r == 1 and s == 1:
-        return 2*(alpha*beta).real+z
-    if r == 1 and s == 2:
-        return 2-4*(alpha*beta).imag*z+z**2
-
-    (p1,q1),(p2,q2) = neighbours(r,s)
-    konstant = _even_const(alpha,beta) if ((q1 + q2) % 2) == 0 else _odd_const(alpha,beta)
-
-    p =  konstant-(farey_polynomial_value(p1,q1,alpha,beta,z)*farey_polynomial_value(p2,q2,alpha,beta,z) + farey_polynomial_value(mp.fabs(p1-p2),mp.fabs(q1-q2),alpha,beta,z))
-
-
-    return p
