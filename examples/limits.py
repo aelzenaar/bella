@@ -12,7 +12,7 @@ def limit_set_points(p=2,q=7,mure=2, muim=2, depth=15, logpoints=3):
     β = complex(G.β)
     μ = complex(G.μ)
     df = G.coloured_limit_set_mc(depth,10**logpoints)
-    scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour']).opts(marker = "dot", size = 1,  color = 'black', width=800, height=800, data_aspect=1, cmap='Category10').redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
+    scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour']).opts(marker = "dot", size = 0.1,  color = 'colour', width=800, height=800, data_aspect=1, cmap='Category10').redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
     return scatter * hv.Points([[(-α/(α**2-1)).real, (-α/(α**2-1)).imag]]).opts(marker = "dot", size = 20,  color = 'red', width=800, height=800, data_aspect=1, cmap='Category10')\
       * hv.Points([[0,0], [((β - β**-1)/μ).real, ((β - β**-1)/μ).imag]]).opts(marker = "dot", size = 20,  color = 'green', width=800, height=800, data_aspect=1, cmap='Category10')
 
