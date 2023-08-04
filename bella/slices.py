@@ -1,4 +1,4 @@
-""" EXPERIMENTAL: functions for generating slice exteriors
+""" EXPERIMENTAL: functions for generating slice exteriors. ****USE riley.riley_slice_exterior() AT THIS TIME****
 
     TODO: add docstrings
     TODO: convert all methods to produce pandas.DataFrames with colour to match syntax for limit sets

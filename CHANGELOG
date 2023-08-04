@@ -2,6 +2,10 @@ v0.0.98
  - FIX incorrect computation of Farey polynomials
  - Increase mpmath precision
  - Add some unit tests
+ - Change Farey polynomials to work with initial traces instead of matrix entries
+ - Allow computation of Farey words and polynomials after substituting for the generators
+ - New syntax for generating Riley slice approximations (slice.py) which allows for
+   experiments involving different Farey word substitutions.
 
 v0.0.97
  - Computation of Riley slice approximations (moduli.py).

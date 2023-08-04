@@ -33,7 +33,8 @@ We use the `setuptools` package for ease of installation. Simply run `pip instal
 The library is called `bella` (so after installing run `import bella` in Python) and includes the following modules:
  * [cayley.py](bella/cayley.py) -- methods for computing with general matrix groups via their Cayley graph (e.g. reducing words, computing limit sets)
  * [farey.py](bella/farey.py) -- methods for working with Farey words and polynomials
- * [riley.py](bella/riley.py) -- methods for working with individual Riley groups, and globally with slice exteriors
+ * [riley.py](bella/riley.py) -- methods for working with individual Riley groups
+ * [slices.py](bella/slices.py) -- methods for computing approximations of slice exteriors
  * [chistyakov.py](bella/chistyakov.py) -- methods for embedding elements of $` \mathbb{Q}_p `$ into $` \mathbb{C} `$ [[C96](#C96)]
 
 
