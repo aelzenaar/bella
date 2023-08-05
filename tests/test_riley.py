@@ -2,6 +2,7 @@ import pytest
 from bella import riley,farey
 import mpmath as mp
 
+
 def test_radial():
     # Check known easy examples
     G = riley.ClassicalRileyGroup(mp.inf,mp.inf,4j)
@@ -29,4 +30,3 @@ def test_radial():
     # # assert guesses[-1] == guesses[-2]
     # print(guesses[-1], guesses[-2])
 
-test_radial()

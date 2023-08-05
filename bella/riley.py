@@ -7,6 +7,7 @@ from . import farey
 import functools
 from numpy.polynomial import Polynomial as P
 from enum import Enum, auto
+from deprecated import deprecated
 
 class RileyGroup(cayley.GroupCache):
     """ Represents a Riley group.
@@ -26,6 +27,14 @@ class RileyGroup(cayley.GroupCache):
 
             For the underlying group to know about finite-order generators, set p and q to the orders of X and Y.
         """
+
+        # Riley groups only make sense when η and θ are REAL and μ is complex.
+        # (Note, GroupCache in general does not have a restriction on the field. But
+        # we want to do specialised things here.)
+        θ = mp.mpf(θ)
+        η = mp.mpf(η)
+        μ = mp.mpf(μ)
+
         relations = []
 
         def generator(index, angle, order):
@@ -95,16 +104,19 @@ class ClassicalRileyGroup(RileyGroup):
         super().__init__(mp.pi/p, mp.pi/q, μ, p, q)
 
 
+@deprecated
 class GeneratorMethod(Enum):
     """ Possible generation methods for the Riley slice exterior. """
     FAREY_POLYNOMIAL = auto()
     RILEY_POLYNOMIAL = auto()
     FAREY_POLYNOMIAL_ZEROS = auto()
 
+@deprecated
 class GeneratorMethodException(Exception):
     """ Thrown if a chosen generator method is inconsistent with other parameters. """
     pass
 
+@deprecated
 def riley_slice_exterior(θ, η, *, generator=GeneratorMethod.FAREY_POLYNOMIAL, depth=None, maxsteps=500,extraprec=1000):
     """ Generator yielding points of the Riley slice on generator angles θ and η.
 
@@ -117,7 +129,6 @@ def riley_slice_exterior(θ, η, *, generator=GeneratorMethod.FAREY_POLYNOMIAL, 
         level_set -- level set of the Farey polynomials to compute (-2 for cusp points).
     """
     traces = traces_from_holonomies(θ,η)
-    # print([c.__str__() for c in traces])
 
     for (r,s) in farey.walk_tree_bfs(depth):
         if generator == GeneratorMethod.FAREY_POLYNOMIAL:
