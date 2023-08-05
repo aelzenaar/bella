@@ -33,7 +33,7 @@ class RileyGroup(cayley.GroupCache):
         # we want to do specialised things here.)
         θ = mp.mpf(θ)
         η = mp.mpf(η)
-        μ = mp.mpf(μ)
+        μ = mp.mpc(μ)
 
         relations = []
 
