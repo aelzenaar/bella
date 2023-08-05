@@ -39,7 +39,10 @@ The library is called `bella` (so after installing run `import bella` in Python)
 
 
 ### Examples
-Install the python packages `holoview`, `bokeh`, `panel`, `pandas`, `mpmath` to try the examples in the `examples` directory.
+Examples are in the [examples/](examples/) directory; see the [readme file](examples/README.md)
+
+#### Old examples
+Install the python packages `holoview`, `bokeh`, `panel`, `pandas`, `mpmath` to try the examples in the `examples.old` directory.
 
  - `panel serve limits.py` - dynamically show limit sets for elliptic Riley groups.
  - `panel serve isometric_circles.py` - dynamically show isometric circles for elliptic Riley groups.

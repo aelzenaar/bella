@@ -2,6 +2,8 @@
 """
 from . import farey, riley
 from mpmath import mp
+from numpy.polynomial import Polynomial as P
+import pandas as pd
 
 def primitive_exterior(θ, η, pow_X, pow_Y, depth, maxsteps=500, extraprec=1000, level_set = -2):
     """ Compute points of the Riley slice exterior on generator angles θ and η.
@@ -23,19 +25,23 @@ def primitive_exterior(θ, η, pow_X, pow_Y, depth, maxsteps=500, extraprec=1000
     trX = P([2*mp.cos(pow_X*θ)])
     trY = P([2*mp.cos(pow_Y*η)])
 
-    # For X^powX Y^powY we need to compute for a bit, but we get
-    trXY = P([ 2*mp.cos(pow_X*θ + pow_Y*η), (mp.sin(pow_X*θ) * mp.sin(pow_Y*η))/(mp.sin(θ) * mp.sin(η)) ])
+    # For X^powX Y^powY we need to compute for a bit, but we get the following. The
+    # z coefficient of the trace polynomial might involve a 0/0 if θ or η is a multiple
+    # of pi, so we need to specifically take 1 in those cases.
+    z_coefficient_X_contribution = 1 if mp.sin(θ) == 0 else mp.sin(pow_X*θ)/mp.sin(θ)
+    z_coefficient_Y_contribution = 1 if mp.sin(η) == 0 else mp.sin(pow_Y*η)/mp.sin(η)
+    trXY = P([ 2*mp.cos(pow_X*θ + pow_Y*η), z_coefficient_X_contribution*z_coefficient_Y_contribution ])
 
     # We can now compute the Farey polynomials after substitution.
     def _internal_generator():
         for (r,s) in farey.walk_tree_bfs(depth):
-            poly = farey.farey_polynomial(r,s,trX,trY,trXY) + level_set
+            poly = farey.farey_polynomial(r,s,trX,trY,trXY) - level_set
             yield from farey.solve_polynomial(poly, maxsteps, extraprec)
 
     return pd.DataFrame.from_records(([float(pt.real), float(pt.imag), pow_X, pow_Y, 'farey', level_set] for pt in _internal_generator()), columns=['x','y','pow_x','pow_y', 'method', 'level_set'])
 
 
-def parabolic_exterior_from_farey(depth=None, maxsteps=500,extraprec=1000,level_set=-2):
+def parabolic_exterior_from_farey(depth, maxsteps=500,extraprec=1000,level_set=-2):
     """ Compute points of the parabolic Riley slice exterior.
 
         Parameters:
@@ -49,7 +55,7 @@ def parabolic_exterior_from_farey(depth=None, maxsteps=500,extraprec=1000,level_
     """
     return primitive_exterior(0,0,1,1,depth,maxsteps,extraprec,level_set)
 
-def parabolic_exterior_from_riley(depth=None, maxsteps=500,extraprec=1000):
+def parabolic_exterior_from_riley(depth, maxsteps=500,extraprec=1000):
     """ Compute points of the parabolic Riley slice exterior using Riley polynomials.
 
         Parameters:
@@ -66,7 +72,7 @@ def parabolic_exterior_from_riley(depth=None, maxsteps=500,extraprec=1000):
     return pd.DataFrame.from_records(([float(pt.real), float(pt.imag), 1, 1, 'riley', 0] for pt in _internal_generator()), columns=['x','y','pow_x','pow_y', 'method', 'level_set'])
 
 
-def elliptic_exterior(p, q, depth=None, maxsteps=500, extraprec=1000, level_set = -2)
+def elliptic_exterior(p, q, depth, maxsteps=500, extraprec=1000, level_set = -2):
     """ Compute points of the elliptic Riley slice exterior with holonomies π/p, π/q.
 
         Parameters:
