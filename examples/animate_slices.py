@@ -25,8 +25,8 @@ def one_frame(kk,θ,depth,first,scale):
     η = (kk/scale) * mp.pi
     df = slices.primitive_exterior(θ,η,1,1,depth)
     scatter = hv.Scatter(df, 'x','y')\
-                .opts(marker = "dot", size = 5, width=800, height=800, data_aspect=1, color='black') * hv.Text(0,3,f"β = exp(πi ({kk}/{scale}))")\
-                .redim(x=hv.Dimension('x', range=(-4.5,4.5)),y=hv.Dimension('y', range=(-4.5, 4.5)))
+                .opts(marker = "dot", size = 5, width=1000, height=500, data_aspect=1, color='black') * hv.Text(0,3,f"β = exp(πi ({kk}/{scale}))")\
+                .redim(x=hv.Dimension('x', range=(-5,5)),y=hv.Dimension('y', range=(-2.5, 2.5)))
     hv.save(scatter, f'animate_slices/frame{-first+kk:05}.png', fmt='png')
     print(f"Done {kk}")
 
