@@ -12,8 +12,7 @@ Run these with `panel serve [filename]`. You need the optional `panel` dependenc
  - [isometric_circles.py](isometric_circles.py) -- dynamically draw isometric circles of Riley groups.
  - [elliptic_parabolic_slice.py](elliptic_parabolic_slice.py) -- draw a particular elliptic slice, showing that non-primitive words give subsets of the slice exterior.
  - [limits.py](limits.py) -- dynamically draw limit sets and fixed points of Riley groups.
-
-TODO: peripherals.py
+ - [peripheral_subgroups.py](peripheral_subgroups.py) -- modification of `limits.py` to highlight peripheral subgroups.
 
 ## Animation examples
 Each of these examples produces the frames for an animation in the subdirectory named the same as the example but without the `.py` suffix. Then

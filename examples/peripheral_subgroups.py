@@ -1,11 +1,14 @@
+""" Example: primitive subgroups
+"""
+
 from bella import riley, farey, cayley
 import mpmath as mp
 import holoviews as hv
 import pandas as pd
 hv.extension('bokeh')
-from bokeh.plotting import show
 import panel as pn
 
+# Utility function for doing a cyclic rotation of a word.
 def rotate(g):
     return  g[-1:] + g[:-1]
 
@@ -21,7 +24,7 @@ def limit_set_points(r=1,s=3,mure=2, muim=2, depth=15, logpoints=3):
             .redim(x=hv.Dimension('x', range=xbounds),y=hv.Dimension('y', range=ybounds))
 
 
-
+    # TODO: dynamically work out what the r/s peripheral word is.
     farey_word = rotate(G.string_to_word(farey.farey_word(r,s)))
     left = farey_word[:1]
     left_middle = farey_word[1:]
@@ -29,9 +32,7 @@ def limit_set_points(r=1,s=3,mure=2, muim=2, depth=15, logpoints=3):
     right = farey_word[-1:]
     tr = cayley.simple_tr(G[farey_word])
 
-    print(left,left_middle)
-    print(right_middle,right)
-
+    # Compute the two peripheral subgroups using GroupCache.subgroup().
     P = G.subgroup([G[left], G[left_middle]])
     small_limit_set1 = P.coloured_limit_set_mc(depth, numpts//2, (P.fixed_points((1,1)))[0])
     small_scatter1 = hv.Scatter(small_limit_set1, 'x','y')\
