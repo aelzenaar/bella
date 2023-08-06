@@ -23,5 +23,5 @@ you can run something like
 
 to generate a video file from those frames.
 
-TODO: port animate_slices to new API
-TODO: document animate_limits_as_slices_vary.py
+ - [animate_limits_as_slices_vary.py](animate_limits_as_slices_vary.py) -- compute the limit sets of the (θ=0, η=tπ, μ=2i) Riley group as t runs from 0 to 2.
+ - [animate_slices.py](animate_slices.py) -- animate primitive Riley slices.
