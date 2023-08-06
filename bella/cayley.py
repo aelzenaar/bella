@@ -201,7 +201,7 @@ class GroupCache:
             base = mp.matrix([[seed],[1]])
 
         def _internal_generator():
-            for w in self.cayley_graph_mc(depth,count):
+            for w in self.free_cayley_graph_mc(depth,count):
                 point = self[w] * base
                 cpx = point[0]/point[1]
                 yield (float(cpx.real), float(cpx.imag), w[0])
