@@ -4,6 +4,7 @@
 Run these with plain vanilla `python [filename]`.
  - [parabolic_slice_hidef.py](parabolic_slice_hidef.py) -- draw a PNG file containing a high-res picture of the parabolic Riley slice to high definition.
  - [cayley_graph_speed.py](cayley_graph_speed.py) -- demonstrate that walking the Cayley group of a non-free group incurs a massive speed overhead.
+ - [padic.py](padic.py) -- demonstrate that it is possible to use other number types (e.g. p-adic numbers) as long as you are sufficiently masochistic.
 
 TODO: give some Farey polynomial examples
 
