@@ -10,6 +10,7 @@ TODO: give some Farey polynomial examples
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.
  - [parabolic_slices.py](parabolic_slices.py) -- draw a lot of different level sets of the Farey polynomials, and the zero set of the Riley polynomials.
  - [isometric_circles.py](isometric_circles.py) -- dynamically draw isometric circles of Riley groups.
+ - [elliptic_parabolic_slice.py](elliptic_parabolic_slice.py) -- draw a particular elliptic slice, showing that non-primitive words give subsets of the slice exterior.
  - [limits.py](limits.py) -- dynamically draw limit sets and fixed points of Riley groups.
 
 TODO: peripherals.py
