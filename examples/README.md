@@ -12,6 +12,7 @@ Run these with plain vanilla `python [filename]`. The utility bash script `gemer
  - [modular_group.py](modular_group.py) -- plot the isometric circles of PSL(2,Z).
  - [connected_component_bound.py](connected_component_bound.py) -- a Schottky-type group on N parabolic generators with 2(N-1) components.
  - [apanasov.py](apanasov.py) -- a quasi-Fuchsian group with four components.
+ - [web.py](web.py) -- a group which is not quasi-Fuchsian, but has quasi-Fuchsian component stabilisers.
 
 ## Interactive panel scripts
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.
