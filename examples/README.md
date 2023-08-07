@@ -12,8 +12,11 @@ Run these with `panel serve [filename]`. You need the optional `panel` dependenc
  - [parabolic_slices.py](parabolic_slices.py) -- draw a lot of different level sets of the Farey polynomials, and the zero set of the Riley polynomials.
  - [isometric_circles.py](isometric_circles.py) -- dynamically draw isometric circles of Riley groups.
  - [elliptic_parabolic_slice.py](elliptic_parabolic_slice.py) -- draw a particular elliptic slice, showing that non-primitive words give subsets of the slice exterior.
- - [limits.py](limits.py) -- dynamically draw limit sets and fixed points of Riley groups.
+ - [riley_limits.py](riley_limits.py) -- dynamically draw limit sets and fixed points of Riley groups.
  - [peripheral_subgroups.py](peripheral_subgroups.py) -- modification of `limits.py` to highlight peripheral subgroups.
+ - [indras_necklace.py](indras_necklace.py) -- compute limit sets of the Indra's Necklace groups, Chapter 6 of _Indra's pearls_.
+ - [theta_schottky.py](theta_schottky.py) -- compute limit sets of θ-Schottky groups, Project 4.2 of _Indra's pearls_.
+ - [grandma.py](grandma.py) -- compute limit sets of Grandma's Recipe groups, Chapter 8 of _Indra's pearls_.
 
 ## Animation examples
 Each of these examples produces the frames for an animation in the subdirectory named the same as the example but without the `.py` suffix. Then

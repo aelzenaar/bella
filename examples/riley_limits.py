@@ -5,7 +5,6 @@ from mpmath import mp
 import holoviews as hv
 import pandas as pd
 hv.extension('bokeh')
-from bokeh.plotting import show
 import panel as pn
 
 # This subroutine takes a particular ClassicalRileyGroup(p,q,μ) and
