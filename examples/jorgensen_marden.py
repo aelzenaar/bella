@@ -38,4 +38,6 @@ def write_limit_set(G,filename):
                   .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
     hv.save(scatter, filename)
 write_limit_set(JMGroup1(), 'jorgensen_marden1.png')
+print("  jorgensen_marden.py: finished 1/2")
 write_limit_set(JMGroup2(), 'jorgensen_marden2.png')
+print("  jorgensen_marden.py: finished 2/2.")

@@ -48,19 +48,21 @@ class GroupCache:
         """ Returns the inverse of `word`. """
         return tuple(reversed(tuple(self.gen_to_inv[x] for x in word)))
 
-    def __init__(self, generators, relators=[]):
+    def __init__(self, generators, relators=[], disable_det_warning=False):
         """ Construct a GroupCache from a finite list of generators and relations.
 
             Arguments:
             generators -- a finite list of 2x2 NumPy arrays.
             relators -- a list of words in the group.
+            disable_det_warning -- if using p-adic numbers, this check hits a RecursionError in pyadic. ***DO NOT SET TO True UNLESS YOU KNOW WHAT YOU ARE DOING!!!***
 
         """
 
-        for n, g in enumerate(generators):
-            det = simple_det(g)
-            if abs(det - 1) > 0.00001 and abs(-det - 1) > 0.00001:
-                warnings.warn(f"generator {n} does not seem to have non-unit determinant {det}")
+        if not disable_det_warning:
+            for n, g in enumerate(generators):
+                det = simple_det(g)
+                if abs(det - 1) > 0.00001 and abs(-det - 1) > 0.00001:
+                    warnings.warn(f"generator {n} does not seem to have non-unit determinant {det}")
 
         self.length = len(generators)
         if self.length == 0:
@@ -233,6 +235,18 @@ class GroupCache:
 
         return pd.DataFrame(_internal_generator(), columns=['x','y','colour'])
 
+    def isometric_circle(self, word):
+        """ Return the isometric circle of the word.
+
+            Returns: (centre, radius) where centre is complex and radius is real.
+        """
+        m = self[word]
+        if m[1,0] == 0:
+            return (mp.inf,mp.inf)
+        centre = -m[1,1]/m[1,0]
+        radius = mp.fabs(1/m[1,0])
+        return (centre, radius)
+
     def coloured_isometric_circles_mc(self, depth, count):
         """ Monte-carlo search for isometric circles in the limit set.
 
@@ -246,11 +260,9 @@ class GroupCache:
 
         def _internal_generator():
             for w in self.cayley_graph_mc(depth,count):
-                m = self[w]
-                if m[1,0] == 0:
+                centre, radius = isometric_circle(w)
+                if centre == mp.inf:
                     continue
-                centre = -m[1,1]/m[1,0]
-                radius = mp.fabs(1/m[1,0])
                 yield [float(centre.real), float(centre.imag), float(radius), w[0]]
 
         return pd.DataFrame.from_records(_internal_generator(), columns=['x','y','radius','colour'])

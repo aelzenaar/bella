@@ -3,6 +3,15 @@ from bella import riley,farey
 import mpmath as mp
 
 
+def test_isometric_circles():
+    # Check known easy examples
+    G = riley.ClassicalRileyGroup(mp.inf,mp.inf,4j)
+
+    assert G.isometric_circle(G.string_to_word(('X'))) == (mp.inf,mp.inf)
+    assert G.isometric_circle(G.string_to_word(('x'))) == (mp.inf,mp.inf)
+    assert G.isometric_circle(G.string_to_word(('Y'))) == (-1/4j,1/4)
+    assert G.isometric_circle(G.string_to_word(('y'))) == (1/4j,1/4)
+
 def test_radial():
     # Check known easy examples
     G = riley.ClassicalRileyGroup(mp.inf,mp.inf,4j)
