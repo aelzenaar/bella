@@ -12,6 +12,7 @@ import random
 import pandas as pd
 import numpy as np
 import warnings
+import multiprocessing
 
 def simple_det(M):
     return M[0,0]*M[1,1]-M[0,1]*M[1,0]
@@ -178,7 +179,7 @@ class GroupCache:
             last_list = this_list
 
     # Monte-Carlo search
-    def free_cayley_graph_mc(self, depth, count):
+    def free_cayley_graph_mc(self, depth, count, multi=False):
         """ Monte-Carlo search for all words in the generators, assuming no relators.
 
             Perform `count` random walks on the Cayley graph of the free group on the given generators,
@@ -187,12 +188,34 @@ class GroupCache:
 
             If the group is not free, this process will produce the group elements
             multiple times, labelled by different words differing by relators.
+
+            If `multi` is True, then each random walk may be conducted simultaneously.
         """
-        for nn in range(count):
-            word = ()
-            for n in range(depth):
-                word = self.free_random_walk_locally(word)
+
+
+        if multi == False:
+            for _ in range(count):
+                yield from self._free_cayley_graph_mc_one_walk(depth)
+        else:
+            # Don't trample on user's settings if they also use multiprocessing.
+            ctx = multiprocessing.get_context('spawn')
+            with ctx.Pool() as pool:
+                queue = ctx.JoinableQueue()
+                pool.starmap(self._free_cayley_graph_mc_one_walk, [(self, depth, queue)]*count)
+                while not queue.empty():
+                    yield queue.get()
+                    queue.task_done()
+
+    def _free_cayley_graph_mc_one_walk(self,depth, queue=None):
+        word = ()
+        for _ in range(depth):
+            word = self.free_random_walk_locally(word)
+            if queue == None:
                 yield word
+            else:
+                queue.put(word)
+        if queue != None:
+            queue.join()
 
     def cayley_graph_mc(self, depth, count, yield_shorter=True):
         """ Monte-Carlo search for all words in the generators, assuming no relators.
@@ -212,7 +235,7 @@ class GroupCache:
                 if yield_shorter or n == depth:
                     yield word
 
-    def coloured_limit_set_mc(self, depth, count, seed = 0):
+    def coloured_limit_set_mc(self, depth, count, seed = 0, multi=False):
         """ Monte-carlo search for points in the limit set.
 
             Produce `depth`*count` translates of the element `seed`, thus approximating the limit set,
@@ -220,6 +243,8 @@ class GroupCache:
 
             Generates: a dataframe with columns [ x, y, colour ] where x+yi is a point in the limit set
             and colour is the index of the first element in the word indexing that limit set.
+
+            If `multi` is True, then each random walk may be conducted simultaneously.
         """
         if seed == mp.inf:
             base = self._underlying_matrix_t([[1],[0]])
@@ -227,7 +252,7 @@ class GroupCache:
             base = self._underlying_matrix_t([[seed],[1]])
 
         def _internal_generator():
-            for w in self.free_cayley_graph_mc(depth,count):
+            for w in self.free_cayley_graph_mc(depth,count,multi=multi):
                 point = self[w] @ base
                 if point[1] != 0:
                     cpx = point[0]/point[1]
