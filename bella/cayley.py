@@ -11,6 +11,10 @@ import functools
 import random
 import pandas as pd
 import numpy as np
+import warnings
+
+def simple_det(M):
+    return M[0,0]*M[1,1]-M[0,1]*M[1,0]
 
 def simple_inv(M):
     """ Invert a 2x2 matrix. """
@@ -52,6 +56,11 @@ class GroupCache:
             relators -- a list of words in the group.
 
         """
+
+        for n, g in enumerate(generators):
+            det = simple_det(g)
+            if abs(det - 1) > 0.00001 and abs(-det - 1) > 0.00001:
+                warnings.warn(f"generator {n} does not seem to have non-unit determinant {det}")
 
         self.length = len(generators)
         if self.length == 0:
