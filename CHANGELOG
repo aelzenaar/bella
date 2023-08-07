@@ -1,3 +1,5 @@
+v0.0.98.post1
+ - delete ununused code in riley.py that depends on `deprecated` package not in dependencies
 v0.0.98
  - FIX incorrect computation of Farey polynomials
  - Increase mpmath precision
