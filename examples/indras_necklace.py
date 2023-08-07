@@ -33,7 +33,8 @@ def limit_set_points(y,v, depth=15, logpoints=3):
     G = NecklaceGroup(y,v)
     fixed_points_X = [ [float(p.real), float(p.imag)] for p in G.fixed_points((0,))]
     fixed_points_Y = [ [float(p.real), float(p.imag)] for p in G.fixed_points((1,))]
-    df = G.coloured_limit_set_mc(depth,10**logpoints)
+    seed = G.fixed_points((0,1))[0]
+    df = G.coloured_limit_set_mc(depth,10**logpoints, seed=seed)
     scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
                 .opts(marker = "dot", size = 1,  color = 'colour', width=800, height=800, data_aspect=1, cmap='Category10')\
                   .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
