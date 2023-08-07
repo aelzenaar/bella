@@ -3,9 +3,13 @@
 ## Basic examples
 Run these with plain vanilla `python [filename]`.
  - [parabolic_slice_hidef.py](parabolic_slice_hidef.py) -- draw a PNG file containing a high-res picture of the parabolic Riley slice to high definition.
+ - [apollonian_gasket.py](apollonian_gasket.py) -- draw a PNG file containing a picture of the Apollonian Gasket.
  - [cayley_graph_speed.py](cayley_graph_speed.py) -- demonstrate that walking the Cayley group of a non-free group incurs a massive speed overhead.
  - [padic.py](padic.py) -- demonstrate that it is possible to use other number types (e.g. p-adic numbers) as long as you are sufficiently masochistic.
  - [farey.py](farey.py) -- produce TeX tables of Farey and Riley words and polynomials.
+ - [jorgensen_marden.py](jorgensen_marden.py) -- plot the limit sets of the Jørgensen--Marden groups which are not quasiconformally conjugate but which uniformise homeomorphic 3-manifolds.
+ - [geometrically_infinite.py](geometrically_infinite.py) -- plot the limit set of a geometrically infinite group with non-empty domain of discontinuity.
+ - [modular_group.py](modular_group.py) -- plot the isometric circles of PSL(2,Z).
 
 ## Interactive panel scripts
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.
@@ -17,6 +21,7 @@ Run these with `panel serve [filename]`. You need the optional `panel` dependenc
  - [indras_necklace.py](indras_necklace.py) -- compute limit sets of the Indra's Necklace groups, Chapter 6 of _Indra's pearls_.
  - [theta_schottky.py](theta_schottky.py) -- compute limit sets of θ-Schottky groups, Project 4.2 of _Indra's pearls_.
  - [grandma.py](grandma.py) -- compute limit sets of Grandma's Recipe groups, Chapter 8 of _Indra's pearls_.
+ - [maskit.py](maskit.py) -- compute limit sets of Maskit groups, Chapter 9 of _Indra's pearls_.
 
 ## Animation examples
 Each of these examples produces the frames for an animation in the subdirectory named the same as the example but without the `.py` suffix. Then
