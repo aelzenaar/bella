@@ -169,7 +169,7 @@ class GroupCache:
             multiple times, labelled by different words differing by relators.
         """
         last_list = [()]
-        for n in range(depth+1):
+        for n in range(depth):
             this_list = []
             for w in last_list:
                 for item in self.free_cayley_graph_locally(w):
@@ -190,7 +190,7 @@ class GroupCache:
         """
         for nn in range(count):
             word = ()
-            for n in range(depth+1):
+            for n in range(depth):
                 word = self.free_random_walk_locally(word)
                 yield word
 
@@ -207,7 +207,7 @@ class GroupCache:
         """
         for nn in range(count):
             word = ()
-            for n in range(depth+1):
+            for n in range(depth):
                 word = self.random_walk_locally(word)
                 if yield_shorter or n == depth:
                     yield word
