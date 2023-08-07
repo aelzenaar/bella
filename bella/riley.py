@@ -7,7 +7,6 @@ from . import farey
 import functools
 from numpy.polynomial import Polynomial as P
 from enum import Enum, auto
-from deprecated import deprecated
 
 class RileyGroup(cayley.GroupCache):
     """ Represents a Riley group.
@@ -102,42 +101,3 @@ class ClassicalRileyGroup(RileyGroup):
     """
     def __init__(self, p, q, μ):
         super().__init__(mp.pi/p, mp.pi/q, μ, p, q)
-
-
-@deprecated
-class GeneratorMethod(Enum):
-    """ Possible generation methods for the Riley slice exterior. """
-    FAREY_POLYNOMIAL = auto()
-    RILEY_POLYNOMIAL = auto()
-    FAREY_POLYNOMIAL_ZEROS = auto()
-
-@deprecated
-class GeneratorMethodException(Exception):
-    """ Thrown if a chosen generator method is inconsistent with other parameters. """
-    pass
-
-@deprecated
-def riley_slice_exterior(θ, η, *, generator=GeneratorMethod.FAREY_POLYNOMIAL, depth=None, maxsteps=500,extraprec=1000):
-    """ Generator yielding points of the Riley slice on generator angles θ and η.
-
-        Parameters:
-        θ, η -- parameters of the slice
-        powX, powY -- what powers of X and Y to take in the Farey words
-        generator -- which polynomial family to iterate over
-        depth -- maximal denominator of Farey polynomial to use
-        maxsteps, extraprec -- passed directly to mpmath.polyroots().
-        level_set -- level set of the Farey polynomials to compute (-2 for cusp points).
-    """
-    traces = traces_from_holonomies(θ,η)
-
-    for (r,s) in farey.walk_tree_bfs(depth):
-        if generator == GeneratorMethod.FAREY_POLYNOMIAL:
-            poly = farey.farey_polynomial(r,s,*traces) + 2
-        elif generator == GeneratorMethod.RILEY_POLYNOMIAL:
-            if θ != 0 or η != 0:
-                raise GeneratorMethodException("Riley polynomials only compute the θ=η=0 Riley slice.")
-            poly = farey.riley_polynomial(r,s)
-        elif generator == GeneratorMethod.FAREY_POLYNOMIAL_ZEROS:
-            poly = farey.farey_polynomial(r,s,*traces)
-
-        yield from farey.solve_polynomial(poly, maxsteps, extraprec)
