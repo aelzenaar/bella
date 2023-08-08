@@ -56,6 +56,14 @@ def test_generators_from_circle_inversions():
     shift = mp.matrix([[1,4*mp.cos(mp.pi/4)*mp.exp(3j*mp.pi/4)],[0,1]])
     assert matrix_almosteq_up_to_sign(shiftgroup[0], shift)
 
+    # Take two tangent circles. Inversion in one times inversion in the other should be parabolic with fixed point
+    # at the point of intersection.
+    circle_4 = (2,1)
+    parabolic_gens = cayley.generators_from_circle_inversions([circle_1,circle_4],[])
+    G = cayley.GroupCache(parabolic_gens)
+    assert cayley.simple_tr(G[(0,)])**2 == 4
+    assert G.fixed_points((0,))[0] == 1
+
 def test_basic_invariants():
     bad_det = mp.matrix([[1,2],[3,4]])
     with pytest.warns(cayley.NonUnitDeterminantWarning) as e_info:
