@@ -14,6 +14,7 @@ Run these with plain vanilla `python [filename]`. The utility bash script `gener
  - [apanasov.py](apanasov.py) -- a quasi-Fuchsian group with four components.
  - [web.py](web.py) -- a group which is not quasi-Fuchsian, but has quasi-Fuchsian component stabilisers.
  - [elementary.py](elementary.py) -- an elementary group obtained as the orientation-preserving half of the group of reflections of a parallelogram.
+ - [beads.py](beads.py) -- draw limit sets of bead groups along arbitrary polygonal paths.
 
 ## Interactive panel scripts
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.
