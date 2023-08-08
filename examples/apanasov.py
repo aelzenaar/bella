@@ -5,8 +5,8 @@
     We give a concrete example due to Apanasov; see [KAG86, Example 19]: it is "a doubly generated Kleinian group that is a Z/2-extension of a quasi-Fuchsian
     group and has isometric fundamental polygon consisting of four components."
 
-    The limit set apanasov.png looks at first glance like a circle, but notice that it is actually squished. (But it is not as wiggly as the figure on p.67
-    of [KAG86] implies.)
+    The limit set apanasov.png looks at first glance like a circle (and we draw two orthogonal diameters to confirm it is not squished), it is not as wiggly as the figure on p.67
+    of [KAG86] implies.
 
     [KAG86] S.L. Krushkalʹ, B.N. Apanasov, and N.A. Gusevskiĭ, "Kleinian groups in examples
             and problems". American Mathematical Society, 1986.
@@ -42,5 +42,8 @@ scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
 isocircles = [G.isometric_circle(w) for w in [(0,),(1,),(2,),(3,),(0,0),(1,1),(2,2),(3,3)]]
 ellipses = [hv.Ellipse(float(centre.real), float(centre.imag), float(radius)*2) for (centre, radius) in isocircles] #<-the final parameter of hv.Ellipse is diameter, not radius
 scatter = reduce(lambda a,b: a*b, ellipses, scatter)
+
+# add axes of the limit set
+scatter *= hv.Segments([ [-0.5,-1,1,-1], [-0.5,-1,-2,-1], [-0.5,-1,-0.5,0.5], [-0.5,-1,-0.5,-2.5] ]).opts(color="black")
 
 hv.save(scatter, "apanasov.png")
