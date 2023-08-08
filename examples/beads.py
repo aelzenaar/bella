@@ -65,7 +65,7 @@ def write_limit_set(G,filename):
     # compute the limit set
     df = G.coloured_limit_set_mc(depth,10**logpoints, seed=seed)
     scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
-                .opts(marker = "dot", size = 1,  color = 'colour', width=1600, height=1600, data_aspect=1, cmap='Set1')
+                .opts(marker = "dot", size = 0.1,  color = 'colour', width=1600, height=1600, data_aspect=1, cmap='Set1')
 
 
     #isometric circles of generators
@@ -75,14 +75,23 @@ def write_limit_set(G,filename):
     scatter = reduce(lambda a,b: a*b, ellipses+beads+fixed_points, scatter)
     hv.save(scatter, filename)
 
-# Roots of unity
+# Beads at the roots of unity
 root = 8
 G = BeadGroup([mp.exp(n*2j*mp.pi/root) for n in range(root)])
 write_limit_set(G, 'beads_rootsofunity.png')
-print("  beads.py: finished 1/-")
+print("  beads.py: finished 1/4")
+
+# Beads in a rectangle
 G = BeadGroup([0, 1, 1+1j, 1+2j, 2j, 1j])
 write_limit_set(G, 'beads_rectangle.png')
-print("  beads.py: finished 2/-")
+print("  beads.py: finished 2/4")
+
+# Beads randomly placed in some curve
 G = BeadGroup([0, 1, 2, 1.5+3j, 4j, 5j, 6j - 1, 4j - 3, 2j-2])
 write_limit_set(G, 'beads_wonky.png')
-print("  beads.py: finished 3/-")
+print("  beads.py: finished 3/4")
+
+# "Twisted Fuchsian group": Maskit, sec. VIII.F.5
+G = BeadGroup([0, 1+1j, 1+mp.sqrt(2) + 1j, 2+mp.sqrt(2), 1 + mp.sqrt(2) - 1j, 1-1j, 0, -1+1j, -1-mp.sqrt(2) + 1j, -2-mp.sqrt(2), -1 - mp.sqrt(2) - 1j, -1-1j ])
+write_limit_set(G, 'beads_fig8.png')
+print("  beads.py: finished 4/4")
