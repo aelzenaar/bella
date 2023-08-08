@@ -1,18 +1,19 @@
 # bella/examples
 
 ## Basic examples
-Run these with plain vanilla `python [filename]`. The utility bash script `gemerate_zoo.sh` will run all of the examples that just produce PNG files.
+Run these with plain vanilla `python [filename]`. The utility bash script `generate_zoo.sh` will run all of the examples that just produce PNG files.
  - [cayley_graph_speed.py](cayley_graph_speed.py) -- demonstrate that walking the Cayley group of a non-free group incurs a massive speed overhead.
  - [parabolic_slice_hidef.py](parabolic_slice_hidef.py) -- draw a PNG file containing a high-res picture of the parabolic Riley slice to high definition.
  - [apollonian_gasket.py](apollonian_gasket.py) -- draw a PNG file containing a picture of the Apollonian Gasket.
- - [padic.py](padic.py) -- demonstrate that it is possible to use other number types (e.g. p-adic numbers) as long as you are sufficiently masochistic.
+ - [padic.py](padic.py) -- demonstrate that it is possible to use other number types (e.g. $` p `$-adic numbers) as long as you are sufficiently masochistic.
  - [farey.py](farey.py) -- produce TeX tables of Farey and Riley words and polynomials.
  - [jorgensen_marden.py](jorgensen_marden.py) -- plot the limit sets of the Jørgensen--Marden groups which are not quasiconformally conjugate but which uniformise homeomorphic 3-manifolds.
  - [geometrically_infinite.py](geometrically_infinite.py) -- plot the limit set of a geometrically infinite group with non-empty domain of discontinuity.
- - [modular_group.py](modular_group.py) -- plot the isometric circles of PSL(2,Z).
- - [connected_component_bound.py](connected_component_bound.py) -- a Schottky-type group on N parabolic generators with 2(N-1) components.
+ - [modular_group.py](modular_group.py) -- plot the isometric circles of $` \mathrm{PSL}(2,\mathbb{Z}) `$.
+ - [connected_component_bound.py](connected_component_bound.py) -- a Schottky-type group on $` N `$ parabolic generators with $` 2(N-1) `$ components.
  - [apanasov.py](apanasov.py) -- a quasi-Fuchsian group with four components.
  - [web.py](web.py) -- a group which is not quasi-Fuchsian, but has quasi-Fuchsian component stabilisers.
+ - [elementary.py](elementary.py) -- an elementary group obtained as the orientation-preserving half of the group of reflections of a parallelogram.
 
 ## Interactive panel scripts
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.

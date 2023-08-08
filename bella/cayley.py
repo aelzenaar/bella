@@ -286,7 +286,7 @@ def generators_from_circle_inversions(circles, lines):
 
         circles is a list of pairs (centre, radius), lines is a list of pairs (point1, point2) (line through point1 and point2, both complex).
 
-        The result of this is GURANTEED to be:
+        The result of this is GUARANTEED to be:
             - [AB] if circles + lines = [A, B] (in that order)
             - [A1*A2, A2*A3, ..., An*A1 ] if circles + lines [ A1, A2, ..., An]
     """
@@ -297,7 +297,7 @@ def generators_from_circle_inversions(circles, lines):
         generating_matrices.append(mp.matrix([[centre, radius**2 + mp.fabs(centre)**2],[1,-mp.conj(centre)]]))
     for P, Q in lines:
         θ = mp.arg(Q-P)
-        generating_matrices.append(mp.matrix([[mp.exp(2j*θ), -mp.conj(P)*mp.exp(2j*θ)],[0,1]]))
+        generating_matrices.append(mp.matrix([[mp.exp(2j*θ), P-mp.conj(P)*mp.exp(2j*θ)],[0,1]]))
 
     if len(generating_matrices) > 2:
         generating_matrices = generating_matrices + [generating_matrices[0]]
