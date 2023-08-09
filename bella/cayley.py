@@ -65,7 +65,8 @@ class GroupCache:
             for n, g in enumerate(generators):
                 det = simple_det(g)
                 if abs(det - 1) > 0.00001 and abs(-det - 1) > 0.00001:
-                    warnings.warn(f"generator {n} does not seem to have non-unit determinant {det}",NonUnitDeterminantWarning)
+                    error_string = "Generator " + str(n) + " does not seem to have non-unit determinant: it's " + mp.nstr(det) + "."
+                    warnings.warn(error_string,NonUnitDeterminantWarning)
 
         self.length = len(generators)
         if self.length == 0:

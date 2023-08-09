@@ -43,7 +43,7 @@ def limit_set_points(r=1,s=3,mure=2, muim=2, depth=15, logpoints=3):
     small_scatter2 = hv.Scatter(small_limit_set2, 'x','y')\
         .opts(marker = "dot", size = 1,  color = "blue", width=800, height=800, data_aspect=1)\
             .redim(x=hv.Dimension('x', range=xbounds),y=hv.Dimension('y', range=ybounds))
-    return big_scatter * small_scatter1 * small_scatter2 * hv.Text(0,1.2,f"{complex(tr):.2f}")
+    return big_scatter * small_scatter1 * small_scatter2 * hv.Text(0,1.2, mp.nstr(tr))
 
 plot = hv.DynamicMap(limit_set_points, kdims=[hv.Dimension('r', range=(0,5), default=1),
                                               hv.Dimension('s', range=(0,5), default=3),

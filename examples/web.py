@@ -39,7 +39,7 @@ class WebGroup(cayley.GroupCache):
             b = (a*d-1)/c
             gens.append(mp.matrix([[a, b], [c, d]]))
 
-        print(f'{len(gens)} generators')
+        print('{} generators'.format(len(gens)))
         super().__init__(gens)
 
 depth = 30

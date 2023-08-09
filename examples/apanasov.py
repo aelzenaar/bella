@@ -23,10 +23,10 @@ class ApanasovGroup(cayley.GroupCache):
         X = mp.matrix([[0,1],[1,1]])
         Y = mp.matrix([[2, 2+5j],[1j,-2+1j]])
         # The norms of the traces of X and Y should be 1.
-        print(f"abs(tr X) = {mp.fabs(cayley.simple_tr(X))}")
-        print(f"det X = {cayley.simple_det(X)}")
-        print(f"abs(tr Y) = {mp.fabs(cayley.simple_tr(Y))}")
-        print(f"det Y = {cayley.simple_det(Y)}")
+        print("abs(tr X) = {}".format(mp.nstr(mp.fabs(cayley.simple_tr(X)))))
+        print("det X = {}".format(mp.nstr(cayley.simple_det(X))))
+        print("abs(tr Y) = {}".format(mp.fabs(cayley.simple_tr(Y))))
+        print("det Y = {}".format(cayley.simple_det(Y)))
         super().__init__([X,Y])
 
 depth = 30

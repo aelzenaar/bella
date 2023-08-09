@@ -17,12 +17,12 @@ def build_tex_table(caption, function):
     for r,s in farey.walk_tree_bfs(max_denom):
         if r % 2 == 0:
             continue
-        print(f"    ${r}/{s}$ & $ {function(r,s)} $\\\\")
-    print(f"""\
+        print("    ${}/{}$ & $ {} $\\\\".format(r,s,function(r,s)))
+    print("""\
   \\end{{tabular}}
-  \\caption{{{caption}}}
+  \\caption{{{}}}
 \\end{{table}}
-""")
+""".format(caption))
 
 
 build_tex_table("The Riley words", lambda r,s: ''.join(farey.riley_word(r,s)))
