@@ -13,21 +13,7 @@ import pandas as pd
 import numpy as np
 import warnings
 
-def simple_det(M):
-    return M[0,0]*M[1,1]-M[0,1]*M[1,0]
-
-def simple_inv(M):
-    """ Invert a 2x2 matrix. """
-
-    # Weird type introspection to allow us to pass in pyadic types that mpmath doesn't like but numpy is OK with
-    MatrixType = type(M)
-    if isinstance(M, np.ndarray):
-        MatrixType = np.array
-    return 1/(M[0,0]*M[1,1]-M[0,1]*M[1,0]) * MatrixType([[M[1,1],-M[0,1]], [-M[1,0], M[0,0]]])
-
-def simple_tr(M):
-    """ Trace of a 2x2 matrix. """
-    return M[0,0] + M[1,1]
+from .matrix import det as simple_det, inv as simple_inv, tr as simple_tr, matmul as matmul
 
 class NonUnitDeterminantWarning(RuntimeWarning):
     pass
@@ -89,7 +75,7 @@ class GroupCache:
         if word == ():
             return self._underlying_matrix_t([[1,0],[0,1]])
         else:
-            return self.generators[word[0]] @ self[word[1:]]
+            return matmul(self.generators[word[0]], self[word[1:]])
 
     def __len__(self):
         """ Return the number of generators (not including inverses). """
@@ -232,7 +218,7 @@ class GroupCache:
 
         def _internal_generator():
             for w in self.free_cayley_graph_mc(depth,count):
-                point = self[w] @ base
+                point = matmul(self[w], base)
                 if point[1] != 0:
                     cpx = point[0]/point[1]
                     yield (float(cpx.real), float(cpx.imag), w[0])
@@ -320,7 +306,7 @@ def generators_from_circle_inversions(circles, lines):
         generating_matrices = generating_matrices + [generating_matrices[0]]
 
     # Here is the correct composition rule.
-    twist_product = lambda A,B : A@(B.H.T)
+    twist_product = lambda A,B : matmul(A,(B.H.T))
     gens = [twist_product(generating_matrices[i], generating_matrices[i+1]) for i in range(len(generating_matrices)-1)]
 
     return gens
