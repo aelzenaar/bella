@@ -23,10 +23,36 @@ def tr(M):
     return M[0,0] + M[1,1]
 
 def matmul(M,N):
-    """ Multiply two matrices, gracefully falling back if @ is not available """
-    if hasattr(M, "__matmul__"):
-        return M.__matmul__(N)
-    elif hasattr(M, "dot"):
-        return M.dot(N) # We are in numpy without @
+    """ Multiply two matrices. """
+    MatrixType = type(M)
+    if isinstance(M, np.ndarray):
+        MatrixType = np.array
+
+    if hasattr(M,'rows'):
+        m = M.rows
+        q = M.cols
+        p = N.rows
+        n = N.cols
     else:
-        return M*N # Hopefully only in mpmath, where * is matrix product.
+        m = M.shape[0]
+        q = M.shape[1]
+        p = N.shape[0]
+        n = N.shape[1]
+
+    if q != p:
+        raise IndexError("Tried to multiply {}x{} and {}x{} matrices.".format(m,q,p,n))
+
+    if m==q==p==n==2:
+        return MatrixType([
+          [ M[0,0]*N[0,0] + M[0,1]*N[1,0],  M[0,0]*N[0,1] + M[0,1]*N[1,1] ],
+          [ M[1,0]*N[0,0] + M[1,1]*N[1,0],  M[1,0]*N[0,1] + M[1,1]*N[1,1] ],
+          ])
+
+    prod = [([0] * n) for _ in range(m)]
+    for i in range(m):
+        for j in range(n):
+            acc = 0
+            for k in range(p):
+                acc += M[i,k] * N[k,j]
+            prod[i][j] = acc
+    return MatrixType(prod)
