@@ -9,6 +9,8 @@
             and problems". American Mathematical Society, 1986.
 """
 
+from PIL import Image
+Image.MAX_IMAGE_PIXELS = None # Get around image size limit
 from bella import cayley
 import holoviews as hv
 hv.extension('bokeh')

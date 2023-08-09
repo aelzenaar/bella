@@ -16,6 +16,7 @@ Run these with plain vanilla `python [filename]`. The utility bash script `gener
  - [elementary.py](examples/elementary.py) -- an elementary group obtained as the orientation-preserving half of the group of reflections of a parallelogram.
  - [beads.py](examples/beads.py) -- draw limit sets of bead groups along arbitrary polygonal paths.
  - [atom.py](examples/atom.py) -- draw the limit set of an approximation of Accola's atom group (an infinitely generated group).
+ - [zarrow.py](examples/zarrow.py) -- draw the limit set of Zarrow's non-classical Schottky group (it's Fuchsian, though, so the picture is not that impressive).
 
 ## Interactive panel scripts
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.
