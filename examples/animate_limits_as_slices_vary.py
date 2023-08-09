@@ -10,15 +10,15 @@ import os
 
 # Output one frame of the animation. See below for explanation of the parameters.
 def one_frame(kk,θ,depth,logpoints,first,scale):
-    print("Computing frame "+ str(kk))
+    print(f"#{kk}")
     η = (kk/scale) * mp.pi
     G = riley.RileyGroup(θ,η,2j) # <- we fix the value of μ.
     df = G.coloured_limit_set_mc(depth,10**logpoints)
     scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
                 .opts(marker = "dot", size = 1,  color = 'colour', width=1000, height=1000, data_aspect=1, cmap='Category10')\
                 .redim(x=hv.Dimension('x', range=(-1,1)),y=hv.Dimension('y', range=(-1, 1)))
-    hv.save(scatter, 'animate_limits_as_slices_vary/frame{:05}.png'.format(-first+kk), fmt='png')
-    print("Done frame " + str(kk))
+    hv.save(scatter, f'animate_limits_as_slices_vary/frame{-first+kk:05}.png', fmt='png')
+    print(f"Done {kk}")
 
 # We use this __main__ pattern since we have to use multiprocessing, see
 # the documentation: https://docs.python.org/dev/library/multiprocessing.html#multiprocessing-programming

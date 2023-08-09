@@ -21,14 +21,14 @@ scale = 100
 
 # Output one frame of the animation. See below for explanation of the parameters.
 def one_frame(kk,θ,depth,first,scale):
-    print("Computing frame "+ str(kk))
+    print(f"#{kk}")
     η = (kk/scale) * mp.pi
     df = slices.primitive_exterior(θ,η,1,1,depth)
     scatter = hv.Scatter(df, 'x','y')\
-                .opts(marker = "dot", size = 5, width=1000, height=500, data_aspect=1, color='black') * hv.Text(0,3,"β = exp(πi ({}/{}))".format(kk,scale))\
+                .opts(marker = "dot", size = 5, width=1000, height=500, data_aspect=1, color='black') * hv.Text(0,3,f"β = exp(πi ({kk}/{scale}))")\
                 .redim(x=hv.Dimension('x', range=(-5,5)),y=hv.Dimension('y', range=(-2.5, 2.5)))
-    hv.save(scatter, 'animate_slices/frame{:05}.png'.format(-first+kk), fmt='png')
-    print("Done frame " + str(kk))
+    hv.save(scatter, f'animate_slices/frame{-first+kk:05}.png', fmt='png')
+    print(f"Done {kk}")
 
 # We use this __main__ pattern since we use multiprocessing, see
 # the documentation: https://docs.python.org/dev/library/multiprocessing.html#multiprocessing-programming
