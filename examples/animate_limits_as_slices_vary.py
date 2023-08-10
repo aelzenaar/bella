@@ -9,11 +9,11 @@ import multiprocessing
 import os
 
 # Output one frame of the animation. See below for explanation of the parameters.
-def one_frame(kk,θ,depth,logpoints,first,scale):
+def one_frame(kk,θ,num_points,first,scale):
     print(f"#{kk}")
     η = (kk/scale) * mp.pi
     G = riley.RileyGroup(θ,η,2j) # <- we fix the value of μ.
-    df = G.coloured_limit_set_mc(depth,10**logpoints)
+    df = G.coloured_limit_set_fast(num_points)
     scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
                 .opts(marker = "dot", size = 1,  color = 'colour', width=1000, height=1000, data_aspect=1, cmap='Category10')\
                 .redim(x=hv.Dimension('x', range=(-1,1)),y=hv.Dimension('y', range=(-1, 1)))
@@ -23,10 +23,9 @@ def one_frame(kk,θ,depth,logpoints,first,scale):
 # We use this __main__ pattern since we have to use multiprocessing, see
 # the documentation: https://docs.python.org/dev/library/multiprocessing.html#multiprocessing-programming
 if __name__=='__main__':
-    # θ is fixed. Depth and logpoints are passed directly into GroupCache.coloured_limit_set_mc().
+    # θ is fixed. num_points is passed directly into GroupCache.coloured_limit_set_fast().
     θ = 0
-    depth = 20
-    logpoints = 4
+    num_points = 20*10**4
 
     # We will compute η as (kk/scale)*π, where kk runs from first to last. Hence to adjust the number of frames
     # adjust scale and modify last so that last/scale is the endpoint value of the anumation that you want.
@@ -45,4 +44,4 @@ if __name__=='__main__':
     # module, the only way we get out of running out of memory is to start a new process each time.) As a nice side-effect, it's fast.
     multiprocessing.set_start_method('spawn') # Using "fork" also leaks memory.
     with multiprocessing.Pool(4, maxtasksperchild=1) as pool:
-        pool.starmap(one_frame, [ (kk,θ,depth,logpoints,first,scale) for kk in range(first, last) ], chunksize=1)
+        pool.starmap(one_frame, [ (kk,θ,num_points,first,scale) for kk in range(first, last) ], chunksize=1)

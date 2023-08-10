@@ -5,7 +5,6 @@
 """
 
 from mpmath import mp
-from numpy.linalg import inv, eig
 import itertools
 import functools
 import random
@@ -215,11 +214,11 @@ class GroupCache:
                 if yield_shorter or n == depth:
                     yield word
 
-    def coloured_limit_set_mc(self, depth, count, seed = 0):
+    def coloured_limit_set_fast(self, count, seed=0):
         """ Monte-carlo search for points in the limit set.
 
-            Produce `depth`*count` translates of the element `seed`, thus approximating the limit set,
-            by computing the Cayley graph as returned by `cayley_graph_mc(depth, count)`.
+            Produce `count` translates of the element `seed`, thus approximating the limit set,
+            by doing a random walk.
 
             Generates: a dataframe with columns [ x, y, colour ] where x+yi is a point in the limit set
             and colour is the index of the first element in the word indexing that limit set.
@@ -228,15 +227,16 @@ class GroupCache:
             base = self._underlying_matrix_t([[1],[0]])
         else:
             base = self._underlying_matrix_t([[seed],[1]])
+        def _internal_generator(base):
+            last = next(self.free_cayley_graph_mc(1,1))
+            for _ in range(count):
+                base = self[last] @ base
+                if base[1] != 0:
+                    cpx = base[0]/base[1]
+                    yield (float(cpx.real), float(cpx.imag), last[0])
+                last = self.free_random_walk_locally(last)[:1]
 
-        def _internal_generator():
-            for w in self.free_cayley_graph_mc(depth,count):
-                point = self[w] @ base
-                if point[1] != 0:
-                    cpx = point[0]/point[1]
-                    yield (float(cpx.real), float(cpx.imag), w[0])
-
-        return pd.DataFrame(_internal_generator(), columns=['x','y','colour'])
+        return pd.DataFrame(_internal_generator(base), columns=['x','y','colour'])
 
     def isometric_circle(self, word):
         """ Return the isometric circle of the word.
@@ -253,7 +253,7 @@ class GroupCache:
     def coloured_isometric_circles_mc(self, depth, count):
         """ Monte-carlo search for isometric circles in the limit set.
 
-            Produce `depth`*count` isometric circles, thus approximating the limit set,
+            Produce `depth`*`count` isometric circles, thus approximating the limit set,
             by computing the Cayley graph as returned by `cayley_graph_mc(depth, count)`.
 
             Generates: a dataframe with columns [ x, y, radius, colour ] where (x,y) is the centre
@@ -263,7 +263,7 @@ class GroupCache:
 
         def _internal_generator():
             for w in self.cayley_graph_mc(depth,count):
-                centre, radius = isometric_circle(w)
+                centre, radius = self.isometric_circle(w)
                 if centre == mp.inf:
                     continue
                 yield [float(centre.real), float(centre.imag), float(radius), w[0]]

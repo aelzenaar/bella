@@ -19,13 +19,12 @@ class IncompleteGroup(cayley.GroupCache):
         self.lines = [ (0,λ), (0,μ), (λ,λ+μ), (μ,λ+μ) ]
         super().__init__(cayley.generators_from_circle_inversions([], self.lines))
 
-depth = 30
-logpoints = 3
+num_points = 10**4
 
 # Roots of unity
 G = IncompleteGroup(1, 1+1j) #<- if you modify this so that the parallelogram has angles not submultiples of unity, the resulting group is no longer discrete.
 seed = 0
-df = G.coloured_limit_set_mc(depth,10**logpoints, seed=seed)
+df = G.coloured_limit_set_fast(num_points, seed=seed)
 scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
             .opts(marker = "dot", size = 4,  color = 'colour', width=800, height=800, data_aspect=1, cmap='Set1')\
               .redim(x=hv.Dimension('x', range=(-8,8)),y=hv.Dimension('y', range=(-8, 8)))

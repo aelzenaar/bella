@@ -18,11 +18,10 @@ class BoundGroup(cayley.GroupCache):
             gens.append(mp.matrix([[1+2j*m, 4*m**2],[1,1-2j*m]]))
         super().__init__(gens)
 
-depth = 20
-logpoints = 4
+num_points = 10**5
 G = BoundGroup(8)
 seed = G.fixed_points((0,1))[0]
-df = G.coloured_limit_set_mc(depth,10**logpoints, seed=seed)
+df = G.coloured_limit_set_fast(num_points, seed=seed)
 scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
             .opts(marker = "dot", size = 1,  color = 'colour', width=400, height=1500, data_aspect=1, cmap='Set1')\
               .redim(x=hv.Dimension('x', range=(-2,2)),y=hv.Dimension('y', range=(-1, 14)))

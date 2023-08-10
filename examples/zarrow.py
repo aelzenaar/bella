@@ -19,14 +19,13 @@ class ZarrowGroup(cayley.GroupCache):
         super().__init__([self.S,self.T])
 
 # Just compute the gasket as the limit set of the μ=2i parabolic Riley group, and save it to an image file.
-depth = 30
-logpoints = 4
+num_points = 10**5
 G = ZarrowGroup()
 seed = G.fixed_points((0,1))[0]
 window_radius = 100
 x_range = (float(seed.real)-window_radius,float(seed.real)+window_radius)
 y_range = (float(seed.imag)-window_radius,float(seed.imag)+window_radius)
-df = G.coloured_limit_set_mc(depth,10**logpoints, seed=seed)
+df = G.coloured_limit_set_fast(num_points, seed=seed)
 scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
             .opts(marker = "dot", size = 0.1,  color = 'colour', width=1600, height=1600, data_aspect=1, cmap='Set1')\
               .redim(x=hv.Dimension('x', range=x_range),y=hv.Dimension('y', range=y_range))

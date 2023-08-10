@@ -29,11 +29,10 @@ class ApanasovGroup(cayley.GroupCache):
         print(f"det Y = {cayley.simple_det(Y)}")
         super().__init__([X,Y])
 
-depth = 30
-logpoints = 5
+num_points = 30*10**5
 G = ApanasovGroup()
 seed = G.fixed_points((0,1))[0]
-df = G.coloured_limit_set_mc(depth,10**logpoints, seed=seed)
+df = G.coloured_limit_set_fast(num_points, seed=seed)
 scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
             .opts(marker = "dot", size = 1,  color = 'colour', width=1000, height=1000, data_aspect=1, cmap='Set1')
 

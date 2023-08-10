@@ -9,8 +9,6 @@
             and problems". American Mathematical Society, 1986.
 """
 
-from PIL import Image
-Image.MAX_IMAGE_PIXELS = None # Get around image size limit
 from bella import cayley
 import holoviews as hv
 hv.extension('bokeh')
@@ -42,14 +40,12 @@ class WebGroup(cayley.GroupCache):
         print(f'{len(gens)} generators')
         super().__init__(gens)
 
-depth = 30
-logpoints = 4
+num_points = 10**5
 G = WebGroup()
 seed = G.fixed_points((0,1))[0]
-df = G.coloured_limit_set_mc(depth,10**logpoints, seed=seed)
+df = G.coloured_limit_set_fast(num_points, seed=seed)
 scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
-            .opts(marker = "dot", size = 0.1,  color = 'colour', width=2000, height=2000, data_aspect=1, cmap='Set1')\
-              .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
+            .opts(marker = "dot", size = 0.1,  color = 'colour', width=2000, height=2000, data_aspect=1, cmap='Set1')
 
 # the four circles C_1,...,C_4
 fourdiscs = [hv.Ellipse(centre.real, centre.imag, float(mp.sqrt(2))).opts(color='gray') for centre in [1, 1j, -1, -1j]]

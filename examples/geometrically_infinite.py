@@ -23,11 +23,10 @@ class GeomInfGroup(cayley.GroupCache):
         X = mp.matrix([[-self.λ*self.x, -(1+self.x**2)],[1,self.λ**-1*self.x]])
         super().__init__([T,X])
 
-depth = 80
-numpoints = 20000
+num_points = 10**6
 G = GeomInfGroup(3)
 seed = G.fixed_points((0,1))[0]
-df = G.coloured_limit_set_mc(depth,numpoints, seed=seed)
+df = G.coloured_limit_set_fast(num_points, seed=seed)
 scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
             .opts(marker = "dot", size = 0.1,  color = 'colour', width=2000, height=2000, data_aspect=1, cmap='Set1')\
               .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))

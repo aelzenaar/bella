@@ -53,8 +53,7 @@ class BeadGroup(cayley.GroupCache):
 
         super().__init__(cayley.generators_from_circle_inversions(self.circles, []))
 
-depth = 50
-logpoints = 4
+num_points = 10**5
 
 def write_limit_set(G,filename):
     # We put fixed points and beads onto the picture, here is the calculation.
@@ -63,7 +62,7 @@ def write_limit_set(G,filename):
     fixed_points = [hv.Points([ [float(p.real), float(p.imag)] for p in G.fixed_points((n,))]).opts(marker = "dot", size = 20) for n in range(0,len(G))]
 
     # compute the limit set
-    df = G.coloured_limit_set_mc(depth,10**logpoints, seed=seed)
+    df = G.coloured_limit_set_fast(num_points, seed=seed)
     scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
                 .opts(marker = "dot", size = 0.1,  color = 'colour', width=1600, height=1600, data_aspect=1, cmap='Set1')
 

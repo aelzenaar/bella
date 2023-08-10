@@ -26,12 +26,12 @@ class GrandmaGroup(cayley.GroupCache):
 #       `colour` attribute returned from GroupCache.coloured_limit_set,
 #       i.e. it refers to the first letter in the word indexing that limit point); and
 #   (b) three points, which give the fixed points of the generators X and Y (the fourth fixed point is at infinity).
-def limit_set_points(are=1,aim=0,bre=0, bim=1, depth=15, logpoints=3):
+def limit_set_points(are=1,aim=0,bre=0, bim=1, logpoints=3):
     G = GrandmaGroup(are+1j*aim,bre+1j*bim)
     fixed_points_X = [ [float(p.real), float(p.imag)] for p in G.fixed_points((0,))]
     fixed_points_Y = [ [float(p.real), float(p.imag)] for p in G.fixed_points((1,))]
     seed = G.fixed_points((0,1))[0]
-    df = G.coloured_limit_set_mc(depth,10**logpoints, seed=seed)
+    df = G.coloured_limit_set_fast(10**logpoints, seed=seed)
     scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
                 .opts(marker = "dot", size = 0.1,  color = 'colour', width=800, height=800, data_aspect=1, cmap='Category10')\
                   .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
@@ -43,6 +43,5 @@ plot = hv.DynamicMap(limit_set_points, kdims=[hv.Dimension('are', label='Re(t_a)
                                               hv.Dimension('aim', label='Im(t_a)', range=(-4.0,4.0), step=.01, default=0),
                                               hv.Dimension('bre', label='Re(t_b)', range=(-4.0,4.0), step=.01, default=2),
                                               hv.Dimension('bim', label='Im(t_b)', range=(-4.0,4.0), step=.01, default=0),
-                                              hv.Dimension('depth', label='maximal length of word', range=(5,50), step=1, default=10),
-                                              hv.Dimension('logpoints', label='log10(number of words)', range=(2,6), default=3)])
+                                              hv.Dimension('logpoints', label='log10(number of points)', range=(2,8), default=4)])
 pn.panel(plot).servable(title="Grandma's Recipe groups")

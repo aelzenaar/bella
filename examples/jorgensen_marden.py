@@ -28,11 +28,10 @@ class JMGroup2(cayley.GroupCache):
         Y = (1/b)*mp.matrix([[2+1j,1j], [-1,-1j]])
         super().__init__([X,Y])
 
-depth = 50
-logpoints = 4
+num_points = 10**5
 def write_limit_set(G,filename):
     seed = G.fixed_points((0,1))[0]
-    df = G.coloured_limit_set_mc(depth,10**logpoints, seed=seed)
+    df = G.coloured_limit_set_fast(num_points, seed=seed)
     scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
                 .opts(marker = "dot", size = 0.1,  color = 'colour', width=1600, height=1600, data_aspect=1, cmap='Set1')\
                   .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
