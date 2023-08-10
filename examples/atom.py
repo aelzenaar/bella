@@ -10,9 +10,16 @@ import holoviews as hv
 hv.extension('bokeh')
 from mpmath import mp
 from functools import reduce
+import panel as pn
+
+panel_app = __name__.startswith('bokeh')
+if panel_app:
+    print("    atom.py is a panel app")
+else:
+    print("    atom.py producing image")
 
 class AtomGroup(cayley.GroupCache):
-    def __init__(self, n, M, speedfactor = 0.3):
+    def __init__(self, n, M, speedfactor = 0.5):
         """ Approximations of Accola's atom group.
 
             We will generate n circles on the two spirals, smaller circles for bigger M.
@@ -38,15 +45,14 @@ class AtomGroup(cayley.GroupCache):
 
         super().__init__(cayley.generators_from_circle_inversions(self.circles1+self.circles2, []))
 
-depth = 50
-logpoints = 4
-generators = 10000
+num_points = 10**6
+generators = 1000
 add_bead_annotations = False #Adding these annotations significantly increases compute time. (on the order of 10 seconds vs 30 minutes)
-G = AtomGroup(generators, 1.2)
+G = AtomGroup(generators, 1.1)
 seed = G.fixed_points((0,1))[0]
-df = G.coloured_limit_set_mc(depth,10**logpoints, seed=seed)
+df = G.coloured_limit_set_fast(num_points, seed=seed)
 scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
-            .opts(marker = "dot", size = .1,  color = 'black', width=10000, height=10000, data_aspect=1)
+            .opts(marker = "dot", size = 1,  color = 'black', width=1600, height=1600, data_aspect=1)
 
 if add_bead_annotations:
     # circles which we are inverting across
@@ -57,6 +63,12 @@ if add_bead_annotations:
     isocircles = [G.isometric_circle(w) for w in G.free_cayley_graph_bfs(1)]
     ellipses = [hv.Ellipse(float(centre.real), float(centre.imag), float(radius)*2).opts(color='gray') for (centre, radius) in isocircles] #<-the final parameter of hv.Ellipse is diameter, not radius
     scatter = reduce(lambda a,b: a*b, ellipses+beads, scatter)
-    hv.save(scatter, "atom.png")
+    if panel_app:
+        pn.panel(scatter).servable(title=f'Accola\'s atom group')
+    else:
+        hv.save(scatter, "atom.png")
 else:
-    hv.save(scatter, "atom_no_beads.png")
+    if panel_app:
+        pn.panel(scatter).servable(title=f'Accola\'s atom group')
+    else:
+        hv.save(scatter, "atom_no_beads.png")
