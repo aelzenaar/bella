@@ -130,7 +130,7 @@ class GroupCache:
                     words.append(w)
             return random.choice(words)
 
-    def free_cayley_graph_locally(self, word):
+    def free_cayley_graph_locally(self, word, rtl=True):
         """ Given a word, produce all neighbouring longer words.
 
             More precisely, returns all words which are of the form (x) + `word`
@@ -138,13 +138,19 @@ class GroupCache:
             of the first generator in `word`. The other known relators are not taken
             into account, so really we are giving the neighbours of `word` in the Cayley graph of
             the free group on the given generators that are of longer length.
+
+            If `rtl = False' then add generators on the right, not the left.
         """
         if word == ():
             yield from [(w,) for w in range(2*self.length)]
         else:
             for lab in range(2*self.length):
-                if lab != self.gen_to_inv[word[0]]:
-                    yield (lab,) + word
+                if rtl:
+                    if lab != self.gen_to_inv[word[0]]:
+                        yield (lab,) + word
+                else:
+                    if lab != self.gen_to_inv[word[-1]]:
+                        yield word + (lab,)
 
     def cayley_graph_locally(self, word):
         """ Given a word, produce all neighbouring non-left-reducible words.
@@ -180,7 +186,7 @@ class GroupCache:
             last_list = this_list
 
     # Monte-Carlo search
-    def free_cayley_graph_mc(self, depth, count):
+    def free_cayley_graph_mc(self, depth, count, rtl=True):
         """ Monte-Carlo search for all words in the generators, assuming no relators.
 
             Perform `count` random walks on the Cayley graph of the free group on the given generators,
@@ -193,7 +199,7 @@ class GroupCache:
         for nn in range(count):
             word = ()
             for n in range(depth):
-                word = self.free_random_walk_locally(word)
+                word = self.free_random_walk_locally(word, rtl)
                 yield word
 
     def cayley_graph_mc(self, depth, count, yield_shorter=True):
@@ -213,6 +219,29 @@ class GroupCache:
                 word = self.random_walk_locally(word)
                 if yield_shorter or n == depth:
                     yield word
+
+    def coloured_limit_set_mc(self, depth, count, seed = 0, rtl=True):
+        """ Monte-carlo search for points in the limit set.
+
+            Produce `depth`*`count` translates of the element `seed`, thus approximating the limit set,
+            by computing the Cayley graph as returned by `free_cayley_graph_mc(depth, count, rtl)`.
+
+            Generates: a dataframe with columns [ x, y, colour ] where x+yi is a point in the limit set
+            and colour is the index of the first element in the word indexing that limit set.
+        """
+        if seed == mp.inf:
+            base = self._underlying_matrix_t([[1],[0]])
+        else:
+            base = self._underlying_matrix_t([[seed],[1]])
+
+        def _internal_generator():
+            for w in self.free_cayley_graph_mc(depth,count, rtl):
+                point = self[w] @ base
+                if point[1] != 0:
+                    cpx = complex(point[0])/complex(point[1])
+                    yield (float(cpx.real), float(cpx.imag), w[0])
+
+        return pd.DataFrame(_internal_generator(), columns=['x','y','colour'])
 
     def coloured_limit_set_fast(self, count, seed=0):
         """ Monte-carlo search for points in the limit set.
@@ -237,6 +266,7 @@ class GroupCache:
                 last = self.free_random_walk_locally(last)[:1]
 
         return pd.DataFrame(_internal_generator(base), columns=['x','y','colour'])
+
 
     def isometric_circle(self, word):
         """ Return the isometric circle of the word.
