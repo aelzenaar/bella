@@ -11,18 +11,11 @@ from pyadic import PAdic
 from pyadic.padic import padic_sqrt
 from fractions import Fraction as Q
 
-# Unfortunately GroupCache.coloured_limit_set_mc() will fail spectacularly on limit sets which are not complex
-# numbers (it isn't intelligent enough to run chistyakov.Υ itself). GroupCache does have a bit of type wrangling
-# going on, so at least we can run the free_cayley_graph_mc method and compute the limit set ourselves.
-def padic_limit_set(G, filename, prime, depth=15, logpoints=4):
-    L = []
-    base = np.array([[0],[1]])
-    for w in G.free_cayley_graph_mc(depth,10**logpoints):
-        point = np.dot(G[w], base)
-        L.append(chistyakov.Υ(0, 0.9*chistyakov.s0(prime), point[0,0]/point[1,0], 100))
 
-    df = pd.DataFrame(data=[(float(np.real(point)), float(np.imag(point))) for point in L], columns=['x','y'], copy=False)
-    scatter = hv.Scatter(df, 'x','y').opts(marker = "dot", size = .1, width=2000, height=2000, data_aspect=1, color='black').redim(x=hv.Dimension('x', range=(-2,2)),y=hv.Dimension('y', range=(-2, 2)))
+def padic_limit_set(G, filename, prime, depth = 15, logwords=4):
+    df = G.coloured_limit_set_mc(depth, 10**logwords, 0, lambda z: chistyakov.Υ(0, 0.5*chistyakov.s0(prime), z, 100))
+    scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour']).opts(marker = "dot", size = .1, width=1000, height=1000, data_aspect=1, color='colour', cmap='Set1')\
+        .redim(x=hv.Dimension('x', range=(-2,2)),y=hv.Dimension('y', range=(-2, 2)))
     hv.save(scatter, filename)
 
 # This is Example 6.1 of arXiv:2110.10904

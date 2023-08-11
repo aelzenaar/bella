@@ -98,7 +98,7 @@ class GroupCache:
         """ Return true if a word starts with any known relator."""
         return not any(word[:len(r)] == r for r in self.relators)
 
-    def free_random_walk_locally(self, word):
+    def free_random_walk_locally(self, word, rtl=True):
         """ Given a word, produce a single neighbouring longer word randomly.
 
             More precisely, returns a word which is of the form (x) + `word`
@@ -110,8 +110,12 @@ class GroupCache:
         if word == ():
             return random.choice([(w,) for w in range(2*self.length)])
         else:
-            lab = random.choice([x for x in range(2*self.length) if x != self.gen_to_inv[word[0]]])
-            return (lab,) + word
+            if rtl:
+                lab = random.choice([x for x in range(2*self.length) if x != self.gen_to_inv[word[0]]])
+                return (lab,) + word
+            else:
+                lab = random.choice([x for x in range(2*self.length) if x != self.gen_to_inv[word[-1]]])
+                return word + (lab,)
 
     def random_walk_locally(self, word):
         """ Given a word, produce a single neighbouring longer non-left-reducable word randomly.
@@ -220,7 +224,7 @@ class GroupCache:
                 if yield_shorter or n == depth:
                     yield word
 
-    def coloured_limit_set_mc(self, depth, count, seed = 0, rtl=True):
+    def coloured_limit_set_mc(self, depth, count, seed = 0, complexify=complex, rtl=True):
         """ Monte-carlo search for points in the limit set.
 
             Produce `depth`*`count` translates of the element `seed`, thus approximating the limit set,
@@ -238,12 +242,12 @@ class GroupCache:
             for w in self.free_cayley_graph_mc(depth,count, rtl):
                 point = self[w] @ base
                 if point[1] != 0:
-                    cpx = complex(point[0])/complex(point[1])
-                    yield (float(cpx.real), float(cpx.imag), w[0])
+                    cpx = complexify(point[0,0]/point[1,0])
+                    yield (cpx.real, cpx.imag, w[0])
 
         return pd.DataFrame(_internal_generator(), columns=['x','y','colour'])
 
-    def coloured_limit_set_fast(self, count, seed=0):
+    def coloured_limit_set_fast(self, count, seed=0, complexify=complex):
         """ Monte-carlo search for points in the limit set.
 
             Produce `count` translates of the element `seed`, thus approximating the limit set,
@@ -261,7 +265,7 @@ class GroupCache:
             for _ in range(count):
                 base = self[last] @ base
                 if base[1] != 0:
-                    cpx = complex(base[0])/complex(base[1])
+                    cpx = complexify(base[0,0]/base[1,0])
                     yield (cpx.real, cpx.imag, last[0])
                 last = self.free_random_walk_locally(last)[:1]
 
