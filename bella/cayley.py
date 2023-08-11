@@ -232,8 +232,8 @@ class GroupCache:
             for _ in range(count):
                 base = self[last] @ base
                 if base[1] != 0:
-                    cpx = base[0]/base[1]
-                    yield (float(cpx.real), float(cpx.imag), last[0])
+                    cpx = complex(base[0])/complex(base[1])
+                    yield (cpx.real, cpx.imag, last[0])
                 last = self.free_random_walk_locally(last)[:1]
 
         return pd.DataFrame(_internal_generator(base), columns=['x','y','colour'])
