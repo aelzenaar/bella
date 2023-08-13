@@ -171,7 +171,6 @@ class GroupCache:
                 if is_reduced_from_left(lword):
                     yield lword
 
-    # Breadth-first search
     def free_cayley_graph_bfs(self, depth):
         """ Breadth-first search for all words in the generators, assuming no relators.
 
@@ -189,7 +188,6 @@ class GroupCache:
                     this_list.append(item)
             last_list = this_list
 
-    # Monte-Carlo search
     def free_cayley_graph_mc(self, depth, count, rtl=True):
         """ Monte-Carlo search for all words in the generators, assuming no relators.
 
@@ -206,8 +204,25 @@ class GroupCache:
                 word = self.free_random_walk_locally(word, rtl)
                 yield word
 
+    def cayley_graph_bfs(self, depth):
+        """ Breadth-first search for all words in the generators, assuming no relators.
+
+            Walk the Cayley graph of the free group on the given generators, yielding
+            words in a breadth-first way, producing all words of length at most `depth`.
+            At each step the random walk will append a generator to the left of the word
+            such that the resulting word is non-left-reducible of incrementally longer length.
+        """
+        last_list = [()]
+        for n in range(depth):
+            this_list = []
+            for w in last_list:
+                for item in self.cayley_graph_locally(w):
+                    yield item
+                    this_list.append(item)
+            last_list = this_list
+
     def cayley_graph_mc(self, depth, count, yield_shorter=True):
-        """ Monte-Carlo search for all words in the generators, assuming no relators.
+        """ Monte-Carlo search for all words in the generators
 
             Perform `count` random walks on the Cayley graph of the group,
             on each walk producing the words of that walk in sequence up to the word of length `depth`,
@@ -297,6 +312,23 @@ class GroupCache:
 
         def _internal_generator():
             for w in self.cayley_graph_mc(depth,count):
+                centre, radius = self.isometric_circle(w)
+                if centre == mp.inf:
+                    continue
+                yield [float(centre.real), float(centre.imag), float(radius), w[0]]
+
+        return pd.DataFrame.from_records(_internal_generator(), columns=['x','y','radius','colour'])
+
+    def coloured_isometric_circles_bfs(self, depth):
+        """ Breadth-first search for isometric circles in the limit set.
+
+            Returns a dataframe with columns [ x, y, radius, colour ] where (x,y) is the centre
+            of an isometric circle of given radius, corresponding to a word whose first letter is
+            the generator indexed by `colour`.
+        """
+
+        def _internal_generator():
+            for w in self.cayley_graph_bfs(depth):
                 centre, radius = self.isometric_circle(w)
                 if centre == mp.inf:
                     continue

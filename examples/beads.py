@@ -53,7 +53,7 @@ class BeadGroup(cayley.GroupCache):
 
         super().__init__(cayley.generators_from_circle_inversions(self.circles, []))
 
-num_points = 10**5
+num_points = 10**6
 
 def write_limit_set(G,filename):
     # We put fixed points and beads onto the picture, here is the calculation.
