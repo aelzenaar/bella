@@ -64,9 +64,9 @@ if __name__ == '__main__':
 
     G = AtomGroup(generators, 1.1)
     seed = G.fixed_points((0,1))[0]
-    #
-    # with multiprocessing.Pool(maxtasksperchild=1) as pool:
-    #     _ = pool.starmap(one_limit_set, [[n+1, number_of_walks, points_per_walk, seed] for n in range(number_of_walks)], chunksize=1 )
+
+    with multiprocessing.Pool(maxtasksperchild=1) as pool:
+        _ = pool.starmap(one_limit_set, [[n+1, number_of_walks, points_per_walk, seed] for n in range(number_of_walks)], chunksize=1 )
     df = dd.read_csv("atom/*.csv")
 
     print("    atom.py has finished computing the limit set")
