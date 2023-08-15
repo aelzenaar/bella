@@ -18,6 +18,14 @@ import os
 from holoviews.operation.datashader import ResampleOperation2D
 from bella.hvhelp import Circles, pairsToCircles
 
+points_per_walk = 10**5
+number_of_walks = 1024
+num_generators = 10000
+width = 4000
+add_bead_annotations = True
+
+
+
 class AtomGroup(cayley.GroupCache):
     def __init__(self, n, M, speedfactor = 1):
         """ Approximations of Accola's atom group.
@@ -47,22 +55,31 @@ class AtomGroup(cayley.GroupCache):
 
 def one_limit_set(n, N, points_per_walk, seed):
     print(f"    atom.py: limit set computation {n}/{N}")
+
+    # If we can't fork, then we need to compute G in the subprocess. We can't
+    # pass it in as a function parameter due to a bug in mpmath:
+    # https://github.com/mpmath/mpmath/issues/380
+    if not ('G' in locals() or 'G' in globals()):
+        print(f"                                          -- can't see G in subprocess, have to recompute")
+        G = AtomGroup(num_generators, 1.1)
+
     df = G.coloured_limit_set_fast(points_per_walk, seed=seed)
     df.to_csv(f"atom/{n}_{N}_iii.csv")
 
 if __name__ == '__main__':
-    points_per_walk = 10**5
-    number_of_walks = 1024
-    generators = 10000
-    width = 4000
-    add_bead_annotations = True
-
     try:
         os.mkdir('atom')
     except FileExistsError:
         pass
 
-    G = AtomGroup(generators, 1.1)
+    # We want to use the fork method so as to share G across subprocesses
+    # since we can't pickle mpmath objects.
+    try:
+        multiprocessing.set_start_method('fork')
+    except:
+        pass
+
+    G = AtomGroup(num_generators, 1.1)
     seed = G.fixed_points((0,1))[0]
 
     with multiprocessing.Pool(maxtasksperchild=1) as pool:
