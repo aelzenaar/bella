@@ -17,6 +17,7 @@ Run these with plain vanilla `python [filename]`. The utility bash script `gener
  - [beads.py](examples/beads.py) -- draw limit sets of bead groups along arbitrary polygonal paths.
  - [atom.py](examples/atom.py) -- draw the limit set of an approximation of Accola's atom group (an infinitely generated group).
  - [zarrow.py](examples/zarrow.py) -- draw the limit set of Zarrow's non-classical Schottky group (it's Fuchsian, though, so the picture is not that impressive).
+ - [interesting_file.py](examples/interesting_file.py) -- produce an interesting file.
 
 ## Interactive panel scripts
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.
