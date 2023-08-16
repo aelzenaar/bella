@@ -26,18 +26,15 @@ def limit_set_points(r=1,s=3,mure=2, muim=2, logpoints=3):
 
     farey_word = farey.farey_word(r,s)
     splittings = farey.peripheral_splittings(farey_word)
-    left, left_middle = tuple( G.string_to_word(u) for u in splittings[0] )
-    right_middle, right = tuple( G.string_to_word(u) for u in splittings[1] )
-    farey_word = G.string_to_word(farey_word)
-    tr = cayley.simple_tr(G[farey_word])
+    tr = cayley.simple_tr(G.farey_matrix(r,s))
 
     # Compute the two peripheral subgroups using GroupCache.subgroup().
-    P = G.subgroup([G[left], G[left_middle]])
+    P = G.subgroup([ G.string_to_word(u) for u in splittings[0] ])
     small_limit_set1 = P.coloured_limit_set_fast(numpts//2, (P.fixed_points((1,1)))[0])
     small_scatter1 = hv.Scatter(small_limit_set1, 'x','y')\
         .opts(marker = "dot", size = 1,  color = "red", width=800, height=800, data_aspect=1)\
             .redim(x=hv.Dimension('x', range=xbounds),y=hv.Dimension('y', range=ybounds))
-    P = G.subgroup([G[right_middle], G[right]])
+    P = G.subgroup([ G.string_to_word(u) for u in splittings[1] ])
     small_limit_set2 = P.coloured_limit_set_fast(numpts//2, (P.fixed_points((1,1)))[0])
     small_scatter2 = hv.Scatter(small_limit_set2, 'x','y')\
         .opts(marker = "dot", size = 1,  color = "blue", width=800, height=800, data_aspect=1)\
