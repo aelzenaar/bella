@@ -77,6 +77,51 @@ def substitute_generators(w, new_X, new_Y):
             yield from S[c]
     return tuple(walker())
 
+def conjugated_generator(w):
+    """ Check if w is a conjugate of a generator.
+
+        If w is of the form u a u^-1 for A one of X, Y, x, y,
+        then return (a, u); otherwise return None.
+    """
+
+    if len(w) % 2 == 0:
+        return None
+    middle = (len(w) - 1)//2
+    u = w[:middle]
+    a = w[middle]
+    U = w[middle+1:]
+    return (a, u) if u == invert_word(U) else None
+
+def cycle_word(w):
+    """ Generate the cyclic permutations of w. """
+    for n in range(len(w)):
+        yield w[-n:] + w[:-n]
+
+def peripheral_splittings(w, include_conjugates = True):
+    """ Return the possible splittings of w into generators of peripheral subgroups.
+
+        Given a word w, return a list of pairs (u,v) such that u is a conjugate of a generator, v is a
+        word of length 1 (i.e. a tuple containing one generator), and uv is a cyclic permutaiton of w.
+
+        If (a b a^-1, v) is a splitting, then (a^-1 v a, b) is also a splitting and generates
+        a conjugate subgroup. If include_conjugates == False, keep exactly one splitting from each
+        conjugate pair.
+    """
+
+    splittings = []
+
+    for c in cycle_word(w):
+        possible_pair = conjugated_generator(c[:-1])
+        if possible_pair is None:
+            continue
+        b, a = possible_pair
+        u = c[:-1]
+        v = c[-1:]
+        if (not include_conjugates) and ( (invert_word(a) + v + a, (b,)) in splittings ):
+            continue
+        splittings.append((u, v))
+    return splittings
+
 @functools.cache
 def next_neighbour(p,q):
     """ Return the larger Farey neighbour of p/q in the Farey sequence of denominator q.

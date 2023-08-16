@@ -96,3 +96,30 @@ def test_poly():
     assert mp.almosteq(cayley.simple_tr(G.farey_matrix(5,17)), (G.farey_polynomial(5,17))(μ), 1e-90)
     assert mp.almosteq(cayley.simple_tr(G.farey_matrix(5,24)), (G.farey_polynomial(5,24))(μ), 1e-90)
 
+
+def test_peripheral_machinery():
+    assert farey.conjugated_generator(('x',)) == ('x', tuple())
+    assert farey.conjugated_generator(('x','Y','X')) == ('Y', ('x',))
+    assert farey.conjugated_generator(('x','y')) == None
+    assert farey.conjugated_generator(('x','x','x')) == None
+    assert farey.conjugated_generator(('x','y','Y','Y','X')) == ('Y', ('x','y'))
+
+    generator = farey.cycle_word((1,2,3,4))
+    assert next(generator) == (1,2,3,4)
+    assert next(generator) == (4,1,2,3)
+    assert next(generator) == (3,4,1,2)
+    assert next(generator) == (2,3,4,1)
+    with pytest.raises(StopIteration) as e_info:
+        assert next(generator) == (1,2,3,4)
+
+    w = farey.farey_word(1,3)
+    assert w == ('y','X','Y','x','Y','X')
+    splittings = farey.peripheral_splittings(w, include_conjugates = True)
+    assert len(splittings) == 4
+    assert (('y','X','Y','x','Y'),('X',)) in splittings
+    assert (('Y','x','Y','X','y'),('X',)) in splittings
+    assert (('x','Y','X','y','X'),('Y',)) in splittings
+    assert (('X','y','X','Y','x'),('Y',)) in splittings
+
+    splittings2 = farey.peripheral_splittings(w, include_conjugates = False)
+    assert len(splittings2) == 2

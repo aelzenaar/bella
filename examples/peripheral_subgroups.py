@@ -24,12 +24,11 @@ def limit_set_points(r=1,s=3,mure=2, muim=2, logpoints=3):
             .redim(x=hv.Dimension('x', range=xbounds),y=hv.Dimension('y', range=ybounds))
 
 
-    # TODO: dynamically work out what the r/s peripheral word is.
-    farey_word = rotate(G.string_to_word(farey.farey_word(r,s)))
-    left = farey_word[:1]
-    left_middle = farey_word[1:]
-    right_middle = farey_word[0:-1]
-    right = farey_word[-1:]
+    farey_word = farey.farey_word(r,s)
+    splittings = farey.peripheral_splittings(farey_word)
+    left, left_middle = tuple( G.string_to_word(u) for u in splittings[0] )
+    right_middle, right = tuple( G.string_to_word(u) for u in splittings[1] )
+    farey_word = G.string_to_word(farey_word)
     tr = cayley.simple_tr(G[farey_word])
 
     # Compute the two peripheral subgroups using GroupCache.subgroup().
