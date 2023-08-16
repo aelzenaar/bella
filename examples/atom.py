@@ -16,7 +16,7 @@ from holoviews.operation.datashader import datashade
 import dask.dataframe as dd
 import os
 from holoviews.operation.datashader import ResampleOperation2D
-from bella.hvhelp import Circles, pairsToCircles
+from bella.hvhelp import makeCircles, pairsToCircles
 import collections
 
 points_per_walk = 10**5
@@ -134,6 +134,9 @@ if __name__ == '__main__':
     ResampleOperation2D.height=width
     shaded = datashade(scatter, min_alpha=0.5).opts(width=width, height=width, bgcolor="black",xaxis=None,yaxis=None)
 
+    print("    atom.py is starting to save image without beads")
+    hv.save(shaded, "atom_no_beads.png")
+
     if add_bead_annotations:
         print("    atom.py is computing beads")
         # circles which we are inverting across
@@ -143,9 +146,7 @@ if __name__ == '__main__':
         # isometric circles of generators
         print("    atom.py is computing isocircles")
         isocircles = G.coloured_isometric_circles_bfs(1)
-        shaded *= Circles(isocircles, kdims = ['x'], vdims = ['y','radius']).opts(fill_alpha=0, radius='radius', color = 'gray')
-        print("    atom.py has added beads and isometric circles")
-
-    print("    atom.py is starting to save image")
-    hv.save(shaded, "atom.png" if add_bead_annotations else "atom_no_beads.png")
+        shaded *= makeCircles(isocircles, kdims = ['x'], vdims = ['y','radius']).opts(radius='radius', color = 'gray')
+        print("    atom.py has added beads and isometric circles and is starting to save image")
+        hv.save(shaded, "atom.png")
 
