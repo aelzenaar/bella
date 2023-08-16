@@ -19,7 +19,7 @@ def circle_plot(p=2,q=7,mure=2, muim=2, depth=15, logpoints=3):
     β = complex(G.β)
     μ = complex(G.μ)
     df = G.coloured_isometric_circles_mc(depth,10**logpoints)
-    return Circles(df, kdims = ['x'], vdims = ['y','colour','radius']).opts(fill_alpha=0, radius='radius', color = 'colour', width=800, height=800, data_aspect=1, cmap='Category10').redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
+    return Circles(df, kdims = ['x'], vdims = ['y','colour','radius']).opts(radius='radius', color = 'colour', width=800, height=800, data_aspect=1, cmap='Category10').redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
 
 # Now we make a DynamicMap so that the user can modify the parameters.
 plot = hv.DynamicMap(circle_plot, kdims=[hv.Dimension('p', values=[2,3,4,5,6,7,8,9,10,20,1000], default=2),

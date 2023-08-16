@@ -23,6 +23,11 @@ class Circles(Chart):
 
     size = param.Integer()
 
+    def __init__(self, *args, **kwargs):
+        super(Circles, self).__init__(*args, **kwargs)
+        self.opts(fill_alpha = 0, line_width = 0.1)
+
+
 class CirclesPlot(PointPlot):
     _plot_methods = dict(single='circle', batched='circle')
 
@@ -34,4 +39,4 @@ hv.Store.register({Circles: CirclesPlot}, 'bokeh')
 def pairsToCircles(pairs):
     """ This helper function takes a list of pairs (centre,radius) and produces a Circles() chart. """
     df = pd.DataFrame([(float(centre.real), float(centre.imag), float(radius)) for centre, radius in pairs], columns=['x','y','radius'])
-    return Circles(df, kdims = ['x'], vdims = ['y','radius']).opts(fill_alpha=0, radius='radius')
+    return Circles(df, kdims = ['x'], vdims = ['y','radius']).opts(radius='radius')
