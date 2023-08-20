@@ -14,7 +14,7 @@ class NecklaceGroup(cayley.GroupCache):
         self.x = mp.sqrt(1+y**2)
         self.u = mp.sqrt(1+v**2)
         if y*v != 0:
-            self.k = (1+mp.sqrt(1-4*y*v))/(y*v)
+            self.k = (1+mp.sqrt(1-y*v))/(y*v)
         else:
             self.k = 0
 
