@@ -14,4 +14,4 @@ def generator(max_denom = 300):
 
 
 df = pd.DataFrame.from_records(generator(), columns=['r','s','u1','v1','u2','v2'])
-df.to_csv('interesting_file.csv')
+df.to_csv('peripheral_splittings.csv')

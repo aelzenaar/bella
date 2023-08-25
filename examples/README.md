@@ -17,7 +17,7 @@ Run these with plain vanilla `python [filename]`. The utility bash script `gener
  - [beads.py](examples/beads.py) -- draw limit sets of bead groups along arbitrary polygonal paths.
  - [atom.py](examples/atom.py) -- draw the limit set of an approximation of Accola's atom group (an infinitely generated group).
  - [zarrow.py](examples/zarrow.py) -- draw the limit set of Zarrow's non-classical Schottky group (it's Fuchsian, though, so the picture is not that impressive).
- - [interesting_file.py](examples/interesting_file.py) -- produce an interesting file.
+ - [peripheral_splittings.py](examples/peripheral_splittings.py) -- produce a list of decompositions of Farey words into products of parabolics.
 
 ## Interactive panel scripts
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.
@@ -26,10 +26,11 @@ Run these with `panel serve [filename]`. You need the optional `panel` dependenc
  - [elliptic_parabolic_slice.py](examples/elliptic_parabolic_slice.py) -- draw a particular elliptic slice, showing that non-primitive words give subsets of the slice exterior.
  - [riley_limits.py](examples/riley_limits.py) -- dynamically draw limit sets and fixed points of Riley groups.
  - [peripheral_subgroups.py](examples/peripheral_subgroups.py) -- modification of `limits.py` to highlight peripheral subgroups.
- - [indras_necklace.py](examples/indras_necklace.py) -- compute limit sets of the Indra's Necklace groups, Chapter 6 of _Indra's pearls_.
- - [theta_schottky.py](examples/theta_schottky.py) -- compute limit sets of θ-Schottky groups, Project 4.2 of _Indra's pearls_.
- - [grandma.py](examples/grandma.py) -- compute limit sets of Grandma's Recipe groups, Chapter 8 of _Indra's pearls_.
- - [maskit.py](examples/maskit.py) -- compute limit sets of Maskit groups, Chapter 9 of _Indra's pearls_.
+ - [indras_necklace.py](examples/indras_necklace.py) -- draw limit sets of the Indra's Necklace groups, Chapter 6 of _Indra's pearls_.
+ - [theta_schottky.py](examples/theta_schottky.py) -- draw limit sets of θ-Schottky groups, Project 4.2 of _Indra's pearls_.
+ - [grandma.py](examples/grandma.py) -- draw limit sets of Grandma's Recipe groups, Chapter 8 of _Indra's pearls_.
+ - [maskit.py](examples/maskit.py) -- draw limit sets of Maskit groups, Chapter 9 of _Indra's pearls_.
+ - [schottky.py](examples/schottky,py) -- draw limit sets of Schottky groups.
 
 ## Animation examples
 Each of these examples produces the frames for an animation in the subdirectory named the same as the example but without the `.py` suffix. Then
