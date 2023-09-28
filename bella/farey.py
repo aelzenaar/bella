@@ -237,6 +237,33 @@ def farey_polynomial(r,s,trX,trY,trXY):
 
     return constant - farey_polynomial(p1,q1,trX,trY,trXY)*farey_polynomial(p2,q2,trX,trY,trXY) - farey_polynomial(abs(p1-p2),abs(q1-q2),trX,trY,trXY)
 
+def farey_polynomial_classic(r,s,p,q):
+    """ Return the Farey polynomial of slope r/s as a numpy.polynomial.Polynomial object, from generator orders
+
+        The method used is the recursion algorithm.
+
+        Arguments:
+          r,s -- coprime integers representing the slope of the desired polynomial
+          p,q -- respective orders of the two generators
+    """
+
+    θ = mp.pi/p
+    η = mp.pi/q
+
+    # Note that the trace of an elliptic element is 2cos(t), where t is the rotation
+    # angle. Thus the trace of powers of X and Y are as follows:
+    trX = P([2*mp.cos(θ)])
+    trY = P([2*mp.cos(η)])
+
+    # For X^powX Y^powY we need to compute for a bit, but we get the following. The
+    # z coefficient of the trace polynomial might involve a 0/0 if θ or η is a multiple
+    # of pi, so we need to specifically take 1 in those cases.
+    z_coefficient_X_contribution = 1 if mp.sin(θ) == 0 else mp.sin(θ)/mp.sin(θ)
+    z_coefficient_Y_contribution = 1 if mp.sin(η) == 0 else mp.sin(η)/mp.sin(η)
+    trXY = P([ 2*mp.cos(θ + η), z_coefficient_X_contribution*z_coefficient_Y_contribution ])
+
+    return farey_polynomial(r,s,trX,trY,trXY)
+
 @functools.cache
 def riley_polynomial(r,s):
     """ Return the Riley polynomial of slope r/s as a numpy.polynomial.Polynomial object

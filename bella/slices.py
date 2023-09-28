@@ -5,6 +5,18 @@ from mpmath import mp
 from numpy.polynomial import Polynomial as P
 import pandas as pd
 
+class ConvergenceFailedException(Exception):
+    """ Thrown if a polynomial solution fails to converge. """
+    def __init__(self, r, s, poly):
+        self.r = r
+        self.s = s
+        self.poly = poly
+        super().__init__()
+
+    def __str__(self):
+        return f"Convergence failed at r/s = {self.r}/{self.s}, polynomial {self.poly}"
+
+
 def primitive_exterior(θ, η, pow_X, pow_Y, depth, maxsteps=500, extraprec=1000, level_set = -2):
     """ Compute points of the Riley slice exterior on generator angles θ and η.
 
@@ -35,8 +47,11 @@ def primitive_exterior(θ, η, pow_X, pow_Y, depth, maxsteps=500, extraprec=1000
     # We can now compute the Farey polynomials after substitution.
     def _internal_generator():
         for (r,s) in farey.walk_tree_bfs(depth):
-            poly = farey.farey_polynomial(r,s,trX,trY,trXY) - level_set
-            yield from farey.solve_polynomial(poly, maxsteps, extraprec)
+            try:
+                poly = farey.farey_polynomial(r,s,trX,trY,trXY) - level_set
+                yield from farey.solve_polynomial(poly, maxsteps, extraprec)
+            except mp.NoConvergence:
+                raise ConvergenceFailedException(r,s,poly)
 
     return pd.DataFrame.from_records(([float(pt.real), float(pt.imag), pow_X, pow_Y, 'farey', level_set] for pt in _internal_generator()), columns=['x','y','pow_x','pow_y', 'method', 'level_set'])
 
