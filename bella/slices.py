@@ -4,17 +4,20 @@ from . import farey, riley
 from mpmath import mp
 from numpy.polynomial import Polynomial as P
 import pandas as pd
+import math
 
 class ConvergenceFailedException(Exception):
     """ Thrown if a polynomial solution fails to converge. """
-    def __init__(self, r, s, poly):
+    def __init__(self, r, s, m, n, poly):
         self.r = r
         self.s = s
+        self.m = m
+        self.n = n
         self.poly = poly
         super().__init__()
 
     def __str__(self):
-        return f"Convergence failed at r/s = {self.r}/{self.s}, polynomial {self.poly}"
+        return f"Convergence failed at r/s = {self.r}/{self.s}, gen powers {self.m} {self.n}, polynomial {self.poly}"
 
 
 def primitive_exterior(θ, η, pow_X, pow_Y, depth, maxsteps=500, extraprec=1000, level_set = -2):
@@ -51,7 +54,7 @@ def primitive_exterior(θ, η, pow_X, pow_Y, depth, maxsteps=500, extraprec=1000
                 poly = farey.farey_polynomial(r,s,trX,trY,trXY) - level_set
                 yield from farey.solve_polynomial(poly, maxsteps, extraprec)
             except mp.NoConvergence:
-                raise ConvergenceFailedException(r,s,poly)
+                raise ConvergenceFailedException(r,s,pow_X,pow_Y,poly)
 
     return pd.DataFrame.from_records(([float(pt.real), float(pt.imag), pow_X, pow_Y, 'farey', level_set] for pt in _internal_generator()), columns=['x','y','pow_x','pow_y', 'method', 'level_set'])
 
@@ -107,6 +110,7 @@ def elliptic_exterior(p, q, depth, maxsteps=500, extraprec=1000, level_set = -2)
     frames = []
     # If either p or q is infinite, we only want to compute m or n = 1, otherwise m or n is all numbers up to p or q.
     for m in range(1, p if p != mp.inf else 2):
-      for n in range(1, q if q != mp.inf else 2):
-        frames.append(primitive_exterior(θ, η, m, n, depth, maxsteps, extraprec, level_set))
+        for n in range(1, q if q != mp.inf else 2):
+            if math.gcd(m,p) * math.gcd(n,q) == 1:
+                frames.append(primitive_exterior(θ, η, m, n, depth, maxsteps, extraprec, level_set))
     return pd.concat(frames)

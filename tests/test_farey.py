@@ -96,6 +96,9 @@ def test_poly():
     assert mp.almosteq(cayley.simple_tr(G.farey_matrix(5,17)), (G.farey_polynomial(5,17))(μ), 1e-90)
     assert mp.almosteq(cayley.simple_tr(G.farey_matrix(5,24)), (G.farey_polynomial(5,24))(μ), 1e-90)
 
+    # Bug #21
+    traces = riley.traces_from_holonomies(3,6)
+    assert farey.farey_polynomial(2,3,*traces).coef[-1] == -1
 
 def test_peripheral_machinery():
     assert farey.conjugated_generator(('x',)) == ('x', tuple())
