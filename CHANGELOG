@@ -1,5 +1,8 @@
 v0.1.0
  - Bug #21: only compute coprime primitice slices and raise exception with helpful error on failed convergence
+ - Add interactive tool for exploring Riley slices
+ - Bugfix: slices.elliptic_exterior() failed if p or q were infinite
+ - Add Schottky groups to examples
 
 v0.0.99
  - a myriad of new examples
