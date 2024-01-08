@@ -40,7 +40,14 @@ The library is called `bella` (so after installing run `from bella import [modul
 
 
 ### Examples
-Examples are in the [examples/](examples/) directory; see the [readme file](examples/README.md)
+Examples are in the [examples/](examples/) directory; see the [readme file](examples/README.md).
+
+Now included is an up-to-date version of the `graphical_limits.py` software from [riley](https://github.com/aelzenaar/riley/) that allows the user to click-and-drag around to view different
+limit sets around the Riley slices. To run this, run
+
+    panel serve examples/riley_limits.py
+
+and click the link that appears in your terminal.
 
 ## References
 <a id="B88">[B83]</a>

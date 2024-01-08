@@ -105,9 +105,6 @@ def elliptic_exterior(p, q, depth, maxsteps=500, extraprec=1000, level_set = -2)
             * method = "farey".
     """
 
-    print(p)
-    print(p == mp.inf)
-
     θ = mp.pi/p
     η = mp.pi/q
     frames = []
