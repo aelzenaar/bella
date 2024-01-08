@@ -105,12 +105,17 @@ def elliptic_exterior(p, q, depth, maxsteps=500, extraprec=1000, level_set = -2)
             * method = "farey".
     """
 
+    print(p)
+    print(p == mp.inf)
+
     θ = mp.pi/p
     η = mp.pi/q
     frames = []
     # If either p or q is infinite, we only want to compute m or n = 1, otherwise m or n is all numbers up to p or q.
-    for m in range(1, p if p != mp.inf else 2):
-        for n in range(1, q if q != mp.inf else 2):
-            if math.gcd(m,p) * math.gcd(n,q) == 1:
+    top_p_power = p if p != mp.inf else 2
+    top_q_power = q if q != mp.inf else 2
+    for m in range(1, top_p_power):
+        for n in range(1, top_q_power):
+            if math.gcd(m, top_p_power) * math.gcd(n, top_q_power) == 1:
                 frames.append(primitive_exterior(θ, η, m, n, depth, maxsteps, extraprec, level_set))
     return pd.concat(frames)
