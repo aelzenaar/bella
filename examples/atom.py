@@ -125,14 +125,14 @@ if __name__ == '__main__':
         _ = pool.starmap(one_limit_set, [[n+1, number_of_walks, points_per_walk, seed] for n in range(number_of_walks)], chunksize=1 )
     df = dd.read_csv("atom/*.csv")
 
-    print("    atom.py has finished computing the limit set")
-    scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour']).opts(marker='dot', width=width, height=width, size=.1, color='white')\
+    print(f"    atom.py has finished computing the limit set, {len(df)} points")
+    scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour']).opts(marker='dot', frame_width=width, frame_height=width, size=.1, color='black')\
         .redim(x=hv.Dimension('x', range=(-2.5,2.5)),y=hv.Dimension('y', range=(-2.5, 2.5)))
 
     print("    atom.py is starting to shade plot")
     ResampleOperation2D.width=width
     ResampleOperation2D.height=width
-    shaded = datashade(scatter, min_alpha=0.5).opts(width=width, height=width, bgcolor="black",xaxis=None,yaxis=None)
+    shaded = datashade(scatter, min_alpha=1).opts(width=width, height=width, bgcolor="white",xaxis=None,yaxis=None)
 
     print("    atom.py is starting to save image without beads")
     hv.save(shaded, "atom_no_beads.png")

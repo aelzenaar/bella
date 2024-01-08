@@ -9,7 +9,7 @@ import holoviews as hv
 import pandas as pd
 hv.extension('bokeh')
 import panel as pn
-from bella.hvhelp import maleCircles
+from bella.hvhelp import makeCircles
 
 # This subroutine takes a particular ClassicalRileyGroup(p,q,μ) and
 # returns a Circles chart with all of the isometric circles of that group up to depth.
