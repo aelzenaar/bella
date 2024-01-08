@@ -2,6 +2,7 @@
 examples/*.png
 examples/animate_slices/*
 examples/animate_limits_as_slices_vary/*
+examples/atom/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
