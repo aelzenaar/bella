@@ -27,7 +27,7 @@ def limit_set_points(x, y, p, q, p_inf, q_inf, logpoints):
     circles = G.coloured_isometric_circles_bfs(1)
 
     scatter = hv.Scatter(limit_points, kdims = ['x'], vdims = ['y','colour']).opts(marker = "dot", size = 0.1,  color = 'colour', width=800, height=800, data_aspect=1, cmap='Category10')\
-                .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))\
+                .redim(x=hv.Dimension('x', range=(-2,2)),y=hv.Dimension('y', range=(-2, 2)))\
             * makeCircles(circles, kdims = ['x'], vdims = ['y','colour','radius']).opts(radius='radius', color = 'colour', width=800, height=800, data_aspect=1, cmap='Category10', alpha=0.5)\
 
     # If X is elliptic it has a fixed point away from infinity.
@@ -43,6 +43,7 @@ def limit_set_points(x, y, p, q, p_inf, q_inf, logpoints):
     return scatter * hv.Points(y_fixed_points)\
                        .opts(marker = "dot", size = 20,  color = 'green', width=800, height=800, data_aspect=1, cmap='Category10')
 
+# Paint the slice with given parameters
 def slice_points(p, q, p_inf, q_inf, depth):
     print("Recomputing slice")
     p = mp.inf if p_inf else p
@@ -52,18 +53,22 @@ def slice_points(p, q, p_inf, q_inf, depth):
              .opts(marker = "dot", size = 4, width=800, height=800, data_aspect=1, color='black', cmap='kr')\
              .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
 
+# Plot which displays a single dot at x_dot, y_dot
 def clickable_panel(x_dot, y_dot):
     return hv.Points([[x_dot, y_dot]])\
-             .opts(marker = "dot", size = 20,  color = 'black', width=800, height=800, data_aspect=1, cmap='Category10')
+             .opts(marker = "dot", size = 20,  color = 'black', width=800, height=800, data_aspect=1, cmap='Category10')\
+         * hv.Text(x_dot,y_dot+.1, f"{x_dot:.2f} + {y_dot:.2f}i")
 
+# Sliders and displays
 p_slider = pn.widgets.IntSlider(name='order of X', value=3, start=2, end=20)
 p_inf_check = pn.widgets.Checkbox(name='X parabolic (overrides order)')
 q_slider = pn.widgets.IntSlider(name='order of Y', value=4, start=2, end=20)
 q_inf_check = pn.widgets.Checkbox(name='Y parabolic (overrides order)')
-depth_slider = pn.widgets.IntSlider(name='depth to compute slice', value=10, start=1, end=50)
+depth_slider = pn.widgets.IntSlider(name='depth to compute slice', value=15, start=10, end=50)
 points_slider = pn.widgets.IntSlider(name='log10(mumber of points)', value=4, start=2, end=8)
 order_sliders = pn.Column(p_slider, p_inf_check, q_slider, q_inf_check, depth_slider, points_slider)
 
+# Overlay the plots
 slice_plot_blank = hv.Points([])
 stream = hv.streams.Tap(source=slice_plot_blank, x=0, y=2)
 slice_plot = slice_plot_blank *\

@@ -28,6 +28,9 @@ The visualisation software was inspired by the [schottky](https://github.com/dan
 ## Installation
 We use the `setuptools` package for ease of installation. Simply run `pip install .` to install.
 
+*Remark*: sagemath is not a formal dependency, but [some people find](https://stackoverflow.com/questions/67713952/why-does-installing-sagemath-improve-the-performance-of-mpmath-in-python)
+that it improves the performance of mpmath.
+
 ## The software included
 
 ### Python library
