@@ -15,6 +15,7 @@ from bella.hvhelp import makeCircles
 #       i.e. it refers to the first letter in the word indexing that limit point); and
 #   (b) three points, which give the fixed points of the generators X and Y (the fourth fixed point is at infinity).
 def limit_set_points(x, y, p, q, p_inf, q_inf, logpoints):
+    print("Recomputing limit set")
     p = mp.inf if p_inf == True else p
     q = mp.inf if q_inf == True else q
     μ =  x + 1j * y
@@ -42,16 +43,18 @@ def limit_set_points(x, y, p, q, p_inf, q_inf, logpoints):
     return scatter * hv.Points(y_fixed_points)\
                        .opts(marker = "dot", size = 20,  color = 'green', width=800, height=800, data_aspect=1, cmap='Category10')
 
-def slice_points(p, q, p_inf, q_inf, depth, x_dot, y_dot):
+def slice_points(p, q, p_inf, q_inf, depth):
+    print("Recomputing slice")
     p = mp.inf if p_inf else p
     q = mp.inf if q_inf else q
     df = slices.elliptic_exterior(p, q, depth)
     return hv.Scatter(df, kdims=['x'],vdims=['y'])\
              .opts(marker = "dot", size = 4, width=800, height=800, data_aspect=1, color='black', cmap='kr')\
-             .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))\
-         * hv.Points([[x_dot, y_dot]])\
-             .opts(marker = "dot", size = 20,  color = 'black', width=800, height=800, data_aspect=1, cmap='Category10')
+             .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
 
+def clickable_panel(x_dot, y_dot):
+    return hv.Points([[x_dot, y_dot]])\
+             .opts(marker = "dot", size = 20,  color = 'black', width=800, height=800, data_aspect=1, cmap='Category10')
 
 p_slider = pn.widgets.IntSlider(name='order of X', value=3, start=2, end=20)
 p_inf_check = pn.widgets.Checkbox(name='X parabolic (overrides order)')
@@ -63,7 +66,9 @@ order_sliders = pn.Column(p_slider, p_inf_check, q_slider, q_inf_check, depth_sl
 
 slice_plot_blank = hv.Points([])
 stream = hv.streams.Tap(source=slice_plot_blank, x=0, y=2)
-slice_plot = slice_plot_blank * hv.DynamicMap(pn.bind(slice_points, p=p_slider, q=q_slider, p_inf = p_inf_check, q_inf = q_inf_check, depth=depth_slider, x_dot = stream.param.x, y_dot = stream.param.y))
+slice_plot = slice_plot_blank *\
+             hv.DynamicMap(pn.bind(slice_points, p=p_slider, q=q_slider, p_inf = p_inf_check, q_inf = q_inf_check, depth=depth_slider)) *\
+             hv.DynamicMap(pn.bind(clickable_panel, x_dot = stream.param.x, y_dot = stream.param.y))
 limitset_plot = pn.bind(limit_set_points, x = stream.param.x, y = stream.param.y, p = p_slider, q = q_slider, p_inf = p_inf_check, q_inf = q_inf_check, logpoints = points_slider)
 
 app = pn.Row(slice_plot, order_sliders, limitset_plot)
