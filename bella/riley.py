@@ -69,7 +69,7 @@ class RileyGroup(cayley.GroupCache):
     @functools.cache
     def farey_fixed_points(self, r, s):
         """ Return the fixed points of the r/s-Farey matrix in this group. """
-        return self.fixed_points(self.farey_matrix(r,s))
+        return self.fixed_points(self.string_to_word(farey.farey_word(r,s)))
 
     def guess_radial_coordinate(self, ε):
         """ Attempt to guess the Keen-Series coordinate of the group.
