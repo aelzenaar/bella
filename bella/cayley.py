@@ -390,3 +390,86 @@ def generators_from_circle_inversions(circles, lines):
     gens = [twist_product(generating_matrices[i], generating_matrices[i+1]) for i in range(len(generating_matrices)-1)]
 
     return gens
+
+
+def action_on_circles(M oph = True):
+    """ Compute the action of a Mobius transformation on the space of circles.
+       
+        It is possible [Beardon, Theorem 3.2.3] to view the space of circles (including lines)
+        in Euclidean n-space as a projective (n+1)-space, and Mobius transformations act as projectivities
+        in this space. In the case of interest to us (n=2) we have a map PSL(2,C) -> PGL(2,R).
+
+        Circles in R^2 are represented as 4-tuples of coefficients of 4-tuples of coefficients (a0,a1,a2,a3)
+        such that the circle is the locus of z s.t. a0 |z|^2 + (a1,a2).z + a3 = 0.
+
+        This function takes a 2x2 matrix M (over C) and a flag oph to determine whether the map
+        is precomposed with complex conjugation. The return value is a 4x4 matrix representing the action
+        of M on the space of circles just described.
+    """
+
+    # Translate M into an action on the coordinate vector of a circle (c.f. [beardon, Theorem 3.2.3]).
+    # For this we need to split M up into a product of translations, dilatations, rigid motions, and circle inversions.
+    # We take the decomposition listed in [Maskit, I.C.2].
+
+    a = M[0,0]
+    b = M[0,1]
+    c = M[1,0]
+    d = M[1,1]
+
+    def orthogonal_transform(A):
+        return np.block([[np.ones((1,1)), np.zeros(1,2), np.zeros(1,1)], [np.zeros(2,1), A, np.zeros(2,1)], [np.zeros(1,1),np.zeros(1,2),np.ones(1,1)]])
+
+    def dilate(k):
+        return np.diag([1,k,k,k**2])
+
+    def unit_circle_reflect():
+        return np.matrix([[0,0,0,1],[0,1,0,0],[0,0,1,0],[1,0,0,0]])
+
+    def translate(u):
+        return np.matrix([[1,0,0,0],[u.real,1,0,0],[u.imag,0,1,0],[abs(u)**2, 2*u.real, 2*u.imag, 1]])
+
+    def reflect_in_circle(centre, radius):
+        return translate(centre) @ dilate(radius) @ unit_circle_reflect() @ dilate(1/radius) @ translate(-centre)
+
+    # Useful orthogonal 2x2 matrix
+    def rotate(theta):
+        return np.matrix([[np.cos(theta),np.sin(theta)],[-np.sin(theta),np.cos(theta)]])
+    def reflect_in_x():
+        return np.matrix([[1,0],[0,-1]])
+
+    def reflect_in_bisector(p, q):
+        an = np.angle(p-q)
+        theta = an - pi if an > pi else pi - an
+        return translate((p+q)/2) orthogonal_transform(reflect_in_x() @ rotate(-2*theta)) @ translate(-(p+q)/2)
+
+    # If c is 0 we have a Euclidean motion, otherwise we follow I.C.2 of Maskit
+    if c != 0:
+        alpha = -d/c
+        alphaprime = a/c
+        rad = 1/abs(c)
+
+        # q is reflection in the isometric circle, p is reflection in bisector of the line joining the iso circle centres.
+        q = reflect_in_circle(alpha,rad)
+        p = reflect_in_bisector(alpha,alphaprime)
+        
+        # r is rotation with a reflection if oph = False
+        # here theta is the rotation between the isometric circle (alpha, rad) and the circle (alphaprime, rad)
+        base_point_1 = r/abs(alpha-alphaprime) * alpha + (1-r/abs(alpha-alphaprime) * alphaprime
+        pase_point_2 = r/abs(alpha-alphaprime) * alphaprime + (1-r/abs(alpha-alphaprime) * alpha
+        moved_point = M @ np.matrix([base_point_1],[1])
+        moved_point = moved_point[0]/moved_point[1]
+        theta = np.angle( (moved_point - alphaprime) / (base_point_2 - alphaprime) )
+        if oph:
+            r = translate(alphaprime) @ orthogonal_transform(rotate(theta)) @ translate(-alphaprime)
+        else:
+            r = translate(alphaprime) @ orthogonal_transform(rotate(theta)) @ orthogonal_transform(reflect_in_x()) @ translate(-alphaprime)
+
+        return r @ q @ p
+    else:
+        # The transformation is z -> (a/d) z + b/d possibly with a conjugation
+        if oph:
+            return translate(b/d) @ dilate(a/d)
+        if !oph:
+            return translate(b/d) @ dilate(a/d) @ orthogonal_transform(reflect_in_x())
+
+

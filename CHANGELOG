@@ -3,6 +3,7 @@ v0.1.0
  - Add interactive tool for exploring Riley slices
  - Bugfix: slices.elliptic_exterior() failed if p or q were infinite
  - Add Schottky groups to examples
+ - Add function to map circles around instead of points
 
 v0.0.99
  - a myriad of new examples
