@@ -392,9 +392,9 @@ def generators_from_circle_inversions(circles, lines):
     return gens
 
 
-def action_on_circles(M oph = True):
+def action_on_circles(M, oph = True):
     """ Compute the action of a Mobius transformation on the space of circles.
-       
+
         It is possible [Beardon, Theorem 3.2.3] to view the space of circles (including lines)
         in Euclidean n-space as a projective (n+1)-space, and Mobius transformations act as projectivities
         in this space. In the case of interest to us (n=2) we have a map PSL(2,C) -> PGL(2,R).
@@ -440,7 +440,7 @@ def action_on_circles(M oph = True):
     def reflect_in_bisector(p, q):
         an = np.angle(p-q)
         theta = an - pi if an > pi else pi - an
-        return translate((p+q)/2) orthogonal_transform(reflect_in_x() @ rotate(-2*theta)) @ translate(-(p+q)/2)
+        return translate((p+q)/2) @ orthogonal_transform(reflect_in_x() @ rotate(-2*theta)) @ translate(-(p+q)/2)
 
     # If c is 0 we have a Euclidean motion, otherwise we follow I.C.2 of Maskit
     if c != 0:
@@ -451,11 +451,11 @@ def action_on_circles(M oph = True):
         # q is reflection in the isometric circle, p is reflection in bisector of the line joining the iso circle centres.
         q = reflect_in_circle(alpha,rad)
         p = reflect_in_bisector(alpha,alphaprime)
-        
+
         # r is rotation with a reflection if oph = False
         # here theta is the rotation between the isometric circle (alpha, rad) and the circle (alphaprime, rad)
-        base_point_1 = r/abs(alpha-alphaprime) * alpha + (1-r/abs(alpha-alphaprime) * alphaprime
-        pase_point_2 = r/abs(alpha-alphaprime) * alphaprime + (1-r/abs(alpha-alphaprime) * alpha
+        base_point_1 = r/abs(alpha-alphaprime) * alpha + (1-r/abs(alpha-alphaprime)) * alphaprime
+        pase_point_2 = r/abs(alpha-alphaprime) * alphaprime + (1-r/abs(alpha-alphaprime)) * alpha
         moved_point = M @ np.matrix([base_point_1],[1])
         moved_point = moved_point[0]/moved_point[1]
         theta = np.angle( (moved_point - alphaprime) / (base_point_2 - alphaprime) )
@@ -469,7 +469,7 @@ def action_on_circles(M oph = True):
         # The transformation is z -> (a/d) z + b/d possibly with a conjugation
         if oph:
             return translate(b/d) @ dilate(a/d)
-        if !oph:
+        else:
             return translate(b/d) @ dilate(a/d) @ orthogonal_transform(reflect_in_x())
 
 
