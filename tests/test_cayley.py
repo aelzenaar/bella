@@ -1,12 +1,12 @@
 import pytest
 from bella import cayley
-import mpmath as mp
+from mpmath import mp
 
 def matrix_almosteq_up_to_sign(M,N):
     return matrix_almosteq(M,N) or matrix_almosteq(M,-N)
 
-def matrix_almosteq(M,N):
-    return mp.almosteq(M[0,0],N[0,0]) and mp.almosteq(M[1,0],N[1,0]) and mp.almosteq(M[0,1],N[0,1]) and mp.almosteq(M[1,1],N[1,1])\
+def matrix_almosteq(M,N, tol=None):
+    return mp.almosteq(M[0,0],N[0,0],abs_eps=tol) and mp.almosteq(M[1,0],N[1,0],abs_eps=tol) and mp.almosteq(M[0,1],N[0,1],abs_eps=tol) and mp.almosteq(M[1,1],N[1,1],abs_eps=tol)\
       and M.rows == 2 and M.cols == 2 and N.rows == 2 and N.cols == 2
 
 def test_generators_from_circle_inversions():
@@ -86,3 +86,20 @@ def test_simple_matrix_formulae():
     assert cayley.simple_tr(X) == mp.mpf(1) + mp.mpf(0.1)
     assert cayley.simple_det(X) == 1*0.1 - 2*(-3j)
     assert cayley.simple_inv(X) == 1/(cayley.simple_det(X)) * mp.matrix([[0.1,-2],[3j,1]])
+
+def test_normalisation():
+    X = mp.matrix([[1,1],[0,1]])
+    Y = mp.matrix([[1,0],[3+2j,1]])
+    M = mp.matrix([[1, 2+3j], [(2-3j)/13, 2]])
+
+    N1 = cayley.normalise_mobius_pair(X,Y)
+    assert matrix_almosteq(N1, mp.matrix([[1,0],[0,1]]))
+
+    N2 = cayley.normalise_mobius_pair(Y,X)
+    assert matrix_almosteq(X, N2 @ Y @ N2**-1)
+
+    N = cayley.normalise_mobius_pair(M @ X @ M**-1, M @ Y @ M**-1)
+    assert mp.almosteq(cayley.simple_det(N), 1)
+
+    assert matrix_almosteq(N @ M @ X @ M**-1 @ N**-1, X, 1e-50)
+    assert matrix_almosteq(N @ M @ Y @ M**-1 @ N**-1, Y, 1e-50)

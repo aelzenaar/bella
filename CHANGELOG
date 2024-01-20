@@ -4,6 +4,7 @@ v0.1.0
  - Bugfix: slices.elliptic_exterior() failed if p or q were infinite
  - Add Schottky groups to examples
  - Add function to map circles around instead of points
+ - Add function to normalise pairs of Mobius transformations
 
 v0.0.99
  - a myriad of new examples
