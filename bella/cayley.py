@@ -473,3 +473,32 @@ def action_on_circles(M, oph = True):
             return translate(b/d) @ dilate(a/d) @ orthogonal_transform(reflect_in_x())
 
 
+def normalise_mobius_pair(A,B):
+    """ Simultaneously normalise two Mobius transformations.
+
+        Return a matrix M such that MAM^-1 fixes infinity and sends 0->1 and MBM^-1 fixes 0.
+    """
+
+    fp_A = -(A[1,1]-A[0,0])/(2*A[1,0]) if A[1,0] != 0 else mp.inf
+    fp_B = -(B[1,1]-B[0,0])/(2*B[1,0]) if B[1,0] != 0 else mp.inf
+    A_of_fp_B = A @ mp.matrix([[fp_B],[1]]) if fp_B != mp.inf else A @ mp.matrix([[1],[0]])
+    A_of_fp_B = mp.inf if A_of_fp_B[1] == 0 else A_of_fp_B[0]/A_of_fp_B[1]
+
+    # Conjugate A and B with the transformation that sends 0 -> fp_B, 1 -> A_of_fp_B, inf -> fp_A.
+    # C.f. Ahlfors I.3.2.
+
+    z2 = fp_B
+    z3 = A_of_fp_B
+    z4 = fp_A
+
+    if z2 == mp.inf:
+        M = mp.matrix([[0, z3-z4], [1, -z4]])
+    elif z3 == mp.inf:
+        M = mp.matrix([[1, -z2], [1, -z4]])
+    elif fp_B == mp.inf:
+        M = mp.matrix([[1, -z2], [0, z3-z2]])
+    else:
+        M = (z3-z4)/(z3-z2) * mp.matrix([[1, -z2], [1, -z4]])
+
+    return M / mp.sqrt(simple_det(M))
+
