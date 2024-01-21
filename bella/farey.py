@@ -92,6 +92,16 @@ def conjugated_generator(w):
     U = w[middle+1:]
     return (a, u) if u == invert_word(U) else None
 
+def simplify_word(w):
+    """ Reduce a word in X. Y, x, y to normal form.
+    """
+    w = ''.join(w)
+    last = ""
+    while last != w:
+        last = w
+        w = last.replace("Xx","").replace("Yy","").replace("xX","").replace("yY","")
+    return tuple(w)
+
 def cycle_word(w):
     """ Generate the cyclic permutations of w. """
     for n in range(len(w)):
