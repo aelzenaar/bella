@@ -454,29 +454,31 @@ def action_on_circles(M, oph = True):
     d = M[1,1]
 
     def orthogonal_transform(A):
-        return np.block([[np.ones((1,1)), np.zeros(1,2), np.zeros(1,1)], [np.zeros(2,1), A, np.zeros(2,1)], [np.zeros(1,1),np.zeros(1,2),np.ones(1,1)]])
+        B = mp.eye(4)
+        B[1:3,1:3] = A
+        return B
 
     def dilate(k):
-        return np.diag([1,k,k,k**2])
+        return mp.diag([1,k,k,k**2])
 
     def unit_circle_reflect():
-        return np.matrix([[0,0,0,1],[0,1,0,0],[0,0,1,0],[1,0,0,0]])
+        return mp.matrix([[0,0,0,1],[0,1,0,0],[0,0,1,0],[1,0,0,0]])
 
     def translate(u):
-        return np.matrix([[1,0,0,0],[u.real,1,0,0],[u.imag,0,1,0],[abs(u)**2, 2*u.real, 2*u.imag, 1]])
+        return mp.matrix([[1,0,0,0],[u.real,1,0,0],[u.imag,0,1,0],[abs(u)**2, 2*u.real, 2*u.imag, 1]])
 
     def reflect_in_circle(centre, radius):
         return translate(centre) @ dilate(radius) @ unit_circle_reflect() @ dilate(1/radius) @ translate(-centre)
 
     # Useful orthogonal 2x2 matrix
     def rotate(theta):
-        return np.matrix([[np.cos(theta),np.sin(theta)],[-np.sin(theta),np.cos(theta)]])
+        return mp.matrix([[mp.cos(theta),mp.sin(theta)],[-mp.sin(theta),mp.cos(theta)]])
     def reflect_in_x():
-        return np.matrix([[1,0],[0,-1]])
+        return mp.matrix([[1,0],[0,-1]])
 
     def reflect_in_bisector(p, q):
-        an = np.angle(p-q)
-        theta = an - pi if an > pi else pi - an
+        an = mp.arg(p-q)
+        theta = mp.fabs(an - mp.pi)
         return translate((p+q)/2) @ orthogonal_transform(reflect_in_x() @ rotate(-2*theta)) @ translate(-(p+q)/2)
 
     # If c is 0 we have a Euclidean motion, otherwise we follow I.C.2 of Maskit
@@ -487,15 +489,19 @@ def action_on_circles(M, oph = True):
 
         # q is reflection in the isometric circle, p is reflection in bisector of the line joining the iso circle centres.
         q = reflect_in_circle(alpha,rad)
-        p = reflect_in_bisector(alpha,alphaprime)
+        p = reflect_in_bisector(alpha,alphaprime) if alpha != alphaprime else mp.eye(4)
 
         # r is rotation with a reflection if oph = False
         # here theta is the rotation between the isometric circle (alpha, rad) and the circle (alphaprime, rad)
-        base_point_1 = r/abs(alpha-alphaprime) * alpha + (1-r/abs(alpha-alphaprime)) * alphaprime
-        pase_point_2 = r/abs(alpha-alphaprime) * alphaprime + (1-r/abs(alpha-alphaprime)) * alpha
-        moved_point = M @ np.matrix([base_point_1],[1])
+        if alpha != alphaprime:
+            base_point_1 = rad/abs(alpha-alphaprime) * alpha + (1-rad/abs(alpha-alphaprime)) * alphaprime
+            pase_point_2 = rad/abs(alpha-alphaprime) * alphaprime + (1-rad/abs(alpha-alphaprime)) * alpha
+        else:
+            base_point_1 = alpha + rad
+            base_point_2 = base_point_1
+        moved_point = M @ mp.matrix([base_point_1,1])
         moved_point = moved_point[0]/moved_point[1]
-        theta = np.angle( (moved_point - alphaprime) / (base_point_2 - alphaprime) )
+        theta = mp.arg( (moved_point - alphaprime) / (base_point_2 - alphaprime) )
         if oph:
             r = translate(alphaprime) @ orthogonal_transform(rotate(theta)) @ translate(-alphaprime)
         else:
