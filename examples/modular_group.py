@@ -18,6 +18,6 @@ numpoints = 100
 G = ModularGroup()
 df = G.coloured_isometric_circles_mc(depth,numpoints)
 chart = Circles(df, kdims = ['x'], vdims = ['y','colour','radius'])\
-          .opts(radius='radius', color = 'colour', width=800, height=800, data_aspect=1, cmap='Set1')\
+          .opts(radius='radius', color = 'colour', frame_width=800, frame_height=800, data_aspect=1, cmap='Set1')\
             .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
 hv.save(chart, "modular_group.png")

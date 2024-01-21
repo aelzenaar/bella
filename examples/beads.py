@@ -64,7 +64,7 @@ def write_limit_set(G,filename):
     # compute the limit set
     df = G.coloured_limit_set_fast(num_points, seed=seed)
     scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
-                .opts(marker = "dot", size = 0.1,  color = 'colour', width=1600, height=1600, data_aspect=1, cmap='Set1')
+                .opts(marker = "dot", size = 0.1,  color = 'colour', frame_width=1600, frame_height=1600, data_aspect=1, cmap='Set1')
 
 
     #isometric circles of generators

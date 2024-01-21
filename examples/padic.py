@@ -14,7 +14,7 @@ from fractions import Fraction as Q
 
 def padic_limit_set(G, filename, prime, depth = 15, logwords=4):
     df = G.coloured_limit_set_mc(depth, 10**logwords, 0, lambda z: chistyakov.Υ(0, 0.5*chistyakov.s0(prime), z, 100))
-    scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour']).opts(marker = "dot", size = .1, width=1000, height=1000, data_aspect=1, color='colour', cmap='Set1')\
+    scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour']).opts(marker = "dot", size = .1, frame_width=1000, frame_height=1000, data_aspect=1, color='colour', cmap='Set1')\
         .redim(x=hv.Dimension('x', range=(-2,2)),y=hv.Dimension('y', range=(-2, 2)))
     hv.save(scatter, filename)
 

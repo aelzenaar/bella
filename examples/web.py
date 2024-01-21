@@ -45,7 +45,7 @@ G = WebGroup()
 seed = G.fixed_points((0,1))[0]
 df = G.coloured_limit_set_fast(num_points, seed=seed)
 scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
-            .opts(marker = "dot", size = 0.1,  color = 'colour', width=2000, height=2000, data_aspect=1, cmap='Set1')
+            .opts(marker = "dot", size = 0.1,  color = 'colour', frame_width=2000, frame_height=2000, data_aspect=1, cmap='Set1')
 
 # the four circles C_1,...,C_4
 fourdiscs = [hv.Ellipse(centre.real, centre.imag, float(mp.sqrt(2))).opts(color='gray') for centre in [1, 1j, -1, -1j]]

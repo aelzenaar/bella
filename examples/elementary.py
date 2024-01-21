@@ -26,7 +26,7 @@ G = IncompleteGroup(1, 1+1j) #<- if you modify this so that the parallelogram ha
 seed = 0
 df = G.coloured_limit_set_fast(num_points, seed=seed)
 scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
-            .opts(marker = "dot", size = 4,  color = 'colour', width=800, height=800, data_aspect=1, cmap='Set1')\
+            .opts(marker = "dot", size = 4,  color = 'colour', frame_width=800, frame_height=800, data_aspect=1, cmap='Set1')\
               .redim(x=hv.Dimension('x', range=(-8,8)),y=hv.Dimension('y', range=(-8, 8)))
 
 #isometric circles of generators make no sense here since everything has a fixed point at infinity. We plot the four sizes of the fundamental

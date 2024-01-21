@@ -23,6 +23,6 @@ G = BoundGroup(8)
 seed = G.fixed_points((0,1))[0]
 df = G.coloured_limit_set_fast(num_points, seed=seed)
 scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
-            .opts(marker = "dot", size = 1,  color = 'colour', width=400, height=1500, data_aspect=1, cmap='Set1')\
+            .opts(marker = "dot", size = 1,  color = 'colour', frame_width=400, frame_height=1500, data_aspect=1, cmap='Set1')\
               .redim(x=hv.Dimension('x', range=(-2,2)),y=hv.Dimension('y', range=(-1, 14)))
 hv.save(scatter, "connected_component_bound.png")
