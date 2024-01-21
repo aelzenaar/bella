@@ -103,3 +103,9 @@ def test_normalisation():
 
     assert matrix_almosteq(N @ M @ X @ M**-1 @ N**-1, X, 1e-50)
     assert matrix_almosteq(N @ M @ Y @ M**-1 @ N**-1, Y, 1e-50)
+
+def test_circle_space():
+    unit_circle = cayley.circle_in_circle_space(0+0j, 1)
+    assert unit_circle/unit_circle[0] == mp.matrix([1, 0, 0, 1])
+
+    assert cayley.circle_space_to_circle_or_line(unit_circle) == [0, 1, False]

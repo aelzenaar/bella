@@ -376,6 +376,59 @@ def generators_from_circle_inversions(circles, lines):
     return gens
 
 
+class BadlyConditionedPointsException(Exception):
+    """ Thrown if given parameters do not define a Mobius transformation or another structure given by "sufficiently general" points. """
+    pass
+
+def line_in_circle_space(w, z):
+    """ Give the coordinates in circle space of the line through w and z.
+
+        See action_on_circles for a description.
+    """
+
+    # Transform into the form (a.z) = t.
+
+    if w == z:
+        raise BadlyConditionedPointsException(f"Equal points do not define a line: f{w}, f{z}")
+
+    if w.real == z.real:
+        a = 1 + 0j
+    else:
+        a = (w.imag - z.imag)/(z.real - w.real) + 1j
+
+    t = w.real * a.real + w.imag * a.imag
+
+    return mp.matrix([0,a.real/2,a.imag/2,t])
+
+def circle_in_circle_space(z, r):
+    """ Give the coordinates in circle space of the circle with centre z and radius r.
+
+        See action_on_circles for a description.
+    """
+    return mp.matrix([1,z.real,z.imag,z.real**2+z.imag**2+r**2])
+
+def circle_space_to_circle_or_line(p):
+    """ Map from circle space (P^3) to Euclidean space.
+
+        Given a point p in R^4, convert this point to a circle on the Riemann sphere.
+        If this circle passes through infinity (i.e. is a line), return a list [w,z, True] where w
+        and z are two points on the line. If the circle is a proper circle, return [z, r, False]
+        where z is the centre and r (a real number) is the radius.
+    """
+    if p[0] == 0:
+        a = 2*p[1] + 2*p[2]*1j
+        t = p[3]
+        if t == 0:
+            return [a*1j, a*-1j, True]
+        else:
+            if a.real == 0:
+                return [1 + (t/a.imag)*1j, -1 + (t/a.imag)*1j, True]
+            else:
+                return [ (t - a.imag)/a.real + 1j,   (t + a.imag)/a.real - 1j]
+    else:
+        p = p/p[0]
+        return [ p[1] + p[2]*1j, mp.sqrt(p[3] - p[1]**2 - p[2]**2), False ] # Completing the square.
+
 def action_on_circles(M, oph = True):
     """ Compute the action of a Mobius transformation on the space of circles.
 
@@ -384,7 +437,7 @@ def action_on_circles(M, oph = True):
         in this space. In the case of interest to us (n=2) we have a map PSL(2,C) -> PGL(2,R).
 
         Circles in R^2 are represented as 4-tuples of coefficients of 4-tuples of coefficients (a0,a1,a2,a3)
-        such that the circle is the locus of z s.t. a0 |z|^2 + (a1,a2).z + a3 = 0.
+        such that the circle is the locus of z s.t. a0 |z|^2 - 2(a1,a2).z + a3 = 0.
 
         This function takes a 2x2 matrix M (over C) and a flag oph to determine whether the map
         is precomposed with complex conjugation. The return value is a 4x4 matrix representing the action
@@ -456,10 +509,6 @@ def action_on_circles(M, oph = True):
         else:
             return translate(b/d) @ dilate(a/d) @ orthogonal_transform(reflect_in_x())
 
-class BadlyConditionedMobiusTransformationException(Exception):
-    """ Thrown if given parameters do not define a Mobius transformation. """
-    pass
-
 def normalise_mobius_pair(A,B):
     """ Simultaneously normalise two Mobius transformations.
 
@@ -485,7 +534,7 @@ def normalise_mobius_pair(A,B):
     z4 = fp_A
 
     if z2 == z3 or z3 == z4 or z4 == z2:
-        raise BadlyConditionedMobiusTransformationException(f"Fixed point of A = {fp_A}, fixed point of B = {fp_B}, A(fixed point of B) = {A_of_fp_B}")
+        raise BadlyConditionedPointsException(f"Fixed point of A = {fp_A}, fixed point of B = {fp_B}, A(fixed point of B) = {A_of_fp_B}")
 
     if z2 == mp.inf:
         M = mp.matrix([[1, -z3], [1, -z4]])

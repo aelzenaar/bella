@@ -3,8 +3,10 @@ v0.1.0
  - Add interactive tool for exploring Riley slices
  - Bugfix: slices.elliptic_exterior() failed if p or q were infinite
  - Add Schottky groups to examples
- - Add function to map circles around instead of points
- - Add function to normalise pairs of Mobius transformations
+ - Add miscellaneous utility functions to Cayley that work directly with Mobius transformations:
+   - action_on_circles(), which computes the action of Mobius transformations on the projective space of circles
+   - three functions to convert usual parameters for circles and lines into the corresponding points of the projective space of circles
+   - normalise_mobius_pair(), which normalises a pair of Mobius transformations to fix 0, infinity, and map 0->1.
 
 v0.0.99
  - a myriad of new examples
