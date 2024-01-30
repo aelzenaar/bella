@@ -18,6 +18,7 @@ Run these with plain vanilla `python [filename]`. The utility bash script `gener
  - [atom.py](examples/atom.py) -- draw the limit set of an approximation of Accola's atom group (an infinitely generated group).
  - [zarrow.py](examples/zarrow.py) -- draw the limit set of Zarrow's non-classical Schottky group (this group is not Fuchsian but does preserve $\mathbb{R}$).
  - [peripheral_splittings.py](examples/peripheral_splittings.py) -- produce a list of decompositions of Farey words into products of parabolics.
+ - [accidental_parabolic.py](examples/accidental_parabolic.py) -- draw the limit set of a B-group with an accidental parabolic.
 
 ## Interactive panel scripts
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.
