@@ -324,7 +324,85 @@ def euclidean_algorithm(a,b):
     Q = []
     while R[-1] != 0:
         r = R[-2] % R[-1]
-        q = (R[-2] - r)/R[-1]
+        q = (R[-2] - r)//R[-1]
         R.append(r)
         Q.append(q)
     return (Q,R)
+
+
+def continued_fraction_rational(a, b):
+    """ Produce a continued fraction representation for the rational a/b.
+
+        @see continued_fraction() for irrational numbers.
+
+        Return a list [q_0, q_1, ..., q_n, 1] of positive integers such that
+        q_0 + 1/(q_1 + 1/(q_2 + 1/(...))) = a/b.
+
+        If a/b < 0 then q_0 is negative. Otherwise all q_k are nonnegative.
+    """
+    if(a == 0):
+        return [0]
+    if(b == 0):
+        return [0,0]
+
+    Q,_ = euclidean_algorithm(a,b)
+    if(Q[-1] != 1):
+        Q[-1] = Q[-1] - 1
+        Q.append(1)
+    return Q
+
+def continued_fraction(x, max_length = 10, eps = 1e-10):
+    """ Produce a continued fraction representation for x.
+
+        @see continued_fraction_rational if x is rational.
+
+        Return a list [q_0, q_1, ..., q_n, 1] of positive integers such that
+        q_0 + 1/(q_1 + 1/(q_2 + 1/(...))) is the initial part of a continued
+        fraction representation for x.
+
+        If x < 0 then q_0 is negative. Otherwise all q_k are nonnegative.
+
+        The list returned will be length at most max_length, but might be shorter.
+    """
+    Q = []
+    while max_length > 0:
+        max_length -= 1
+        Q.append(int(mp.floor(x)))
+        f = mp.chop(x - Q[-1], tol=eps)
+        if f == 0:
+            break
+        x = 1/f
+
+    if Q == []:
+        return [0]
+    else:
+        return Q
+
+
+def collapse_continued_fraction(expansion):
+    """ Compute the fraction from a continued fraction expansion.
+
+        Given a continued fraction [q_1,...,q_n], compute a/b = 1/(q_1 + 1/(...))
+        and return the pair (a,b). It is the responsibility of the caller to understand
+        if the fraction is supposed to represent a rational outside the interval [0,1]
+        and to take the reciprocal.
+
+        Therefore, a/b = 1/(collapse_continued_fraction(continued_fraction_rational(a/b))).
+    """
+
+    if(expansion == []):
+        return (0,1)
+    if(expansion == [0]):
+        return mp.inf
+    if(len(expansion) == 1):
+        return (1,expansion[0])
+    if(expansion == [1,1]):
+        return (1,2)
+    if(expansion[-1] == 1):
+        p1, q1 = collapse_continued_fraction(expansion[:-1])
+        p2, q2 = collapse_continued_fraction(expansion[:-2])
+        return (p1 + p2, q1 + q2)
+    expansion[-1] = expansion[-1]-1
+    expansion = expansion + [1]
+    return collapse_continued_fraction(expansion)
+

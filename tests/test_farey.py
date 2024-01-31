@@ -141,3 +141,11 @@ def test_fractions():
     _,R = farey.euclidean_algorithm(-10,5)
     assert R[-1] == 0 and (R[-2] == 5 or R[-2] == -5)
 
+    assert farey.continued_fraction_rational(649,200) == [3,4,12,3,1]
+    assert farey.continued_fraction(649/200) == [3,4,12,3,1]
+    assert farey.collapse_continued_fraction([3,4,12,3,1]) == (200,649)
+
+    assert farey.continued_fraction(mp.e) == [2, 1, 2, 1, 1, 4, 1, 1, 6, 1]
+    assert farey.continued_fraction(-mp.pi) == [-4, 1, 6, 15, 1, 292, 1, 1, 1, 2]
+
+
