@@ -298,3 +298,33 @@ def riley_polynomial(r,s):
 
     return p
 
+
+def euclidean_algorithm(a,b):
+    """ Run the Euclidean algorithm for a/b.
+
+        If a and b are positive integers, return a pair of lists Q, R of integers such that:
+          * R[0] = a
+          * R[1] = b
+          * 0 <= R[k-1] < R[k] for all k
+          * R[k-2] = Q[k-2] R[k-1] + R[k]
+          * R[-2] = gcd(a,b)
+          * R[-1] = 0.
+
+        If a or b is negative, the sign of the remainders is not guaranteed: R[-2] is still the gcd but up
+        to a possible factor of -1.
+
+        If a or b is zero, the gcd returned is zero.
+    """
+
+    if a*b == 0:
+        return ([0,0],[a,b,0,0])
+
+
+    R = [a,b]
+    Q = []
+    while R[-1] != 0:
+        r = R[-2] % R[-1]
+        q = (R[-2] - r)/R[-1]
+        R.append(r)
+        Q.append(q)
+    return (Q,R)

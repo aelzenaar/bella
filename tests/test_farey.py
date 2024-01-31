@@ -126,3 +126,18 @@ def test_peripheral_machinery():
 
     splittings2 = farey.peripheral_splittings(w, include_conjugates = False)
     assert len(splittings2) == 2
+
+def test_fractions():
+    _,R = farey.euclidean_algorithm(2,3)
+    assert R[-1] == 0 and R[-2] == 1
+
+    _,R = farey.euclidean_algorithm(2,2)
+    assert R[-1] == 0 and R[-2] == 2
+
+    Q,R = farey.euclidean_algorithm(12,3)
+    assert R[-1] == 0 and R[-2] == 3
+    print(len(Q),len(R))
+
+    _,R = farey.euclidean_algorithm(-10,5)
+    assert R[-1] == 0 and (R[-2] == 5 or R[-2] == -5)
+
