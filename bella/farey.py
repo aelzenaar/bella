@@ -211,7 +211,6 @@ def solve_polynomial(np_poly, maxsteps=500, extraprec=1000):
 
         Parameters:
         maxsteps, extraprec -- passed directly to mpmath.polyroots().
-        level_set -- level set of the Farey polynomials to compute (-2 for cusp points).
     """
 
     # It is significantly faster (on the order of 20sec vs 110sec) to do a rough computation first using numpy
