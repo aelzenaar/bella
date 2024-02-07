@@ -1,6 +1,7 @@
 v0.1.1
  - Add accidental parabolic example
  - Add continued fractions algorithms
+ - Compute Lyndon-Ullman bounds in the Riley slice explorer
 
 v0.1.0
  - Bug #21: only compute coprime primitice slices and raise exception with helpful error on failed convergence

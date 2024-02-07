@@ -6,7 +6,7 @@ import holoviews as hv
 import pandas as pd
 hv.extension('bokeh')
 import panel as pn
-from bella.hvhelp import makeCircles
+from bella.hvhelp import makeCircles,pairsToCircles
 
 # This subroutine takes a particular ClassicalRileyGroup(p,q,μ) and
 # returns an overlay of:
@@ -49,9 +49,18 @@ def slice_points(p, q, p_inf, q_inf, depth):
     p = mp.inf if p_inf else p
     q = mp.inf if q_inf else q
     df = slices.elliptic_exterior(p, q, depth)
+
+    Q = 1+1j*mp.tan(mp.pi/p) if not p_inf else 1
+    Qp = -1+1j*mp.tan(mp.pi/q) if not p_inf else -1
+    β = mp.exp(mp.pi*1j/q) if not q_inf else 1
+    centres  = [-Q * (1-β**2)/β, -Qp * (1-β**2)/β, (1/β)*Q - β*Qp, (1/β)*Qp - β*Q]
+    radius = 2/mp.cos(mp.pi/p) if not p_inf else 2
+
+
     return hv.Scatter(df, kdims=['x'],vdims=['y'])\
              .opts(marker = "dot", size = 4, width=800, height=800, data_aspect=1, color='black', cmap='kr')\
-             .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
+             .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))\
+         * pairsToCircles([(z, radius) for z in centres])
 
 # Plot which displays a single dot at x_dot, y_dot
 def clickable_panel(x_dot, y_dot):
