@@ -21,7 +21,7 @@ for name, val in [
         ("pi", 1/mp.pi)
     ]:
 
-    fraction = farey.continued_fraction(val, max_length = 15)[1:]
+    fraction = farey.continued_fraction(val, max_length = 16)[1:]
 
     for n in range(1,len(fraction)+1):
         expansion = fraction[:n]
@@ -34,11 +34,8 @@ for name, val in [
           fn = f'cusp_approx_{name}_{n}'
           points = [[float(z.real), float(z.imag)] for z in roots]
 
-          best_root = max([z for z in points if z[1] >= 0], key = lambda p: p[0]**2 + p[1]**2)
-
           scatter = hv.Points(points).opts(marker = "dot", size = 10,  color = 'black')\
-                      .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-2, 2)))\
-                  * hv.Points([best_root]).opts(marker = "dot", size=20, color="red")
+                      .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-2, 2)))
           hv.save(scatter.opts(frame_width=800, frame_height=400, data_aspect=1), fn, fmt='png')
         except (LinAlgError, mp.NoConvergence):
           print(" * Denominator too large to solve", file=sys.stderr)
