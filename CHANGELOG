@@ -1,5 +1,5 @@
 v0.1.1
- - Add accidental parabolic example
+ - Add accidental parabolic example and an example of (1;2)-compression body groups.
  - Add continued fractions algorithms
  - Compute Lyndon-Ullman bounds in the Riley slice explorer
 

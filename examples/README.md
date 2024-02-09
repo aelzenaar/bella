@@ -33,6 +33,7 @@ Run these with `panel serve [filename]`. You need the optional `panel` dependenc
  - [grandma.py](grandma.py) -- draw limit sets of Grandma's Recipe groups, Chapter 8 of _Indra's pearls_.
  - [maskit.py](maskit.py) -- draw limit sets of Maskit groups, Chapter 9 of _Indra's pearls_.
  - [schottky.py](schottky,py) -- draw limit sets of Schottky groups.
+ - [lackenby_purcell.py](lackenby_purcell.py) -- draw limit sets of groups with one rank 2 cusp and an additional loxodromic.
 
 ## Animation examples
 Each of these examples produces the frames for an animation in the subdirectory named the same as the example but without the `.py` suffix. Then
