@@ -3,7 +3,8 @@
 ## Basic examples
 Run these with plain vanilla `python [filename]`. The utility bash script `generate_zoo.sh` will run all of the examples that just produce PNG files.
  - [cayley_graph_speed.py](cayley_graph_speed.py) -- demonstrate that walking the Cayley group of a non-free group incurs a massive speed overhead.
- - [parabolic_slice_hidef.py](parabolic_slice_hidef.py) -- draw a PNG file containing a high-res picture of the parabolic Riley slice to high definition.
+ - [parabolic_slice_hidef.py](parabolic_slice_hidef.py) -- draw a PNG file containing a high-res picture of the parabolic Riley slice.
+ - [parabolic_slice_pleating_rays.py](parabolic_slice_pleating_rays.py) -- plot rational pleating rays around the parabolic Riley slice.
  - [apollonian_gasket.py](apollonian_gasket.py) -- draw a PNG file containing a picture of the Apollonian Gasket.
  - [padic.py](padic.py) -- demonstrate that it is possible to use other number types (e.g. $` p `$-adic numbers) as long as you are sufficiently masochistic.
  - [farey.py](farey.py) -- produce TeX tables of Farey and Riley words and polynomials.

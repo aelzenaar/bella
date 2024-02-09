@@ -13,6 +13,13 @@ class FractionOutOfRangeException(Exception):
     pass
 
 
+##############################################
+###
+### Farey words
+###
+##############################################
+
+
 @functools.cache
 def farey_word(r,s):
     """ Compute the Farey word of slope r/s using the cutting sequence definition.
@@ -132,6 +139,14 @@ def peripheral_splittings(w, include_conjugates = True):
         splittings.append((u, v))
     return splittings
 
+
+
+##############################################
+###
+### Farey sequences and misc functions on fractions
+###
+##############################################
+
 @functools.cache
 def next_neighbour(p,q):
     """ Return the larger Farey neighbour of p/q in the Farey sequence of denominator q.
@@ -201,6 +216,14 @@ def walk_tree_bfs(end = None):
             if math.gcd(r,s) == 1:
                 yield (r,s)
 
+
+
+
+##############################################
+###
+### Farey and Riley polynomials
+###
+##############################################
 
 def numpy_to_mpmath_polynomial(np_poly):
     """ Convert a numpy polynomial to a polynomial that mpmath will accept. """
@@ -296,6 +319,15 @@ def riley_polynomial(r,s):
 
 
     return p
+
+
+
+
+##############################################
+###
+### Continued fraction approximations
+###
+##############################################
 
 
 def euclidean_algorithm(a,b):
@@ -405,3 +437,56 @@ def collapse_continued_fraction(expansion):
     expansion = expansion + [1]
     return collapse_continued_fraction(expansion)
 
+
+
+
+##############################################
+###
+### Methods to compute rational pleating rays
+###
+##############################################
+
+def newtons_method(f, z0, df = None, tol_re = 1e-10, tol_im = 1e-20):
+    """ Run Newton's method starting at z0 until reaching the given tolerance.
+
+        Real and imaginary tolerances can be given separately.
+    """
+
+    if df == None:
+        df = f.deriv()
+
+    w0 = f(z0)
+    while mp.fabs(w0.real) > tol_re or mp.fabs(w0.imag) > tol_im:
+        z0 = z0 - w0/df(z0)
+        w0 = f(z0)
+
+    return z0
+
+def real_point_on_circle(f, R, angle, tol=None):
+    """ Find the point on the circle |z| = R where Im f(z) = 0 with arg closest to angle.
+    """
+    actual_function = lambda theta: ( f(R*mp.exp(1j * theta)) ).imag
+    return R*mp.exp(1j*mp.findroot(actual_function, angle, tol=tol))
+
+def approximate_pleating_ray(r, s, p, q, R = 20, N = 10):
+    """ Return points on the r/s pleating ray of the (p,q)-Riley slice.
+
+        We will return N+1 points [z0,...,zN] where z0 is a point on the r/s pleating ray
+        with |z0| = R and where zN is the r/s cusp point.
+
+        Arguments:
+          r,s -- coprime integers representing the slope
+          p,q -- orders of the group generators, so we are working in R^{p,q}
+          R -- radius (in CC) to start approximating at
+          N -- number of points to compute (minus 1)
+    """
+    f = farey_polynomial_classic(r,s,p,q)
+    df = f.deriv()
+    z = [real_point_on_circle(f, R, mp.pi*r/s)]
+    L = [f(z[0])]
+    epsilon = mp.fabs(L[0] + 2)/N
+    for i in range(1,N+1):
+        L.append( (1 - i/N) * L[-1] - 2*(i/N) )
+        z.append(newtons_method(f - L[-1], z[-1], df))
+
+    return z

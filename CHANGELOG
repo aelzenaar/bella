@@ -1,6 +1,7 @@
 v0.1.1
- - Add accidental parabolic example and an example of (1;2)-compression body groups.
  - Add continued fractions algorithms
+ - Add algorithms to compute rational pleating rays, see examples/parabolic_slice_pleating_rays.py.
+ - Add accidental parabolic example and an example of (1;2)-compression body groups.
  - Compute Lyndon-Ullman bounds in the Riley slice explorer
 
 v0.1.0
