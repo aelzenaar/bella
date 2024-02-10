@@ -140,11 +140,8 @@ def standard_peripheral_generators(r,s):
         U = simplify_word(conjugator + cycled_word[:-1] + invert_word(conjugator))
         V = simplify_word(conjugator + cycled_word[-1:] + invert_word(conjugator))
     else:
-        m = s-1
-        conjugator = word[:m]
-        cycled_word = simplify_word(invert_word(conjugator) + word + conjugator)
-        U = simplify_word(conjugator + cycled_word[:1] + invert_word(conjugator))
-        V = simplify_word(conjugator + cycled_word[1:] + invert_word(conjugator))
+        U = word[:1]
+        V = word[1:]
 
     return [(A,B),(U,V)]
 

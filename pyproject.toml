@@ -1,6 +1,6 @@
 [project]
 name = "bella"
-version = "0.1.0"
+version = "0.1.1"
 authors = [{name="Alex Elzenaar",email="aelz176@aucklanduni.ac.nz"}]
 description = "A computational package for discrete matrix groups of low rank."
 readme = "README.md"
