@@ -127,19 +127,31 @@ def test_peripheral_machinery():
     splittings2 = farey.peripheral_splittings(w, include_conjugates = False)
     assert len(splittings2) == 2
 
+    farey_word = farey.farey_word(3,4)
+    splittings = farey.standard_peripheral_generators(3,4)
+    for i in range(2):
+        for j in range(2):
+            assert farey.conjugated_generator(splittings[i][j]) != None
+    for i in range(2):
+        assert farey.simplify_word(splittings[i][0] + splittings[i][1]) == farey_word
+
 def test_fractions():
-    _,R = farey.euclidean_algorithm(2,3)
+    _,R,_,_ = farey.euclidean_algorithm(2,3)
     assert R[-1] == 0 and R[-2] == 1
 
-    _,R = farey.euclidean_algorithm(2,2)
+    _,R,_,_ = farey.euclidean_algorithm(2,2)
     assert R[-1] == 0 and R[-2] == 2
 
-    Q,R = farey.euclidean_algorithm(12,3)
+    Q,R,_,_ = farey.euclidean_algorithm(12,3)
     assert R[-1] == 0 and R[-2] == 3
-    print(len(Q),len(R))
 
-    _,R = farey.euclidean_algorithm(-10,5)
+    _,R,_,_ = farey.euclidean_algorithm(-10,5)
     assert R[-1] == 0 and (R[-2] == 5 or R[-2] == -5)
+
+    _,_,s,t = farey.euclidean_algorithm(3,5)
+    assert s*3+t*5 == 1
+    _,_,s,t = farey.euclidean_algorithm(2,4)
+    assert s*2+t*4 == 2
 
     assert farey.continued_fraction_rational(649,200) == [3,4,12,3,1]
     assert farey.continued_fraction(649/200) == [3,4,12,3,1]

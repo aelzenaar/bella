@@ -1,8 +1,11 @@
 v0.1.1
- - Add continued fractions algorithms
- - Add algorithms to compute rational pleating rays, see examples/parabolic_slice_pleating_rays.py.
- - Add accidental parabolic example and an example of (1;2)-compression body groups.
- - Compute Lyndon-Ullman bounds in the Riley slice explorer
+ - The primary improvements in this version are related to Farey sequences and Farey word:
+   - Added continued fractions algorithms to farey module
+   - Better peripheral splittings function, farey.standard_peripheral_generators()
+   - Add algorithms to compute rational pleating rays, see examples/parabolic_slice_pleating_rays.py
+ - Other miscellaneous changes:
+   - Add accidental parabolic example and an example of (1;2)-compression body groups.
+   - Compute Lyndon-Ullman bounds in the Riley slice explorer
 
 v0.1.0
  - Bug #21: only compute coprime primitice slices and raise exception with helpful error on failed convergence

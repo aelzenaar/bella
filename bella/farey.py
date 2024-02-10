@@ -4,6 +4,7 @@
 import math
 import functools
 import itertools
+from warnings import warn
 from mpmath import mp
 from numpy.polynomial import Polynomial as P
 P.__hash__ = lambda self: tuple(self.coef).__hash__()
@@ -114,6 +115,39 @@ def cycle_word(w):
     for n in range(len(w)):
         yield w[-n:] + w[:-n]
 
+def standard_peripheral_generators(r,s):
+    """ Compute four parabolic words A, B, U, V such that AB = W_{r/s} = UV.
+
+        Returned value: [(A,B),(U,V)]
+
+        This is standardised in the sense that they are exactly the generators
+        given in [EMS23] Lemma 2.3.
+
+        [EMS23] Elzenaar, Martin, Schillewaert. "The combinatorics of the Farey words and their traces" (2023).
+    """
+    word = farey_word(r,s)
+    A = word[:-1]
+    B = word[-1:]
+
+    if s%2 != 0:
+        # We want an even m such that rm = -1 mod s
+        _,_,m,n = euclidean_algorithm(r,s) # rm + sn = 1
+        m = s - (m%s)
+        if m%2 != 0:
+            m += s
+        conjugator = word[:m]
+        cycled_word = simplify_word(invert_word(conjugator) + word + conjugator)
+        U = simplify_word(conjugator + cycled_word[:-1] + invert_word(conjugator))
+        V = simplify_word(conjugator + cycled_word[-1:] + invert_word(conjugator))
+    else:
+        m = s-1
+        conjugator = word[:m]
+        cycled_word = simplify_word(invert_word(conjugator) + word + conjugator)
+        U = simplify_word(conjugator + cycled_word[:1] + invert_word(conjugator))
+        V = simplify_word(conjugator + cycled_word[1:] + invert_word(conjugator))
+
+    return [(A,B),(U,V)]
+
 def peripheral_splittings(w, include_conjugates = True):
     """ Return the possible splittings of w into generators of peripheral subgroups.
 
@@ -124,6 +158,8 @@ def peripheral_splittings(w, include_conjugates = True):
         a conjugate subgroup. If include_conjugates == False, keep exactly one splitting from each
         conjugate pair.
     """
+
+    warn("farey.peripheral_splittings is deprecated from v0.1.1. Prefer standard_peripheral_generators().")
 
     splittings = []
 
@@ -333,13 +369,14 @@ def riley_polynomial(r,s):
 def euclidean_algorithm(a,b):
     """ Run the Euclidean algorithm for a/b.
 
-        If a and b are positive integers, return a pair of lists Q, R of integers such that:
+        If a and b are positive integers, return a pair of lists Q, R of integers and two integers s,t such that:
           * R[0] = a
           * R[1] = b
           * 0 <= R[k-1] < R[k] for all k
           * R[k-2] = Q[k-2] R[k-1] + R[k]
           * R[-2] = gcd(a,b)
-          * R[-1] = 0.
+          * R[-1] = 0
+          * gcd(a,b) = s*a + t*b.
 
         If a or b is negative, the sign of the remainders is not guaranteed: R[-2] is still the gcd but up
         to a possible factor of -1.
@@ -353,12 +390,18 @@ def euclidean_algorithm(a,b):
 
     R = [a,b]
     Q = []
+    S = [1,0]
+    T = [0,1]
     while R[-1] != 0:
         r = R[-2] % R[-1]
         q = (R[-2] - r)//R[-1]
+        s = S[-2] - q*S[-1]
+        t = T[-2] - q*T[-1]
         R.append(r)
         Q.append(q)
-    return (Q,R)
+        S.append(s)
+        T.append(t)
+    return (Q,R,S[-2],T[-2])
 
 
 def continued_fraction_rational(a, b):
@@ -376,7 +419,7 @@ def continued_fraction_rational(a, b):
     if(b == 0):
         return [0,0]
 
-    Q,_ = euclidean_algorithm(a,b)
+    Q,_,_,_ = euclidean_algorithm(a,b)
     if(Q[-1] != 1):
         Q[-1] = Q[-1] - 1
         Q.append(1)
