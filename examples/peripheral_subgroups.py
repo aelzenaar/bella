@@ -24,8 +24,7 @@ def limit_set_points(r=1,s=3,mure=2, muim=2, logpoints=3):
             .redim(x=hv.Dimension('x', range=xbounds),y=hv.Dimension('y', range=ybounds))
 
 
-    farey_word = farey.farey_word(r,s)
-    splittings = farey.peripheral_splittings(farey_word)
+    splittings = farey.standard_peripheral_generators(r,s)
     tr = cayley.simple_tr(G.farey_matrix(r,s))
 
     # Compute the two peripheral subgroups using GroupCache.subgroup().
