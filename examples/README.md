@@ -21,6 +21,7 @@ Run these with plain vanilla `python [filename]`. The utility bash script `gener
  - [peripheral_splittings.py](peripheral_splittings.py) -- produce a list of decompositions of Farey words into products of parabolics.
  - [accidental_parabolic.py](accidental_parabolic.py) -- draw the limit set of a B-group with an accidental parabolic.
  - [riley_slice_cusps.py](riley_slice_cusps.py) -- produce cusp points on the Riley slice corresponding to various irrational numbers.
+ - [cusp_groups.py](cusp_groups.py) -- plot the limit sets of some cusp groups.
 
 ## Interactive panel scripts
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.

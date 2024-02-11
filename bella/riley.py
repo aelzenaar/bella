@@ -101,3 +101,16 @@ class ClassicalRileyGroup(RileyGroup):
     """
     def __init__(self, p, q, μ):
         super().__init__(mp.pi/p, mp.pi/q, μ, p, q)
+
+class RileyCuspGroup(ClassicalRileyGroup):
+    """ Represents a rational cusp group.
+
+        Arguments:
+          p,q -- orders of the generators
+          r,s -- order of the cusp
+    """
+    def __init__(self, p, q, r, s):
+        ray = farey.approximate_pleating_ray(r,s, p,q, R=20, N=100)
+        μ = ray[-1]
+        super().__init__(p, q, μ)
+
