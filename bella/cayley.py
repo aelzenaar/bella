@@ -398,14 +398,16 @@ def line_in_circle_space(w, z):
 
     t = w.real * a.real + w.imag * a.imag
 
-    return mp.matrix([0,a.real/2,a.imag/2,t])
+    m = mp.matrix([0,a.real/2,a.imag/2,t])
+    return m/mp.norm(m)
 
 def circle_in_circle_space(z, r):
     """ Give the coordinates in circle space of the circle with centre z and radius r.
 
         See action_on_circles for a description.
     """
-    return mp.matrix([1,z.real,z.imag,z.real**2+z.imag**2+r**2])
+    m = mp.matrix([1,z.real,z.imag,z.real**2+z.imag**2+r**2])
+    return m/mp.norm(m)
 
 def circle_space_to_circle_or_line(p):
     """ Map from circle space (P^3) to Euclidean space.
@@ -427,7 +429,7 @@ def circle_space_to_circle_or_line(p):
                 return [ (t - a.imag)/a.real + 1j,   (t + a.imag)/a.real - 1j]
     else:
         p = p/p[0]
-        return [ p[1] + p[2]*1j, mp.sqrt(p[3] - p[1]**2 - p[2]**2), False ] # Completing the square.
+        return [ p[1] + p[2]*1j,  mp.fabs(mp.sqrt(p[1]**2 + p[2]**2 - p[3])), False ] # Completing the square.
 
 def action_on_circles(M, oph = True):
     """ Compute the action of a Mobius transformation on the space of circles.
@@ -495,7 +497,7 @@ def action_on_circles(M, oph = True):
         # here theta is the rotation between the isometric circle (alpha, rad) and the circle (alphaprime, rad)
         if alpha != alphaprime:
             base_point_1 = rad/abs(alpha-alphaprime) * alpha + (1-rad/abs(alpha-alphaprime)) * alphaprime
-            pase_point_2 = rad/abs(alpha-alphaprime) * alphaprime + (1-rad/abs(alpha-alphaprime)) * alpha
+            base_point_2 = rad/abs(alpha-alphaprime) * alphaprime + (1-rad/abs(alpha-alphaprime)) * alpha
         else:
             base_point_1 = alpha + rad
             base_point_2 = base_point_1
