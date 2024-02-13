@@ -105,7 +105,12 @@ def test_normalisation():
     assert matrix_almosteq(N @ M @ Y @ M**-1 @ N**-1, Y, 1e-50)
 
 def test_circle_space():
-    # Test functions on the unit circle
+    line = cayley.line_in_circle_space(0, 1j)
+    translation = mp.matrix([[1,1],[0,1]])
+    line2 =  cayley.action_on_circles(translation) @ line
+    assert 2*line2/line2[3] == mp.matrix([0,1,0,2])
+
+
     unit_circle = cayley.circle_in_circle_space(0+0j, 1)
     assert unit_circle/unit_circle[0] == mp.matrix([1, 0, 0, 1])
     assert cayley.circle_space_to_circle_or_line(unit_circle) == [0, 1, False]

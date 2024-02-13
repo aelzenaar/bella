@@ -398,16 +398,14 @@ def line_in_circle_space(w, z):
 
     t = w.real * a.real + w.imag * a.imag
 
-    m = mp.matrix([0,a.real/2,a.imag/2,t])
-    return m/mp.norm(m)
+    return mp.matrix([0,a.real/2,a.imag/2,t])
 
 def circle_in_circle_space(z, r):
     """ Give the coordinates in circle space of the circle with centre z and radius r.
 
         See action_on_circles for a description.
     """
-    m = mp.matrix([1,z.real,z.imag,z.real**2+z.imag**2+r**2])
-    return m/mp.norm(m)
+    return mp.matrix([1,z.real,z.imag,z.real**2+z.imag**2+r**2])
 
 def circle_space_to_circle_or_line(p):
     """ Map from circle space (P^3) to Euclidean space.
@@ -575,3 +573,26 @@ def mobius_fixed_points(M):
         else:
             return [(-(d-a)+mp.sqrt(Δ))/(2*c), (-(d-a)-mp.sqrt(Δ))/(2*c)]
 
+
+def circle_through_points(z1,z2,z3):
+    """ Return a point in P^4 corresponding to the circle through three complex points.
+    """
+
+    if mp.almosteq(z1,z2) or mp.almosteq(z2,z3) or mp.almosteq(z3,z1):
+        raise ValueError("Arguments to circle_through_points must be three distinct points.")
+
+    if z1 == mp.inf:
+        return line_in_circle_space(z2,z3)
+    if z2 == mp.inf:
+        return line_in_circle_space(z1,z3)
+    if z3 == mp.inf:
+        return line_in_circle_space(z1,z2)
+
+    w = (z3 - z1)/(z2 - z1)
+
+    if mp.fabs(w.imag) <= 0:
+        return line_in_circle_space(z1,z2)
+    else:
+        cen = (z2 - z1)*(w - mp.fabs(w)**2)/(2j*w.imag) + z1
+        rad = mp.fabs(z1-cen)
+        return circle_in_circle_space(cen, rad)
