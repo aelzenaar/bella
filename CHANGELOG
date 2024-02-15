@@ -1,3 +1,7 @@
+v0.1.2
+ - Major bugfixes to circle space action
+ - Remove a couple of minor examples that are no longer helpful
+
 v0.1.1
  - The primary improvements in this version are related to Farey sequences and Farey word:
    - Added continued fractions algorithms to farey module

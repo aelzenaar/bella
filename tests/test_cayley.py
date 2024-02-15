@@ -105,6 +105,21 @@ def test_normalisation():
     assert matrix_almosteq(N @ M @ Y @ M**-1 @ N**-1, Y, 1e-50)
 
 def test_circle_space():
+    L1 = cayley.circle_through_points(0+2j, 1+2j, mp.inf)
+    assert L1[3] != 0
+    assert L1/L1[3] == mp.matrix([0,0,1/4,1])
+
+    C2 = cayley.circle_in_circle_space(-.25j, 1/4)
+    assert C2/C2[0] == mp.matrix([1,0,-1/4,0])
+
+    C1 = cayley.circle_through_points(0, -0.5j, -.2-.4j)
+    assert C1[0] != 0
+    assert mp.chop(C1/C1[0],10**-10) == mp.matrix([1,0,-1/4,0])
+
+    M1 = cayley.action_on_circles(mp.matrix([[0,1j],[1j,0]]))
+    M1L1 = M1 @ L1
+    assert mp.chop(M1L1/M1L1[0],10**-10) == mp.chop(C1/C1[0], 10**-10)
+
     line = cayley.line_in_circle_space(0, 1j)
     translation = mp.matrix([[1,1],[0,1]])
     line2 =  cayley.action_on_circles(translation) @ line
@@ -112,7 +127,7 @@ def test_circle_space():
 
 
     unit_circle = cayley.circle_in_circle_space(0+0j, 1)
-    assert unit_circle/unit_circle[0] == mp.matrix([1, 0, 0, 1])
+    assert unit_circle/unit_circle[0] == mp.matrix([1, 0, 0, -1])
     assert cayley.circle_space_to_circle_or_line(unit_circle) == [0, 1, False]
 
     M = cayley.action_on_circles(mp.matrix([[0,-1],[1,0]]))

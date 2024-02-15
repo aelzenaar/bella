@@ -405,7 +405,7 @@ def circle_in_circle_space(z, r):
 
         See action_on_circles for a description.
     """
-    return mp.matrix([1,z.real,z.imag,z.real**2+z.imag**2+r**2])
+    return mp.matrix([1,z.real,z.imag,z.real**2+z.imag**2-r**2])
 
 def circle_space_to_circle_or_line(p):
     """ Map from circle space (P^3) to Euclidean space.
@@ -497,12 +497,14 @@ def action_on_circles(M, oph = True):
             base_point_1 = rad/abs(alpha-alphaprime) * alpha + (1-rad/abs(alpha-alphaprime)) * alphaprime
             base_point_2 = rad/abs(alpha-alphaprime) * alphaprime + (1-rad/abs(alpha-alphaprime)) * alpha
         else:
-            base_point_1 = alpha + rad
+            base_point_1 = alpha + rad*1j
             base_point_2 = base_point_1
         moved_point = M @ mp.matrix([base_point_1,1])
         moved_point = moved_point[0]/moved_point[1]
         theta = mp.arg( (moved_point - alphaprime) / (base_point_2 - alphaprime) )
-        if oph:
+        # need to know if r is orientation preserving or not.
+        # whole thing = p.r.q, if oph = true then r is reversing iff p and q both are, p always is, so r is reversing iff q is.
+        if oph and (q != mp.eye(4)):
             r = translate(alphaprime) @ orthogonal_transform(rotate(theta)) @ translate(-alphaprime)
         else:
             r = translate(alphaprime) @ orthogonal_transform(rotate(theta)) @ orthogonal_transform(reflect_in_x()) @ translate(-alphaprime)
