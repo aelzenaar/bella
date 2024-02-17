@@ -105,26 +105,29 @@ def test_normalisation():
     assert matrix_almosteq(N @ M @ Y @ M**-1 @ N**-1, Y, 1e-50)
 
 def test_circle_space():
-    L1 = cayley.circle_through_points(0+2j, 1+2j, mp.inf)
-    assert L1[3] != 0
-    assert L1/L1[3] == mp.matrix([0,0,1/4,1])
+    horizontal_line = cayley.circle_through_points(0+2j, 1+2j, mp.inf)
+    assert horizontal_line[3] != 0
+    assert horizontal_line/horizontal_line[3] == mp.matrix([0,0,1/4,1])
 
     C2 = cayley.circle_in_circle_space(-.25j, 1/4)
     assert C2/C2[0] == mp.matrix([1,0,-1/4,0])
 
-    C1 = cayley.circle_through_points(0, -0.5j, -.2-.4j)
-    assert C1[0] != 0
+    C1 = cayley.circle_through_points(0, -0.5j, .2-.4j)
     assert mp.chop(C1/C1[0],10**-10) == mp.matrix([1,0,-1/4,0])
 
-    M1 = cayley.action_on_circles(mp.matrix([[0,1j],[1j,0]]))
-    M1L1 = M1 @ L1
+    mult_inverse = cayley.action_on_circles(mp.matrix([[0,1j],[1j,0]]))
+    M1L1 = mult_inverse @ horizontal_line
+    mp.nprint(C1)
+    mp.nprint(M1L1)
     assert mp.chop(M1L1/M1L1[0],10**-10) == mp.chop(C1/C1[0], 10**-10)
 
-    line = cayley.line_in_circle_space(0, 1j)
+    vertical_line = cayley.line_in_circle_space(0, 1j)
     translation = mp.matrix([[1,1],[0,1]])
-    line2 =  cayley.action_on_circles(translation) @ line
+    line2 =  cayley.action_on_circles(translation) @ vertical_line
     assert 2*line2/line2[3] == mp.matrix([0,1,0,2])
-
+    translation = mp.matrix([[1,1],[0,1]])
+    line3 =  cayley.action_on_circles(translation) @ horizontal_line
+    assert line3/line3[3] == horizontal_line/horizontal_line[3]
 
     unit_circle = cayley.circle_in_circle_space(0+0j, 1)
     assert unit_circle/unit_circle[0] == mp.matrix([1, 0, 0, -1])
@@ -134,3 +137,13 @@ def test_circle_space():
     assert M.rows == 4 and M.rows == 4 and mp.det(M) != 0
     image_of_unit_circle = M @ unit_circle
     assert image_of_unit_circle/image_of_unit_circle[0] == unit_circle
+
+    horizontal_line_2 = cayley.circle_through_points(0+0.5j, 0.5+0.5j, mp.inf)
+    assert (1/2)*horizontal_line_2/horizontal_line_2[3] == mp.matrix([0,0,1/2,1/2])
+    circle_2 = mp.matrix([1,0,-3/8,1/8])
+    print("***")
+    M = cayley.action_on_circles(mp.matrix([[1,0],[4j,1]]))
+    image = M @ horizontal_line_2
+    mp.nprint(cayley.circle_space_to_circle_or_line(circle_2))
+    mp.nprint(cayley.circle_space_to_circle_or_line(image))
+    assert mp.chop(image/image[0]) == circle_2

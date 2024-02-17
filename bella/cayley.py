@@ -472,13 +472,12 @@ def action_on_circles(M, oph = True):
 
     # Useful orthogonal 2x2 matrix
     def rotate(theta):
-        return mp.matrix([[mp.cos(theta),mp.sin(theta)],[-mp.sin(theta),mp.cos(theta)]])
+        return mp.matrix([[mp.cos(theta),-mp.sin(theta)],[mp.sin(theta),mp.cos(theta)]])
     def reflect_in_x():
         return mp.matrix([[1,0],[0,-1]])
 
     def reflect_in_bisector(p, q):
-        an = mp.arg(p-q)
-        theta = mp.fabs(an - mp.pi)
+        theta = mp.pi/2 + mp.arg(p-q)
         return translate((p+q)/2) @ orthogonal_transform(reflect_in_x() @ rotate(-2*theta)) @ translate(-(p+q)/2)
 
     # If c is 0 we have a Euclidean motion, otherwise we follow I.C.2 of Maskit
@@ -487,9 +486,9 @@ def action_on_circles(M, oph = True):
         alphaprime = a/c
         rad = 1/abs(c)
 
-        # q is reflection in the isometric circle, p is reflection in bisector of the line joining the iso circle centres.
-        q = reflect_in_circle(alpha,rad)
-        p = reflect_in_bisector(alpha,alphaprime) if alpha != alphaprime else mp.eye(4)
+        # p is reflection in the isometric circle, q is reflection in bisector of the line joining the iso circle centres.
+        p = reflect_in_circle(alpha,rad)
+        q = reflect_in_bisector(alpha,alphaprime) if alpha != alphaprime else mp.eye(4)
 
         # r is rotation with a reflection if oph = False
         # here theta is the rotation between the isometric circle (alpha, rad) and the circle (alphaprime, rad)
@@ -502,12 +501,13 @@ def action_on_circles(M, oph = True):
         moved_point = M @ mp.matrix([base_point_1,1])
         moved_point = moved_point[0]/moved_point[1]
         theta = mp.arg( (moved_point - alphaprime) / (base_point_2 - alphaprime) )
+        mp.nprint(theta)
         # need to know if r is orientation preserving or not.
-        # whole thing = p.r.q, if oph = true then r is reversing iff p and q both are, p always is, so r is reversing iff q is.
-        if oph and (q != mp.eye(4)):
-            r = translate(alphaprime) @ orthogonal_transform(rotate(theta)) @ translate(-alphaprime)
+        # f = r.q.p; since p is always orientation reversing, if f is orientation preserving then r is orientation reversing iff q is trivial
+        if oph and (q == mp.eye(4)):
+            r = translate(alphaprime) @ orthogonal_transform(rotate(theta - mp.pi)) @ orthogonal_transform(reflect_in_x()) @ translate(-alphaprime)
         else:
-            r = translate(alphaprime) @ orthogonal_transform(rotate(theta)) @ orthogonal_transform(reflect_in_x()) @ translate(-alphaprime)
+            r = translate(alphaprime) @ orthogonal_transform(rotate(theta)) @ translate(-alphaprime)
 
         return r @ q @ p
     else:
