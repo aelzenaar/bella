@@ -141,9 +141,6 @@ def test_circle_space():
     horizontal_line_2 = cayley.circle_through_points(0+0.5j, 0.5+0.5j, mp.inf)
     assert (1/2)*horizontal_line_2/horizontal_line_2[3] == mp.matrix([0,0,1/2,1/2])
     circle_2 = mp.matrix([1,0,-3/8,1/8])
-    print("***")
     M = cayley.action_on_circles(mp.matrix([[1,0],[4j,1]]))
     image = M @ horizontal_line_2
-    mp.nprint(cayley.circle_space_to_circle_or_line(circle_2))
-    mp.nprint(cayley.circle_space_to_circle_or_line(image))
     assert mp.chop(image/image[0]) == circle_2

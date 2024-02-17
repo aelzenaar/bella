@@ -501,10 +501,10 @@ def action_on_circles(M, oph = True):
         moved_point = M @ mp.matrix([base_point_1,1])
         moved_point = moved_point[0]/moved_point[1]
         theta = mp.arg( (moved_point - alphaprime) / (base_point_2 - alphaprime) )
-        mp.nprint(theta)
         # need to know if r is orientation preserving or not.
         # f = r.q.p; since p is always orientation reversing, if f is orientation preserving then r is orientation reversing iff q is trivial
         if oph and (q == mp.eye(4)):
+            # If we are reflecting then the angle of rotation will be off by pi.
             r = translate(alphaprime) @ orthogonal_transform(rotate(theta - mp.pi)) @ orthogonal_transform(reflect_in_x()) @ translate(-alphaprime)
         else:
             r = translate(alphaprime) @ orthogonal_transform(rotate(theta)) @ translate(-alphaprime)
