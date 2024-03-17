@@ -6,6 +6,7 @@ import holoviews as hv
 import pandas as pd
 hv.extension('bokeh')
 import panel as pn
+from bella.hvhelp import makeCircles,pairsToCircles
 
 class MaskitGroup(cayley.GroupCache):
     def __init__(self, μ):
@@ -28,11 +29,13 @@ def limit_set_points(μre=1,μim=0, logpoints=3):
     fixed_points_Y = [ [float(p.real), float(p.imag)] for p in G.fixed_points((1,))]
     seed = G.fixed_points((0,1))[0]
     df = G.coloured_limit_set_fast(10**logpoints, seed=seed)
+    circles = G.coloured_isometric_circles_bfs(1)
     scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
                 .opts(marker = "dot", size = 0.1,  color = 'colour', width=800, height=800, data_aspect=1, cmap='Category10')\
                   .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
     return scatter * hv.Points(fixed_points_X).opts(marker = "dot", size = 20,  color = 'red', width=800, height=800, data_aspect=1)\
-      * hv.Points(fixed_points_Y).opts(marker = "dot", size = 20,  color = 'green', width=800, height=800, data_aspect=1)
+      * hv.Points(fixed_points_Y).opts(marker = "dot", size = 20,  color = 'green', width=800, height=800, data_aspect=1)\
+      * makeCircles(circles, kdims = ['x'], vdims = ['y','colour','radius']).opts(radius='radius', color = 'colour', data_aspect=1, cmap='Category10', alpha=0.5)\
 
 # Now we make a DynamicMap so that the user can modify the parameters.
 plot = hv.DynamicMap(limit_set_points, kdims=[hv.Dimension('μre', label='Re(μ)', range=(-6.0,6.0), step=.01, default=0),
