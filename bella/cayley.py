@@ -188,6 +188,27 @@ class GroupCache:
                     this_list.append(item)
             last_list = this_list
 
+    def free_cayley_graph_dfs(self, depth):
+        """ Depth-first search for all words in the generators, assuming no relators.
+
+            Walk the Cayley graph of the free group on the given generators, yielding
+            words in a depth-first way, eventually producing all words of length at most `depth`.
+            If the group is not free, this process will produce the group elements
+            multiple times, labelled by different words differing by relators.
+        """
+        discovered = []
+        search_space = []
+
+        search_space.append(tuple())
+
+        while len(search_space) != 0:
+            v = search_space.pop()
+            if not v in discovered:
+                discovered.append(v)
+                if len(v) < depth:
+                    search_space += self.free_cayley_graph_locally(v, rtl=False)
+        return discovered
+
     def free_cayley_graph_mc(self, depth, count, rtl=True):
         """ Monte-Carlo search for all words in the generators, assuming no relators.
 
@@ -286,6 +307,30 @@ class GroupCache:
 
         return pd.DataFrame(_internal_generator(base), columns=['x','y','colour'])
 
+
+    def limit_set_dfs(self, depth, seed = 0, complexify=complex):
+        """ Depth-first ordered search for points in the limit set.
+
+            Produce all translates of the element `seed` up to depth `depth` in the Cayley
+            graph, thus approximating the limit set, by computing the Cayley graph as returned
+            by `free_cayley_graph_dfs(depth)`.
+
+            Generates: a dataframe with columns [ x, y ] where x+yi is a point in the limit set.
+        """
+        if seed == mp.inf:
+            base = self._underlying_matrix_t([[1],[0]])
+        else:
+            base = self._underlying_matrix_t([[seed],[1]])
+
+        def _internal_generator():
+            for w in self.free_cayley_graph_dfs(depth):
+                print(w)
+                point = self[w] @ base
+                if point[1] != 0:
+                    cpx = complexify(point[0,0]/point[1,0])
+                    yield (cpx.real, cpx.imag)
+
+        return pd.DataFrame(_internal_generator(), columns=['x','y'])
 
     def isometric_circle(self, word):
         """ Return the isometric circle of the word.
