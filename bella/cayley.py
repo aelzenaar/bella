@@ -168,7 +168,7 @@ class GroupCache:
         else:
             for lab in range(2*self.length):
                 lword = (lab,) + word
-                if is_reduced_from_left(lword):
+                if self.is_reduced_from_left(lword):
                     yield lword
 
     def free_cayley_graph_bfs(self, depth):
