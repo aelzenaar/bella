@@ -48,14 +48,12 @@ def slice_points(p, q, p_inf, q_inf, depth):
     print("Recomputing slice")
     p = mp.inf if p_inf else p
     q = mp.inf if q_inf else q
-    df = slices.elliptic_exterior(p, q, depth)
+    df = slices.elliptic_exterior(p, q, depth, extraprec=1500)
 
-    Q = 1+1j*mp.tan(mp.pi/p) if not p_inf else 1
-    Qp = -1+1j*mp.tan(mp.pi/q) if not p_inf else -1
+    α = mp.exp(mp.pi*1j/p) if not p_inf else 1
     β = mp.exp(mp.pi*1j/q) if not q_inf else 1
-    centres  = [-Q * (1-β**2)/β, -Qp * (1-β**2)/β, (1/β)*Q - β*Qp, (1/β)*Qp - β*Q]
-    radius = 2/mp.cos(mp.pi/p) if not p_inf else 2
-
+    centres  = [-α*(β - mp.conj(β)), -mp.conj(α)*(mp.conj(β) - β), -α*β - mp.conj(α)*mp.conj(β), mp.conj(α)*β + α*mp.conj(β)]
+    radius = 2
 
     return hv.Scatter(df, kdims=['x'],vdims=['y'])\
              .opts(marker = "dot", size = 4, width=800, height=800, data_aspect=1, color='black', cmap='kr')\
