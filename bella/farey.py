@@ -271,7 +271,7 @@ def solve_polynomial(np_poly, maxsteps=500, extraprec=1000):
 
     # It is significantly faster (on the order of 20sec vs 110sec) to do a rough computation first using numpy
     # and then feed the result into mpmath's solver.
-    fast_roots = P([float(mp.chop(c)) for c in np_poly]).roots()
+    fast_roots = P([complex(mp.chop(c)) for c in np_poly]).roots()
     yield from mp.polyroots( numpy_to_mpmath_polynomial(np_poly), maxsteps=maxsteps, extraprec=extraprec, roots_init=fast_roots)
 
 
@@ -354,6 +354,27 @@ def riley_polynomial(r,s):
     return p
 
 
+@functools.cache
+def maskit_polynomial(r,s):
+    """ Return the Maskit polynomial of slope r/s as a numpy.polynomial.Polynomial object.
+
+        This is the trace polynomial of the words defined in pp.276--283 of Indra's Pearls.
+
+        Arguments:
+          r,s -- coprime integers representing the slope of the desired polynomial
+    """
+
+    if r == 0 and s == 1:
+        # tr YX + tr yX = tr X tr Y
+        return P([0,1j])
+    if r == 1 and s == 1:
+        return P([-2j,1j])
+    if r == 1 and s == 2:
+        return P([-2,2,-1])
+
+    (p1,q1),(p2,q2) = neighbours(r,s)
+
+    return maskit_polynomial(p1,q1)*maskit_polynomial(p2,q2) - maskit_polynomial(abs(p1-p2),abs(q1-q2))
 
 
 ##############################################

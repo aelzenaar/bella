@@ -116,3 +116,26 @@ def elliptic_exterior(p, q, depth, maxsteps=500, extraprec=1000, level_set = -2)
             if math.gcd(m, top_p_power) * math.gcd(n, top_q_power) == 1:
                 frames.append(primitive_exterior(θ, η, m, n, depth, maxsteps, extraprec, level_set))
     return pd.concat(frames)
+
+def maskit_slice_exterior(depth, maxsteps=500, extraprec=1000, level_set = -2):
+    """ Compute points of the Maskit slice exterior.
+
+        Parameters:
+        `depth` -- maximal denominator of Farey polynomial to use
+        `maxsteps`, `extraprec` -- passed directly to mpmath.polyroots().
+        `level_set` -- level set of the Farey polynomials to compute (-2 for cusp points).
+
+        Generates: a dataframe with columns `[ x, y, pow_x, pow_y, method, level_set ]` where `x+y*j` is an element
+        of the `level_set` level set of some Farey polynomial, where `pow_x` and `pow_y` are
+        respectively `pow_X` and `pow_Y`, where `method = "farey"`, and where `level_set` is the same as the eponynous parameter.
+    """
+
+    def _internal_generator():
+        for (r,s) in farey.walk_tree_bfs(depth):
+            try:
+                poly = farey.maskit_polynomial(r,s) - level_set
+                yield from farey.solve_polynomial(poly, maxsteps, extraprec)
+            except mp.NoConvergence:
+                raise ConvergenceFailedException(r,s,pow_X,pow_Y,poly)
+
+    return pd.DataFrame.from_records(([float(pt.real), float(pt.imag), level_set] for pt in _internal_generator()), columns=['x','y', 'level_set'])
