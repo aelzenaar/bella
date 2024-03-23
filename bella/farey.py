@@ -365,7 +365,6 @@ def maskit_polynomial(r,s):
     """
 
     if r == 0 and s == 1:
-        # tr YX + tr yX = tr X tr Y
         return P([0,1j])
     if r == 1 and s == 1:
         return P([-2j,1j])

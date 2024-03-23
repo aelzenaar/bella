@@ -117,13 +117,17 @@ def elliptic_exterior(p, q, depth, maxsteps=500, extraprec=1000, level_set = -2)
                 frames.append(primitive_exterior(θ, η, m, n, depth, maxsteps, extraprec, level_set))
     return pd.concat(frames)
 
-def maskit_slice_exterior(depth, maxsteps=500, extraprec=1000, level_set = -2):
+def maskit_slice_exterior(depth, maxsteps=500, extraprec=1000, level_set = -2, translates = 4):
     """ Compute points of the Maskit slice exterior.
+
+        Note that the Maskit polynomial levelsets will have real part in [0,2]. This function produces
+        `translates` translates of this set left and right to see the whole picture.
 
         Parameters:
         `depth` -- maximal denominator of Farey polynomial to use
         `maxsteps`, `extraprec` -- passed directly to mpmath.polyroots().
         `level_set` -- level set of the Farey polynomials to compute (-2 for cusp points).
+        `translates` -- number of translates to produce
 
         Generates: a dataframe with columns `[ x, y, pow_x, pow_y, method, level_set ]` where `x+y*j` is an element
         of the `level_set` level set of some Farey polynomial, where `pow_x` and `pow_y` are
@@ -138,4 +142,6 @@ def maskit_slice_exterior(depth, maxsteps=500, extraprec=1000, level_set = -2):
             except mp.NoConvergence:
                 raise ConvergenceFailedException(r,s,pow_X,pow_Y,poly)
 
-    return pd.DataFrame.from_records(([float(pt.real), float(pt.imag), level_set] for pt in _internal_generator()), columns=['x','y', 'level_set'])
+    points = [[float(pt.real), float(pt.imag), level_set] for pt in _internal_generator()]
+
+    return pd.DataFrame.from_records([[p[0] + 2*by, p[1], p[2]] for p in points for by in range(-translates,translates)], columns=['x','y', 'level_set'])
