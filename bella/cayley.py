@@ -22,7 +22,7 @@ def simple_inv(M):
     MatrixType = type(M)
     if isinstance(M, np.ndarray):
         MatrixType = np.array
-    return 1/(M[0,0]*M[1,1]-M[0,1]*M[1,0]) * MatrixType([[M[1,1],-M[0,1]], [-M[1,0], M[0,0]]])
+    return 1/simple_det(M) * MatrixType([[M[1,1],-M[0,1]], [-M[1,0], M[0,0]]])
 
 def simple_tr(M):
     """ Trace of a 2x2 matrix. """
