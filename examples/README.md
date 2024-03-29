@@ -24,15 +24,15 @@ Run these with plain vanilla `python [filename]`. The utility bash script `gener
 
 ## Interactive panel scripts
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.
+ - [riley_limits.py](riley_limits.py) -- dynamically draw limit sets and fixed points of Riley groups in a very interactive way (this is the replacement for the older `graphical_limits.py`).
+ - [maskit_limits.py](maskit_limits.py) -- dynamically draw limit sets and fixed points of Maskit groups (Chapter 9 of _Indra's pearls_) in a very interactive way.
  - [parabolic_slices.py](parabolic_slices.py) -- draw a lot of different level sets of the Farey polynomials, and the zero set of the Riley polynomials.
  - [isometric_circles.py](isometric_circles.py) -- dynamically draw isometric circles of Riley groups.
  - [elliptic_parabolic_slice.py](elliptic_parabolic_slice.py) -- draw a particular elliptic slice, showing that non-primitive words give subsets of the slice exterior.
- - [riley_limits.py](riley_limits.py) -- dynamically draw limit sets and fixed points of Riley groups in a very interactive way (this is the replacement for the older `graphical_limits.py`).
  - [peripheral_subgroups.py](peripheral_subgroups.py) -- modification of `limits.py` to highlight peripheral subgroups.
  - [indras_necklace.py](indras_necklace.py) -- draw limit sets of the Indra's Necklace groups, Chapter 6 of _Indra's pearls_.
  - [theta_schottky.py](theta_schottky.py) -- draw limit sets of θ-Schottky groups, Project 4.2 of _Indra's pearls_.
  - [grandma.py](grandma.py) -- draw limit sets of Grandma's Recipe groups, Chapter 8 of _Indra's pearls_.
- - [maskit.py](maskit.py) -- draw limit sets of Maskit groups, Chapter 9 of _Indra's pearls_.
  - [schottky.py](schottky,py) -- draw limit sets of Schottky groups.
  - [lackenby_purcell.py](lackenby_purcell.py) -- draw limit sets of groups with one rank 2 cusp and an additional loxodromic.
 

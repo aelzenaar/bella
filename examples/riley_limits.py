@@ -72,7 +72,7 @@ p_inf_check = pn.widgets.Checkbox(name='X parabolic (overrides order)')
 q_slider = pn.widgets.IntSlider(name='order of Y', value=4, start=2, end=20)
 q_inf_check = pn.widgets.Checkbox(name='Y parabolic (overrides order)')
 depth_slider = pn.widgets.IntSlider(name='depth to compute slice', value=15, start=10, end=50)
-points_slider = pn.widgets.IntSlider(name='log10(mumber of points)', value=4, start=2, end=8)
+points_slider = pn.widgets.IntSlider(name='log10(number of points)', value=4, start=2, end=8)
 order_sliders = pn.Column(p_slider, p_inf_check, q_slider, q_inf_check, depth_slider, points_slider)
 
 # Overlay the plots
@@ -85,4 +85,4 @@ limitset_plot = pn.bind(limit_set_points, x = stream.param.x, y = stream.param.y
 
 app = pn.Row(slice_plot, order_sliders, limitset_plot)
 
-app.servable()
+app.servable("Riley slices")
