@@ -142,6 +142,7 @@ def maskit_slice_exterior(depth, maxsteps=500, extraprec=1000, level_set = -2, t
             except mp.NoConvergence:
                 raise ConvergenceFailedException(r,s,pow_X,pow_Y,poly)
 
-    points = [[float(pt.real), float(pt.imag), level_set] for pt in _internal_generator()]
+    points = [[pt.real, pt.imag, level_set] for pt in _internal_generator()]
 
-    return pd.DataFrame.from_records([[p[0] + 2*by, p[1], p[2]] for p in points for by in range(-translates,translates)], columns=['x','y', 'level_set'])
+    t = 2
+    return pd.DataFrame.from_records([[float(p[0] + t*by), float(p[1]), p[2]] for p in points for by in range(-translates,translates)], columns=['x','y', 'level_set'])

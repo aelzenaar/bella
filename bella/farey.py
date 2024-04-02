@@ -364,12 +364,14 @@ def maskit_polynomial(r,s):
           r,s -- coprime integers representing the slope of the desired polynomial
     """
 
+    t = 2
+
     if r == 0 and s == 1:
         return P([0,1j])
     if r == 1 and s == 1:
-        return P([-2j,1j])
+        return P([-t*1j,1j])
     if r == 1 and s == 2:
-        return P([-2,2,-1])
+        return P([-2,t,-1])
 
     (p1,q1),(p2,q2) = neighbours(r,s)
 
