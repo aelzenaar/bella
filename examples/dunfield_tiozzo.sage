@@ -1,5 +1,14 @@
+# This is a very naive sage script to generate points in the exterior of the Dunfield-Tiozzo slice
+# (see dunfield_tiozzo.py).
+#
+# Setting depth high will seriously tax your computer since we do very minimal caching. To improve things
+# we can use the recursive product formula from our Farey polynomial paper but it seems like a lot of work
+# to implement for a 1-off thing.
+
 import itertools
 import csv
+
+depth = 15
 
 t = var('t')
 
@@ -52,7 +61,7 @@ all_roots = []
 
 cache = dict()
 
-fracs = list(walk_tree_bfs(15))
+fracs = list(walk_tree_bfs(depth))
 n=0
 for r,s in fracs:
     n+=1

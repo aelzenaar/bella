@@ -46,6 +46,12 @@ def clickable_panel(x_dot, y_dot):
              .opts(marker = "dot", size = 20,  color = 'black', width=800, height=800, data_aspect=1, cmap='Category10')\
          * hv.Text(x_dot,y_dot+.1, f"{x_dot:.2f} + {y_dot:.2f}i")
 
+def slice_panel():
+    pts = pd.read_csv('dunfield_tiozzo.csv', names=['x','y'])
+    return hv.Scatter(pts, kdims=['x'],vdims=['y'])\
+             .opts(marker = "dot", size = 4, width=800, height=800, data_aspect=1, color='black', cmap='kr')\
+             .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
+
 # Sliders and displays
 points_slider = pn.widgets.IntSlider(name='log10(number of points)', value=4, start=2, end=8)
 order_sliders = pn.Column(points_slider)
@@ -54,6 +60,7 @@ order_sliders = pn.Column(points_slider)
 slice_plot_blank = hv.Points([])
 stream = hv.streams.Tap(source=slice_plot_blank, x=.42, y=1.94)
 slice_plot = slice_plot_blank *\
+             slice_panel() *\
              hv.DynamicMap(pn.bind(clickable_panel, x_dot = stream.param.x, y_dot = stream.param.y))
 limitset_plot = pn.bind(limit_set_points, x = stream.param.x, y = stream.param.y, logpoints = points_slider)
 
