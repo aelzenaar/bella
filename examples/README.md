@@ -26,6 +26,7 @@ Run these with plain vanilla `python [filename]`. The utility bash script `gener
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.
  - [riley_limits.py](riley_limits.py) -- dynamically draw limit sets and fixed points of Riley groups in a very interactive way (this is the replacement for the older `graphical_limits.py`).
  - [maskit_limits.py](maskit_limits.py) -- dynamically draw limit sets and fixed points of Maskit groups (Chapter 9 of _Indra's pearls_) in a very interactive way.
+ - [dunfield_tiozzo.py](dunfield_tiozzo.py) -- draw limit sets and fixed points of Schottky representations of Br(3) (https://arxiv.org/abs/2402.06771).
  - [parabolic_slices.py](parabolic_slices.py) -- draw a lot of different level sets of the Farey polynomials, and the zero set of the Riley polynomials.
  - [isometric_circles.py](isometric_circles.py) -- dynamically draw isometric circles of Riley groups.
  - [elliptic_parabolic_slice.py](elliptic_parabolic_slice.py) -- draw a particular elliptic slice, showing that non-primitive words give subsets of the slice exterior.
