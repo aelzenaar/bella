@@ -269,6 +269,7 @@ class GroupCache:
             Generates: a dataframe with columns [ x, y, colour ] where x+yi is a point in the limit set
             and colour is the index of the first element in the word indexing that limit set.
         """
+        warnings.warn("cayley.coloured_limit_set_mc() is deprecated from v0.1.3. Prefer coloured_limit_set_fast().")
         if seed == mp.inf:
             base = self._underlying_matrix_t([[1],[0]])
         else:
