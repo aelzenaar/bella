@@ -5,50 +5,38 @@
 # we can use the recursive product formula from our Farey polynomial paper but it seems like a lot of work
 # to implement for a 1-off thing.
 
+import random
 import itertools
 import csv
+from sage.libs.mpmath.utils import mpmath_to_sage, sage_to_mpmath
+import mpmath
 
-depth = 15
+depth = 50
+max_number=200000
+prec=200
 
-t = var('t')
+K.<t> = FunctionField(QQ)
 
-def farey_word(r,s):
-    """ Compute the Farey word of slope r/s using the cutting sequence definition.
+def random_word(max_length=depth):
+    word = []
+    if random.choice(['pos','all']) == 'pos':
+        letters = ['A','B', 'end']
+    else:
+        letters = ['a','b','A','B', 'end']
+    while len(word) < max_length:
+        next_letter = random.choice(letters)
+        if next_letter == 'end':
+            if len(word) > 0:
+              break
+            else:
+              continue
 
-        The Farey word is W^{-1} Y W X where W is the Riley word; it is the relator in the presentation < X, Y : W_r/s = 1>
-        of the r/s two-bridge knot.
+        if len(word) == 0 or next_letter != word[-1].swapcase():
+            word.append(next_letter)
+        else:
+            continue
+    return tuple(word)
 
-        Arguments:
-        r, s -- coprime integers such that r/s is the slope of the desired Farey word
-
-        Returns:
-        A tuple consisting of single-character strings representing generators of the group and their inverses.
-    """
-
-    if gcd(r,s) != 1:
-        raise ValueError("Arguments to farey_word should be coprime integers.")
-
-    lookup_table=[['a','A'],['B','b']]
-    length = 2*s
-    def height(i):
-        h = i*r/s
-        h = h+1/2 if ceil(h)==h else h
-        return ceil(h)
-    return tuple( lookup_table[i%2][height(i)%2]  for i in range(1,length+1) )
-
-
-def walk_tree_bfs(end = None):
-    """ Yield every fraction with denominator < `end` in a breadth first way.
-
-        If `end` == None then keep going forever.
-    """
-
-    for s in itertools.count(1):
-        if s == end:
-            return None
-        for r in range(0,s+1):
-            if gcd(r,s) == 1:
-                yield (r,s)
 
 A = Matrix([[-t,1],[0,1]])
 B = Matrix([[1,0],[t,-t]])
@@ -58,39 +46,38 @@ a = A.inverse()
 b = B.inverse()
 
 all_roots = []
+colours = []
 
-cache = dict()
+done = set()
 
-fracs = list(walk_tree_bfs(depth))
 n=0
-for r,s in fracs:
-    n+=1
-    print(f' * {int(n)}/{len(fracs)}\t{(int(100)*int(n)/len(fracs)):.3f}%')
-    word = '*'.join(farey_word(r,s))
-    if word[:-1] in cache:
-      evaled = cache[word[:-1]] * eval(word[-1])
+while n < max_number:
+    word = '*'.join(random_word())
+    if word in done:
+        print(f' * * retrying')
+        continue
     else:
-      evaled = eval(word)
+        done.add(word)
+        print(f' * {int(n+1)}/{int(max_number)}\t{(int(100)*int(n+1)/int(max_number)):.3f}%')
+        n += 1
+    evaled = eval(word)
+    trace = ((evaled.trace())**2 - 4).numerator()
 
-    cache[word] = evaled
-    trace = evaled.trace()
+    if(word.isupper()):
+      colour = 'Positive'
+    else:
+      colour = 'Non-positive'
 
-    try:
-      roots = solve(trace == -2, t, to_poly_solve=true)
-      all_roots += [root.rhs() for root in roots]
-      roots = solve(trace == 2, t, to_poly_solve=true)
-      all_roots += [root.rhs() for root in roots]
-    except:
-      # print(trace)
-      pass
+    if trace != 0:
+      roots = [mpmath_to_sage(z,prec) for z in mpmath.polyroots([ sage_to_mpmath(x,prec) for x in list(reversed(trace.list()))], maxsteps=500,extraprec=1000)]
+      # roots = [r for r,_ in trace.roots(CC)]
+      all_roots += [r for r in roots]
+      colours += [colour]*len(roots)
 
 C = []
-for r in all_roots:
-  try:
-    n = N(r)
-    C.append([str(real(n)), str(imag(n))])
-  except:
-    pass
+for r, colour in zip(all_roots, colours):
+  n = N(r)
+  C.append([str(real(n)), str(imag(n)), colour])
 
 with open('dunfield_tiozzo.csv', 'w') as f:
     c = csv.writer(f)
