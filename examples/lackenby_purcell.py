@@ -56,7 +56,7 @@ def clickable_panel(x_dot, y_dot):
          * hv.Text(x_dot,y_dot+.1, f"{x_dot:.2f} + {y_dot:.2f}i")).opts(shared_axes=False)
 
 # Sliders and displays
-points_slider = pn.widgets.IntSlider(name='log10(mumber of points)', value=8, start=2, end=8)
+points_slider = pn.widgets.IntSlider(name='log10(number of points)', value=4, start=2, end=8)
 order_sliders = pn.Column(points_slider)
 
 # Overlay the plots
