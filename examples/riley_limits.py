@@ -26,22 +26,22 @@ def limit_set_points(x, y, p, q, p_inf, q_inf, logpoints):
     limit_points = G.coloured_limit_set_fast(10**logpoints)
     circles = G.coloured_isometric_circles_bfs(1)
 
-    scatter = hv.Scatter(limit_points, kdims = ['x'], vdims = ['y','colour']).opts(marker = "dot", size = 0.1,  color = 'colour', width=800, height=800, data_aspect=1, cmap='Category10')\
+    scatter = hv.Scatter(limit_points, kdims = ['x'], vdims = ['y','colour']).opts(marker = "dot", size = 0.1,  color = 'colour', cmap='Category10')\
+                .opts(frame_width=650, data_aspect=1)\
                 .redim(x=hv.Dimension('x', range=(-2,2)),y=hv.Dimension('y', range=(-2, 2)))\
-            * makeCircles(circles, kdims = ['x'], vdims = ['y','colour','radius']).opts(radius='radius', color = 'colour', width=800, height=800, data_aspect=1, cmap='Category10', alpha=0.5)\
+            * makeCircles(circles, kdims = ['x'], vdims = ['y','colour','radius']).opts(radius='radius', color = 'colour', cmap='Category10', alpha=0.5)\
 
     # If X is elliptic it has a fixed point away from infinity.
     if not p_inf:
         scatter *= hv.Points([[(-α/(α**2-1)).real, (-α/(α**2-1)).imag]])\
-                     .opts(marker = "dot", size = 20,  color = 'red', width=800, height=800, data_aspect=1, cmap='Category10')
+                     .opts(marker = "dot", size = 20,  color = 'red')
 
     if q_inf:
         y_fixed_points = [[0,0]]
     else:
         y_fixed_points = [[0,0], [((β - β**-1)/μ).real, ((β - β**-1)/μ).imag]]
 
-    return scatter * hv.Points(y_fixed_points)\
-                       .opts(marker = "dot", size = 20,  color = 'green', width=800, height=800, data_aspect=1, cmap='Category10')
+    return scatter * hv.Points(y_fixed_points).opts(marker = "dot", size = 4, color='black', cmap='kr')\
 
 # Paint the slice with given parameters
 def slice_points(p, q, p_inf, q_inf, depth):
@@ -56,14 +56,14 @@ def slice_points(p, q, p_inf, q_inf, depth):
     radius = 2
 
     return hv.Scatter(df, kdims=['x'],vdims=['y'])\
-             .opts(marker = "dot", size = 4, width=800, height=800, data_aspect=1, color='black', cmap='kr')\
+             .opts(marker = "dot", size = 4, frame_width=650, data_aspect=1, color='black', cmap='kr')\
              .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))\
          * pairsToCircles([(z, radius) for z in centres])
 
 # Plot which displays a single dot at x_dot, y_dot
 def clickable_panel(x_dot, y_dot):
     return hv.Points([[x_dot, y_dot]])\
-             .opts(marker = "dot", size = 20,  color = 'black', width=800, height=800, data_aspect=1, cmap='Category10')\
+             .opts(marker = "dot", size = 20,  color = 'black', frame_width=650, data_aspect=1, cmap='Category10')\
          * hv.Text(x_dot,y_dot+.1, f"{x_dot:.2f} + {y_dot:.2f}i")
 
 # Sliders and displays
