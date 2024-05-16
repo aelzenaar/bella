@@ -371,7 +371,7 @@ class GroupCache:
         radius = mp.fabs(1/m[1,0])
         return (centre, radius)
 
-    def coloured_isometric_circles_mc(self, depth, count):
+    def coloured_isometric_circles_mc(self, depth, count, min_radius=0, bounding_radius=10000):
         """ Monte-carlo search for isometric circles in the limit set.
 
             Produce `depth`*`count` isometric circles, thus approximating the limit set,
@@ -380,6 +380,8 @@ class GroupCache:
             Generates: a dataframe with columns [ x, y, radius, colour ] where (x,y) is the centre
             of an isometric circle of given radius, corresponding to a word whose first letter is
             the generator indexed by `colour`.
+
+            Exclude circles with radius < min_radius, or with |centre| > bounding_radius.
         """
 
         def _internal_generator():
@@ -387,22 +389,28 @@ class GroupCache:
                 centre, radius = self.isometric_circle(w)
                 if centre == mp.inf:
                     continue
+                if (radius < min_radius) or (mp.fabs(centre) > bounding_radius):
+                    continue
                 yield [float(centre.real), float(centre.imag), float(radius), w[0]]
 
         return pd.DataFrame.from_records(_internal_generator(), columns=['x','y','radius','colour'])
 
-    def coloured_isometric_circles_bfs(self, depth):
+    def coloured_isometric_circles_bfs(self, depth, min_radius=0, bounding_radius=10000):
         """ Breadth-first search for isometric circles in the limit set.
 
             Returns a dataframe with columns [ x, y, radius, colour ] where (x,y) is the centre
             of an isometric circle of given radius, corresponding to a word whose first letter is
             the generator indexed by `colour`.
+
+            Exclude circles with radius < min_radius, or with |centre| > bounding_radius.
         """
 
         def _internal_generator():
             for w in self.cayley_graph_bfs(depth):
                 centre, radius = self.isometric_circle(w)
                 if centre == mp.inf:
+                    continue
+                if (radius < min_radius) or (mp.fabs(centre) > bounding_radius):
                     continue
                 yield [float(centre.real), float(centre.imag), float(radius), w[0]]
 
