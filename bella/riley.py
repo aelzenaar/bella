@@ -49,6 +49,8 @@ class RileyGroup(cayley.GroupCache):
         self.μ = μ
         X = mp.matrix([[self.α,1],[0,self.α.conjugate()]])
         Y = mp.matrix([[self.β,0],[self.μ,self.β.conjugate()]])
+        self.X = X
+        self.Y = Y
 
         super().__init__([X,Y], relations)
         self.generator_map = {'X':0, 'Y':1, 'x':self.gen_to_inv[0], 'y':self.gen_to_inv[1]}
