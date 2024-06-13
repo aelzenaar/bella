@@ -2,6 +2,7 @@ v0.1.3
  - Add function to compute Maskit polynomials and slice, as well as an interactive Maskit slice explorer.
  - GroupCache now supports rudimentary generator names.
  - Isometric circle generators have built in bounding parameters
+ - Bugfix: when Y(inf) = inf, then cayley.mobius_fixed_points(Y) was wrong up to sign.
 
 v0.1.2
  - Major bugfixes to circle space action

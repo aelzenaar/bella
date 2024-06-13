@@ -637,6 +637,8 @@ def normalise_mobius_pair(A,B):
 
 def mobius_fixed_points(M):
     """ Return a list of the fixed points of the transformation M.
+
+        If infinity is a fixed point then it will appear first.
     """
     a = M[0,0]
     b = M[0,1]
@@ -647,7 +649,7 @@ def mobius_fixed_points(M):
         if d-a == 0:
             return [mp.inf]
         else:
-            return [mp.inf, b/(a-d)]
+            return [mp.inf, b/(d-a)]
     else:
         Δ = (d-a)**2 + 4*b*c
         if Δ == 0:

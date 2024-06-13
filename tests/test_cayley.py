@@ -87,6 +87,12 @@ def test_simple_matrix_formulae():
     assert cayley.simple_det(X) == 1*0.1 - 2*(-3j)
     assert cayley.simple_inv(X) == 1/(cayley.simple_det(X)) * mp.matrix([[0.1,-2],[3j,1]])
 
+    β = mp.exp(mp.pi/3)
+    Y = mp.matrix([[β, 1], [0, β**-1]])
+    fp = cayley.mobius_fixed_points(Y)
+    assert fp[0] == mp.inf
+    assert mp.almosteq(fp[1], (Y[0,0]*fp[1] + Y[0,1])/(Y[1,0]*fp[1] + Y[1,1]))
+
 def test_normalisation():
     X = mp.matrix([[1,1],[0,1]])
     Y = mp.matrix([[1,0],[3+2j,1]])
