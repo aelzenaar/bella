@@ -21,6 +21,7 @@ Run these with plain vanilla `python [filename]`. The utility bash script `gener
  - [accidental_parabolic.py](accidental_parabolic.py) -- draw the limit set of a B-group with an accidental parabolic.
  - [riley_slice_cusps.py](riley_slice_cusps.py) -- produce cusp points on the Riley slice corresponding to various irrational numbers.
  - [cusp_groups.py](cusp_groups.py) -- plot the limit sets of some cusp groups.
+ - [fig8lattice.py](fig8lattice.py) -- plot the limit set of the holonomy group of the figure 8 knot along with the lattice of traces.
 
 ## Interactive panel scripts
 Run these with `panel serve [filename]`. You need the optional `panel` dependency.
