@@ -95,7 +95,7 @@ class GroupCache:
 
     def fancyword_to_word(self, fancyword):
         """ Convert from "abc" words to (1,2,3) words """
-        return tuple( self.names_reverse_lookup(ell) for ell in fancyword )
+        return tuple( self.names_reverse_lookup[ell] for ell in fancyword )
 
     @functools.cache
     def __getitem__(self, word):
