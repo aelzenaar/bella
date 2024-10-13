@@ -1,31 +1,40 @@
-""" Example: plotting the figure eight knot limit set along with the traces of elements in the group.
+""" Example: plotting the figure eight knot limit set along with
+    the traces of elements in the group and the limit set of a
+    Seifert surface subgroup.
 """
 
-from bella import farey, riley,cayley
+from bella import riley,cayley
 from mpmath import mp
 import holoviews as hv
-hv.extension('bokeh')
+hv.extension('matplotlib')
 
-# Just compute the parabolic slice and save it to an image file.
-ω = mp.exp(2*mp.pi*1j/3)
-G = riley.ClassicalRileyGroup(mp.inf, mp.inf, -ω)
+omega = mp.exp(2*mp.pi*1j/3)
+G = riley.ClassicalRileyGroup(mp.inf, mp.inf, -omega)
 
 traces = []
 for word in G.free_cayley_graph_dfs(6):
   trace = cayley.simple_tr(G[word])
   traces.append(trace)
-  # print(trace)
-# for r,s in farey.walk_tree_bfs(10):
-#   traces.append(G.farey_polynomial(r,s)(-ω))
 print(len(traces))
 
-logpoints = 7
+numpoints = 4*10**7
 seed = G.fixed_points((0,1))[0]
-df = G.coloured_limit_set_fast(10**logpoints, seed=seed)
-scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
-            .opts(marker = "dot", size = 0.1,  color = 'colour', frame_width=1000, frame_height=1000, data_aspect=1, cmap='Set1')\
-              .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
+limset = G.coloured_limit_set_fast(numpoints, seed=seed)
+scatter = hv.Scatter(limset, kdims = ['x'], vdims = ['y','colour'])\
+            .opts(marker = "d", s = .2,\
+                  aspect=1, fig_size=1000,\
+                  color = 'colour', cmap="glasbey_cool")\
+              .redim(x=hv.Dimension('x', range=(-2, 2)),\
+                     y=hv.Dimension('y', range=(-2, 2)))
 
-scatter *= hv.Points([(float(z.real), float(z.imag)) for z in traces]).opts(color='black', size=5)
+P = G.subgroup([ G.string_to_word("YxYXyxYx"), G.string_to_word("xYXy") ])
+limsetP = P.coloured_limit_set_fast(numpoints, (P.fixed_points((1,1)))[0])
+scatterP = hv.Scatter(limsetP, kdims = ['x'], vdims = ['y','colour'])\
+             .opts(marker = "d", s=.2, aspect=1, \
+                   color = "colour", cmap="glasbey_warm")
 
-hv.save(scatter, 'fig8lattice.png', fmt='png')
+
+scatter *= hv.Points([(float(z.real), float(z.imag)) for z in traces])\
+             .opts(color='black', s=5) * scatterP
+
+hv.save(scatter, 'fig8lattice_mpl2.png', fmt='png')
