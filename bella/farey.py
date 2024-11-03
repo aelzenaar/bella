@@ -530,11 +530,12 @@ def real_point_on_circle(f, R, angle, tol=None):
     actual_function = lambda theta: ( f(R*mp.exp(1j * theta)) ).imag
     return R*mp.exp(1j*mp.findroot(actual_function, angle, tol=tol))
 
-def approximate_pleating_ray(r, s, p, q, R = 20, N = 10):
+def approximate_pleating_ray(r, s, p, q, R = 20, N = 10, end_at_cusp=True):
     """ Return points on the r/s pleating ray of the (p,q)-Riley slice.
 
         We will return N+1 points [z0,...,zN] where z0 is a point on the r/s pleating ray
-        with |z0| = R and where zN is the r/s cusp point.
+        with |z0| = R and where zN is the r/s cusp point (if end_at_cusp = True) or the r/s
+        link group (if end_at_cusp = False)
 
         Arguments:
           r,s -- coprime integers representing the slope
@@ -546,7 +547,8 @@ def approximate_pleating_ray(r, s, p, q, R = 20, N = 10):
     df = f.deriv()
     z = [real_point_on_circle(f, R, mp.pi*r/s)]
     L = [f(z[0])]
-    epsilon = mp.fabs(L[0] + 2)/N
+    endpoint = -2 if end_at_cusp else +2
+    epsilon = mp.fabs(L[0] - endpoint)/N
     for i in range(1,N+1):
         L.append( (1 - i/N) * L[-1] - 2*(i/N) )
         z.append(newtons_method(f - L[-1], z[-1], df))
