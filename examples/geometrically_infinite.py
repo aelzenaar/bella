@@ -9,8 +9,8 @@
 
 from bella import cayley
 import holoviews as hv
-hv.extension('bokeh')
 from mpmath import mp
+hv.extension('matplotlib')
 
 class GeomInfGroup(cayley.GroupCache):
     def __init__(self, m):
@@ -23,12 +23,17 @@ class GeomInfGroup(cayley.GroupCache):
         X = mp.matrix([[-self.λ*self.x, -(1+self.x**2)],[1,self.λ**-1*self.x]])
         super().__init__([T,X])
 
-num_points = 2*10**7
-m = 3
+num_points = 6*10**7
+m = 8
 G = GeomInfGroup(m)
 seed = G.fixed_points((0,1))[0]
 df = G.coloured_limit_set_fast(num_points, seed=seed)
+means = df.mean()
 scatter = hv.Scatter(df, kdims = ['x'], vdims = ['y','colour'])\
-            .opts(marker = "dot", size = 0.1,  color = 'colour', frame_width=2000, frame_height=2000, data_aspect=1, cmap='Set1')\
-              .redim(x=hv.Dimension('x', range=(-4,4)),y=hv.Dimension('y', range=(-4, 4)))
+            .opts(marker = "d", s = .2,\
+                aspect=1, fig_size=1000,\
+                color = 'colour', cmap="summer")\
+            .redim(x=hv.Dimension('x', range=(means['x']-4,means['x']+4)),\
+                    y=hv.Dimension('y', range=(means['y']-4,means['y']+4)))
+
 hv.save(scatter, f"geometrically_infinite{m}.png")

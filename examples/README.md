@@ -17,7 +17,6 @@ Run these with plain vanilla `python [filename]`. The utility bash script `gener
  - [elementary.py](elementary.py) -- an elementary group obtained as the orientation-preserving half of the group of reflections of a parallelogram.
  - [beads.py](beads.py) -- draw limit sets of bead groups along arbitrary polygonal paths.
  - [atom.py](atom.py) -- draw the limit set of an approximation of Accola's atom group (an infinitely generated group).
- - [zarrow.py](zarrow.py) -- draw the limit set of Zarrow's non-classical Schottky group (this group is not Fuchsian but does preserve $\mathbb{R}$).
  - [accidental_parabolic.py](accidental_parabolic.py) -- draw the limit set of a B-group with an accidental parabolic.
  - [riley_slice_cusps.py](riley_slice_cusps.py) -- produce cusp points on the Riley slice corresponding to various irrational numbers.
  - [cusp_groups.py](cusp_groups.py) -- plot the limit sets of some cusp groups.
