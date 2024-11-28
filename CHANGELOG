@@ -4,6 +4,7 @@ v0.1.3
  - Isometric circle generators have built in bounding parameters
  - Bugfix: when Y(inf) = inf, then cayley.mobius_fixed_points(Y) was wrong up to sign.
  - Pleating ray extensions can be computed right down to the link group (farey.approximate_pleating_ray(end_at_cusp=False))
+ - Breadth-first limit set algorithm
 
 v0.1.2
  - Major bugfixes to circle space action

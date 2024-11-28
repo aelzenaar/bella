@@ -246,6 +246,7 @@ class GroupCache:
             multiple times, labelled by different words differing by relators.
         """
         for nn in range(count):
+            # print(f"{nn/count:2.2%}")
             word = ()
             for n in range(depth):
                 word = self.free_random_walk_locally(word, rtl)
@@ -256,7 +257,7 @@ class GroupCache:
 
             Walk the Cayley graph of the free group on the given generators, yielding
             words in a breadth-first way, producing all words of length at most `depth`.
-            At each step the random walk will append a generator to the left of the word
+            At each step the walk will append a generator to the left of the word
             such that the resulting word is non-left-reducible of incrementally longer length.
         """
         last_list = [()]
@@ -310,7 +311,7 @@ class GroupCache:
 
         return pd.DataFrame(_internal_generator(), columns=['x','y','colour'])
 
-    def coloured_limit_set_fast(self, count, seed=0, complexify=complex):
+    def coloured_limit_set_fast(self, count, seed=None, rebase_when=None, complexify=complex):
         """ Monte-carlo search for points in the limit set.
 
             Produce `count` translates of the element `seed`, thus approximating the limit set,
@@ -319,10 +320,19 @@ class GroupCache:
             Generates: a dataframe with columns [ x, y, colour ] where x+yi is a point in the limit set
             and colour is the index of the first element in the word indexing that limit set.
         """
-        if seed == mp.inf:
-            base = self._underlying_matrix_t([[1],[0]])
-        else:
-            base = self._underlying_matrix_t([[seed],[1]])
+
+        def reseed(seed):
+            if seed == None:
+                seed = self.fixed_points(self.free_random_walk_locally(self.free_random_walk_locally(tuple())))[0]
+
+            if seed == mp.inf:
+                base = self._underlying_matrix_t([[1],[0]])
+            else:
+                base = self._underlying_matrix_t([[seed],[1]])
+            return base
+
+        base = reseed(seed)
+
         def _internal_generator(base):
             last = next(self.free_cayley_graph_mc(1,1))
             for _ in range(count):
@@ -330,6 +340,9 @@ class GroupCache:
                 if base[1] != 0:
                     cpx = complexify(base[0,0]/base[1,0])
                     yield (cpx.real, cpx.imag, last[0])
+                if (rebase_when != None) and (mp.fabs(cpx) > rebase_when):
+                    base = reseed(seed)
+                    print(f"rebasing")
                 last = self.free_random_walk_locally(last)[:1]
 
         return pd.DataFrame(_internal_generator(base), columns=['x','y','colour'])
@@ -351,13 +364,35 @@ class GroupCache:
 
         def _internal_generator():
             for w in self.free_cayley_graph_dfs(depth):
-                print(w)
                 point = self[w] @ base
                 if point[1] != 0:
                     cpx = complexify(point[0,0]/point[1,0])
-                    yield (cpx.real, cpx.imag)
+                    yield (cpx.real, cpx.imag, w[0])
 
-        return pd.DataFrame(_internal_generator(), columns=['x','y'])
+        return pd.DataFrame(_internal_generator(), columns=['x','y','colour'])
+
+    def limit_set_bfs(self, depth, seed = 0, complexify=complex):
+        """ Breadth-first ordered search for points in the limit set.
+
+            Produce all translates of the element `seed` up to depth `depth` in the Cayley
+            graph, thus approximating the limit set, by computing the Cayley graph as returned
+            by `free_cayley_graph_bfs(depth)`.
+
+            Generates: a dataframe with columns [ x, y ] where x+yi is a point in the limit set.
+        """
+        if seed == mp.inf:
+            base = self._underlying_matrix_t([[1],[0]])
+        else:
+            base = self._underlying_matrix_t([[seed],[1]])
+
+        def _internal_generator():
+            for w in self.free_cayley_graph_bfs(depth):
+                point = self[w] @ base
+                if point[1] != 0:
+                    cpx = complexify(point[0,0]/point[1,0])
+                    yield (cpx.real, cpx.imag, w[0])
+
+        return pd.DataFrame(_internal_generator(), columns=['x','y','colour'])
 
     def isometric_circle(self, word):
         """ Return the isometric circle of the word.
