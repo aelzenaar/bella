@@ -550,7 +550,7 @@ def approximate_pleating_ray(r, s, p, q, R = 20, N = 10, end_at_cusp=True):
     endpoint = -2 if end_at_cusp else +2
     epsilon = mp.fabs(L[0] - endpoint)/N
     for i in range(1,N+1):
-        L.append( (1 - i/N) * L[-1] - 2*(i/N) )
+        L.append( (1 - i/N) * L[-1] + endpoint*(i/N) )
         z.append(newtons_method(f - L[-1], z[-1], df))
 
     return z
