@@ -546,11 +546,12 @@ def approximate_pleating_ray(r, s, p, q, R = 20, N = 10, end_at_cusp=True):
     f = farey_polynomial_classic(r,s,p,q)
     df = f.deriv()
     z = [real_point_on_circle(f, R, mp.pi*r/s)]
-    L = [f(z[0])]
-    endpoint = -2 if end_at_cusp else +2
-    epsilon = mp.fabs(L[0] - endpoint)/N
-    for i in range(1,N+1):
-        L.append( (1 - i/N) * L[-1] + endpoint*(i/N) )
-        z.append(newtons_method(f - L[-1], z[-1], df))
+    L = f(z[0])
+
+    traces = list(reversed([-2*mp.exp((x/N)*mp.log(mp.fabs(L)/2)) for x in range(0,N)]))
+    if not end_at_cusp:
+        traces += list(reversed([2*mp.cosh(mp.pi*1j*x/N)  for x in range(0,N)]))
+    for tr in traces:
+        z.append(newtons_method(f - tr, z[-1], df))
 
     return z
